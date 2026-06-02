@@ -44,11 +44,11 @@ const topics = [
     name: "Houdini",
     description: "Houdini FX, destruction, fluids, VFX, scripting, procedural workflow và môi trường 3D."
   },
-  {
-    slug: "blender",
-    name: "Blender",
-    description: "Modeling, nhân vật 3D, environment, animation, Geometry Nodes, VFX, texturing và rendering với Blender."
-  },
+ {
+  slug: "blender",
+  name: "Blender",
+  description: "Modeling, nhân vật 3D, environment, animation, Geometry Nodes, VFX, texturing và rendering với Blender."
+},
   {
     slug: "maya",
     name: "Maya",
