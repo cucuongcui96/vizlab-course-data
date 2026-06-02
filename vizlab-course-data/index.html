@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Vizlab Course Data</title>
+</head>
+<body>
+  <h1>Danh sách khóa học Vizlab</h1>
+
+  <input 
+    type="text" 
+    placeholder="Tìm khóa học..."
+    oninput="searchCourses(this.value)"
+    style="
+      width:100%;
+      max-width:500px;
+      padding:12px 14px;
+      margin:16px 0;
+      border:1px solid #ddd;
+      border-radius:10px;
+      font-size:16px;
+    "
+  >
+
+  <div id="topics"></div>
+  <hr>
+  <div id="courses"></div>
+
+  <script src="data/topics.js"></script>
+
+  <script src="data/courses/digital-painting.js"></script>
+  <script src="data/courses/procreate.js"></script>
+  <script src="data/courses/zbrush.js"></script>
+  <script src="data/courses/illustrator.js"></script>
+  <script src="data/courses/photoshop.js"></script>
+  <script src="data/courses/adobe-premiere.js"></script>
+  <script src="data/courses/after-effects.js"></script>
+  <script src="data/courses/davinci-resolve.js"></script>
+  <script src="data/courses/houdini.js"></script>
+  <script src="data/courses/blender.js"></script>
+  <script src="data/courses/maya.js"></script>
+  <script src="data/courses/3ds-max.js"></script>
+  <script src="data/courses/motionanimation.js"></script>
+  <script src="data/courses/unreal-engine.js"></script>
+  <script src="data/courses/ux-ui-figma.js"></script>
+  <script src="data/courses/art-drawing.js"></script>
+
+  <script src="data/all-courses.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
