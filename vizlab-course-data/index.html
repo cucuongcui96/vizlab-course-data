@@ -414,6 +414,66 @@
         let currentSelectedCategory = 'all';
         let currentSelectedFilterChip = 'all'; 
         let cart = [];
+        function getCartStorageKey() {
+    if (currentUser && currentUser.id) {
+        return "vizlab_cart_user_" + currentUser.id;
+    }
+
+    return GUEST_CART_KEY;
+}
+
+function saveCartToStorage() {
+    const cartKey = getCartStorageKey();
+
+    const cartIds = cart.map(item => ({
+        id: item.id,
+        title: item.title,
+        topic: item.topic || item.category
+    }));
+
+    localStorage.setItem(cartKey, JSON.stringify(cartIds));
+}
+
+function loadCartFromStorage() {
+    const cartKey = getCartStorageKey();
+    const savedCart = localStorage.getItem(cartKey);
+
+    if (!savedCart) {
+        cart = [];
+        updateCartUI();
+        return;
+    }
+
+    try {
+        const savedItems = JSON.parse(savedCart);
+
+        cart = savedItems
+            .map(savedItem => {
+                return ALL_COURSES.find(course => course.id === savedItem.id)
+                    || SPECIAL_ROADMAPS_DATA.find(course => course.id === savedItem.id)
+                    || ALL_COURSES.find(course => course.title === savedItem.title)
+                    || SPECIAL_ROADMAPS_DATA.find(course => course.title === savedItem.title);
+            })
+            .filter(Boolean);
+
+        updateCartUI();
+    } catch (error) {
+        console.error("Lỗi đọc giỏ hàng:", error);
+        cart = [];
+        updateCartUI();
+    }
+}
+
+function clearCartStorage() {
+    const cartKey = getCartStorageKey();
+    localStorage.removeItem(cartKey);
+    cart = [];
+    updateCartUI();
+}
+
+function isCourseInCart(courseId) {
+    return cart.some(item => item.id === courseId);
+}
 const GUEST_CART_KEY = "vizlab_cart_guest";
 
         let progressInterval = null;
