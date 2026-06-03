@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -7,45 +8,112 @@
 <body>
   <h1>Danh sách khóa học Vizlab</h1>
 
-  <input 
-    type="text" 
-    placeholder="Tìm khóa học..."
-    oninput="searchCourses(this.value)"
-    style="
-      width:100%;
-      max-width:500px;
-      padding:12px 14px;
-      margin:16px 0;
-      border:1px solid #ddd;
-      border-radius:10px;
-      font-size:16px;
-    "
-  >
+  <div class="auth-box" style="
+    padding:12px 16px;
+    margin:16px 0;
+    border:1px solid #ddd;
+    border-radius:10px;
+    max-width:700px;
+  ">
+    <strong>Trạng thái:</strong>
+    <span data-auth-status>Đang kiểm tra đăng nhập...</span>
+    <span data-user-email style="margin-left:8px;"></span>
+
+```
+<a 
+  href="login.html" 
+  data-login-link
+  style="margin-left:12px;"
+>
+  Đăng nhập
+</a>
+
+<button 
+  onclick="signOut()" 
+  data-logout-button 
+  style="display:none; margin-left:12px;"
+>
+  Đăng xuất
+</button>
+```
+
+  </div>
+
+<input
+type="text"
+placeholder="Tìm khóa học..."
+oninput="searchCourses(this.value)"
+style="
+width:100%;
+max-width:500px;
+padding:12px 14px;
+margin:16px 0;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:16px;
+"
+
+>
 
   <div id="topics"></div>
   <hr>
   <div id="courses"></div>
 
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase-config.js"></script>
+
+  <!-- Topics -->
+
   <script src="data/topics.js"></script>
 
+  <!-- Course data -->
+
   <script src="data/courses/digital-painting.js"></script>
+
   <script src="data/courses/procreate.js"></script>
+
   <script src="data/courses/zbrush.js"></script>
+
   <script src="data/courses/illustrator.js"></script>
+
   <script src="data/courses/photoshop.js"></script>
+
   <script src="data/courses/adobe-premiere.js"></script>
+
   <script src="data/courses/after-effects.js"></script>
+
   <script src="data/courses/davinci-resolve.js"></script>
+
   <script src="data/courses/houdini.js"></script>
+
   <script src="data/courses/blender.js"></script>
+
   <script src="data/courses/maya.js"></script>
+
   <script src="data/courses/3ds-max.js"></script>
+
   <script src="data/courses/motionanimation.js"></script>
+
   <script src="data/courses/unreal-engine.js"></script>
+
   <script src="data/courses/ux-ui-figma.js"></script>
+
   <script src="data/courses/art-drawing.js"></script>
-<script src="data/courses/blender.js"></script>
+
+  <!-- Combined data -->
+
   <script src="data/all-courses.js"></script>
+
+  <!-- Website logic -->
+
+  <script src="cart.js"></script>
+
+  <script src="auth.js"></script>
+
   <script src="app.js"></script>
+
 </body>
 </html>
