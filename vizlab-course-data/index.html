@@ -373,6 +373,7 @@
                 }
 
                 loadCartFromStorage();
+                loadFavoriteCoursesFromStorage();
 
             } catch (error) {
                 console.error("Hệ thống Auth gặp sự cố:", error);
@@ -426,6 +427,7 @@
         const filterTypes = [
             { id: 'all', name: 'Khám phá Tất cả' },
             { id: 'owned', name: 'Khóa học của tôi' },
+            { id: 'favorite', name: 'Khóa học yêu thích' },
             { id: 'member', name: 'Mở khóa Hội Viên' },
             { id: 'paid', name: 'Sở hữu Khóa Lẻ' },
             { id: 'under200', name: 'Dễ dàng Nhập môn (< 200k)' },
@@ -456,6 +458,8 @@
         let currentSelectedFilterChip = 'all'; 
         let cart = [];
         const GUEST_CART_KEY = "vizlab_cart_guest";
+        let favoriteCourseIds = [];
+        const GUEST_FAVORITES_KEY = "vizlab_favorites_guest";
 
         function getCartStorageKey() {
             if (currentUser && currentUser.id) {
@@ -520,6 +524,54 @@
 
         function isCourseInCart(courseId) {
             return cart.some(item => item.id === courseId);
+        }
+
+        function getFavoriteStorageKey() {
+            if (currentUser && currentUser.id) {
+                return "vizlab_favorites_user_" + currentUser.id;
+            }
+            return GUEST_FAVORITES_KEY;
+        }
+
+        function saveFavoriteCoursesToStorage() {
+            localStorage.setItem(getFavoriteStorageKey(), JSON.stringify(favoriteCourseIds));
+        }
+
+        function loadFavoriteCoursesFromStorage() {
+            const savedFavorites = localStorage.getItem(getFavoriteStorageKey());
+            if (!savedFavorites) {
+                favoriteCourseIds = [];
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(savedFavorites);
+                favoriteCourseIds = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                console.error("Lỗi đọc khóa học yêu thích:", error);
+                favoriteCourseIds = [];
+            }
+        }
+
+        function isCourseFavorited(courseId) {
+            return favoriteCourseIds.includes(courseId);
+        }
+
+        function toggleFavoriteCourse(courseId, event) {
+            if (event) event.stopPropagation();
+            if (!courseId) return;
+
+            if (isCourseFavorited(courseId)) {
+                favoriteCourseIds = favoriteCourseIds.filter(id => id !== courseId);
+            } else {
+                favoriteCourseIds.push(courseId);
+            }
+
+            saveFavoriteCoursesToStorage();
+
+            if (typeof executeSearchAndFilter === "function") {
+                executeSearchAndFilter();
+            }
         }
 
         let progressInterval = null;
@@ -588,6 +640,7 @@
             ALL_COURSES = results.flat(); 
 
             loadCartFromStorage();
+            loadFavoriteCoursesFromStorage();
 
             document.getElementById('loading-shimmer').classList.add('hidden');
             document.getElementById('course-grid').classList.remove('hidden');
@@ -604,6 +657,7 @@
             const chipIcons = {
                 all: 'fas fa-compass',
                 owned: 'fas fa-graduation-cap',
+                favorite: 'fas fa-heart',
                 member: 'fas fa-crown',
                 paid: 'fas fa-bag-shopping',
                 under200: 'fas fa-seedling',
@@ -784,6 +838,8 @@
                 } else {
                     filtered = filtered.filter(c => userOwnsCourse(c.id));
                 }
+            } else if (currentSelectedFilterChip === 'favorite') {
+                filtered = filtered.filter(c => isCourseFavorited(c.id));
             } else if (currentSelectedFilterChip === 'member') {
                 filtered = filtered.filter(c => c.type === 'member');
             } else if (currentSelectedFilterChip === 'paid') {
@@ -813,6 +869,8 @@
                     countEl.textContent = 'Đăng nhập để xem khóa học của bạn';
                 } else if (currentSelectedFilterChip === 'owned') {
                     countEl.textContent = `Bạn đang có ${filtered.length} khóa học đã được cấp quyền`;
+                } else if (currentSelectedFilterChip === 'favorite') {
+                    countEl.textContent = `Bạn đang có ${filtered.length} khóa học yêu thích`;
                 } else {
                     countEl.textContent = `Tìm thấy ${filtered.length} khóa học phù hợp`;
                 }
@@ -863,6 +921,19 @@
                     return;
                 }
 
+                if (currentSelectedFilterChip === 'favorite') {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+                                <i class="fas fa-heart text-4xl text-slate-500 mb-4"></i>
+                                <h3 class="text-white font-black text-xl mb-2">Chưa có khóa học yêu thích</h3>
+                                <p class="text-slate-400 text-sm">Bấm biểu tượng trái tim trên thẻ khóa học để lưu khóa bạn quan tâm.</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
                 grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-16 font-medium">Không tìm thấy khóa học nào phù hợp trong Vũ Trụ Sáng Tạo.</div>`;
                 return;
             }
@@ -880,6 +951,7 @@
 
                 const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
                 const isInCart = isCourseInCart(course.id);
+                const isFavorite = isCourseFavorited(course.id);
 
                 const actionButton = isOwned
                     ? `<div onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-emerald-400 flex items-center justify-center gap-2 text-sm text-[#020617] transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(52,211,153,0.35)]" title="Vào học">
@@ -904,7 +976,10 @@
                     </div>
 
                     <div class="relative h-full flex flex-col bg-[#0f172a]/95 backdrop-blur-md rounded-[1.4rem] overflow-hidden border border-white/5 border-t-white/10 transition-all duration-500 group-hover:bg-transparent">
-                        ${isMember ? `<div class="absolute top-4 right-4 z-20 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(226,232,240,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown text-slate-700"></i> Hội Viên</div>` : ''}
+                        <button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 right-4 z-30 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                            <i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i>
+                        </button>
+                        ${isMember ? `<div class="absolute top-16 right-4 z-20 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(226,232,240,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown text-slate-700"></i> Hội Viên</div>` : ''}
                         ${isInCart && !isOwned && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(79,185,253,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-check"></i> Đã thêm</div>` : ''}
                         <div class="aspect-video relative overflow-hidden bg-black">
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
@@ -980,6 +1055,7 @@
                 
                 const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
                 const isInCart = isCourseInCart(course.id);
+                const isFavorite = isCourseFavorited(course.id);
 
                 const actionBtnSpecial = isOwned
                     ? `<div onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-emerald-400 flex items-center justify-center gap-2 text-sm md:text-base text-[#020617] shadow-[0_0_15px_rgba(52,211,153,0.35)] transition-all hover:scale-105" title="Vào học">
@@ -999,7 +1075,7 @@
 
                 card.innerHTML = `
                     <div class="bg-[#0f172a] h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
-                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
+                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
                         <div class="p-6 md:p-8 flex flex-col flex-1 -mt-12 relative z-10">
                             <span class="text-[10px] uppercase font-black tracking-widest text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
                             <h3 class="text-lg md:text-xl font-black text-white leading-tight mb-3 ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${course.title}</h3>
