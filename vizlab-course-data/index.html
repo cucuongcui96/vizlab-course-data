@@ -157,6 +157,47 @@
         
         <div class="relative z-10 max-w-[1600px] mx-auto px-6 md:px-12 py-8 md:py-10">
             
+            <div id="top-library-toolbar" class="sticky top-16 md:top-0 z-[60] -mx-2 md:-mx-4 mb-8 md:mb-10 px-2 md:px-4 pt-2 md:pt-0">
+                <div class="rounded-[1.6rem] border border-white/10 bg-[#020617]/82 backdrop-blur-2xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+                    <div class="p-3 md:p-4 flex flex-col xl:flex-row xl:items-center gap-3 md:gap-4">
+                        <div class="flex items-center justify-between gap-3 min-w-0 xl:w-[300px] shrink-0">
+                            <button onclick="scrollToLibrary()" class="flex items-center gap-3 min-w-0 text-left group/top-title">
+                                <span class="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#4fb9fd] to-violet-500 text-[#020617] flex items-center justify-center shadow-[0_0_24px_rgba(79,185,253,0.35)] shrink-0">
+                                    <i class="fas fa-layer-group text-lg"></i>
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block text-white font-black text-base md:text-lg leading-tight tracking-tight group-hover/top-title:text-[#4fb9fd] transition-colors">Thư viện khóa học</span>
+                                    <span class="block text-slate-400 text-[11px] md:text-xs font-semibold truncate" id="top-toolbar-subtitle">Tìm kiếm, lọc và vào học nhanh</span>
+                                </span>
+                            </button>
+
+                            <button onclick="toggleCart()" class="xl:hidden relative flex items-center justify-center h-11 w-11 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-slate-300 hover:text-white transition-all shrink-0">
+                                <i class="fas fa-shopping-bag text-base"></i>
+                                <div id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black text-[10px] h-5 w-5 rounded-full flex items-center justify-center border border-[#020617] scale-0 transition-transform duration-300">0</div>
+                            </button>
+                        </div>
+
+                        <div class="relative group/search flex-1 min-w-0">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-slate-400 text-sm group-focus-within/search:text-[#4fb9fd] transition-colors"></i>
+                            </div>
+                            <input type="text" id="search-input" placeholder="Tìm nhanh trong tất cả chủ đề..."
+                                   class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 font-semibold focus:outline-none focus:border-[#4fb9fd]/50 focus:bg-white/10 transition-all shadow-inner">
+                        </div>
+
+                        <button onclick="toggleCart()" class="hidden xl:flex relative items-center justify-center gap-2 h-12 px-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-slate-300 hover:text-white transition-all shrink-0">
+                            <i class="fas fa-shopping-bag text-base"></i>
+                            <span class="text-xs font-black uppercase tracking-wider">Giỏ hàng</span>
+                            <div id="cart-badge-desktop" class="bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black text-[10px] h-5 min-w-5 px-1.5 rounded-full flex items-center justify-center scale-0 transition-transform duration-300">0</div>
+                        </button>
+                    </div>
+
+                    <div class="px-3 md:px-4 pb-3 md:pb-4">
+                        <div id="filter-chips-container" class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1"></div>
+                    </div>
+                </div>
+            </div>
+
             <section class="mb-16 md:mb-20 mt-4 md:mt-0">
                 <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-3">
                     <div>
@@ -226,30 +267,17 @@
                 <div id="slider-dots" class="flex items-center justify-center gap-2 mt-4 transition-opacity duration-300"></div>
             </section>
 
-            <section id="course-library" class="pb-20 relative">
-                <div class="sticky top-0 z-40 pt-6 pb-6 bg-[#020617]/95 backdrop-blur-md mb-8 border-b border-white/10">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <section id="course-library" class="pb-20 relative scroll-mt-32 md:scroll-mt-28">
+                <div class="mb-8 border-b border-white/10 pb-6">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
                         <div>
-                            <h2 class="text-2xl font-black text-white tracking-tight" id="library-title">Vũ Trụ Sáng Tạo</h2>
+                            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight" id="library-title">Vũ Trụ Sáng Tạo</h2>
                             <span class="text-slate-400 text-sm font-semibold" id="course-count">Đánh thức nghệ sĩ 3D bên trong bạn</span>
                         </div>
-                        
-                        <div class="flex items-center gap-4 w-full md:w-auto">
-                            <div class="relative group/search flex-1 md:w-[350px]">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-slate-400 text-sm group-focus-within/search:text-white transition-colors"></i>
-                                </div>
-                                <input type="text" id="search-input" placeholder="Ví dụ: blender người mới..." 
-                                       class="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 font-semibold focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all shadow-xl">
-                            </div>
-                            
-                            <button onclick="toggleCart()" class="relative flex items-center justify-center h-12 w-12 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-all shadow-xl shrink-0">
-                                <i class="fas fa-shopping-bag text-lg"></i>
-                                <div id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black text-[10px] h-5 w-5 rounded-full flex items-center justify-center border border-[#020617] scale-0 transition-transform duration-300">0</div>
-                            </button>
-                        </div>
+                        <button onclick="scrollToLibrary()" class="hidden md:inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#4fb9fd] bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-4 py-2.5 rounded-2xl hover:bg-[#4fb9fd]/20 transition-all">
+                            <i class="fas fa-arrow-down"></i> Khu vực khóa học
+                        </button>
                     </div>
-                    <div id="filter-chips-container" class="flex flex-wrap gap-2.5 pt-2"></div>
                 </div>
 
                 <div id="loading-shimmer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -397,7 +425,7 @@
 
         const filterTypes = [
             { id: 'all', name: 'Khám phá Tất cả' },
-            { id: 'owned', name: 'Khóa đã mua' },
+            { id: 'owned', name: 'Khóa học của tôi' },
             { id: 'member', name: 'Mở khóa Hội Viên' },
             { id: 'paid', name: 'Sở hữu Khóa Lẻ' },
             { id: 'under200', name: 'Dễ dàng Nhập môn (< 200k)' },
@@ -558,6 +586,9 @@
 
             const results = await Promise.all(fetchPromises);
             ALL_COURSES = results.flat(); 
+
+            loadCartFromStorage();
+
             document.getElementById('loading-shimmer').classList.add('hidden');
             document.getElementById('course-grid').classList.remove('hidden');
             
@@ -567,19 +598,38 @@
 
         function renderFilterChips() {
             const container = document.getElementById('filter-chips-container');
+            if (!container) return;
             container.innerHTML = '';
+
+            const chipIcons = {
+                all: 'fas fa-compass',
+                owned: 'fas fa-graduation-cap',
+                member: 'fas fa-crown',
+                paid: 'fas fa-bag-shopping',
+                under200: 'fas fa-seedling',
+                over200: 'fas fa-rocket'
+            };
+
             filterTypes.forEach(chip => {
                 const isActive = currentSelectedFilterChip === chip.id;
                 const button = document.createElement('button');
-                button.className = isActive 
-                    ? "text-xs font-bold px-4 py-2.5 rounded-xl transition-all bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] border border-transparent shadow-lg scale-105 duration-300"
-                    : "text-xs font-semibold px-4 py-2.5 rounded-xl transition-all bg-white/5 border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 duration-300";
-                button.innerText = chip.name;
+
+                button.className = isActive
+                    ? "group/chip shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-wide bg-gradient-to-r from-slate-100 to-slate-300 text-[#020617] border border-white/60 shadow-[0_0_24px_rgba(226,232,240,0.24)] transition-all duration-300"
+                    : "group/chip shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-wide bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:border-[#4fb9fd]/30 transition-all duration-300";
+
+                button.innerHTML = `
+                    <i class="${chipIcons[chip.id] || 'fas fa-circle'} ${isActive ? 'text-[#020617]' : 'text-[#4fb9fd] group-hover/chip:text-white'}"></i>
+                    <span class="whitespace-nowrap">${chip.name}</span>
+                `;
+
                 button.onclick = () => {
                     currentSelectedFilterChip = chip.id;
                     renderFilterChips();
                     executeSearchAndFilter();
+                    scrollToLibrary();
                 };
+
                 container.appendChild(button);
             });
         }
@@ -639,10 +689,17 @@
         }
 
         function updateCartUI() {
-            const badge = document.getElementById('cart-badge');
-            badge.innerText = cart.length;
-            if(cart.length > 0) { badge.classList.replace('scale-0', 'scale-100'); } 
-            else { badge.classList.replace('scale-100', 'scale-0'); }
+            const badges = [document.getElementById('cart-badge'), document.getElementById('cart-badge-desktop')].filter(Boolean);
+            badges.forEach(badge => {
+                badge.innerText = cart.length;
+                if (cart.length > 0) {
+                    badge.classList.remove('scale-0');
+                    badge.classList.add('scale-100');
+                } else {
+                    badge.classList.remove('scale-100');
+                    badge.classList.add('scale-0');
+                }
+            });
 
             const list = document.getElementById('cart-items-list');
             list.innerHTML = '';
@@ -748,6 +805,25 @@
                 });
             }
 
+            const countEl = document.getElementById('course-count');
+            const topSubtitle = document.getElementById('top-toolbar-subtitle');
+
+            if (countEl) {
+                if (currentSelectedFilterChip === 'owned' && !currentUser) {
+                    countEl.textContent = 'Đăng nhập để xem khóa học của bạn';
+                } else if (currentSelectedFilterChip === 'owned') {
+                    countEl.textContent = `Bạn đang có ${filtered.length} khóa học đã được cấp quyền`;
+                } else {
+                    countEl.textContent = `Tìm thấy ${filtered.length} khóa học phù hợp`;
+                }
+            }
+
+            if (topSubtitle) {
+                topSubtitle.textContent = currentUser
+                    ? `Đang đăng nhập: ${currentUser.email || 'học viên'}`
+                    : 'Tìm kiếm, lọc và vào học nhanh';
+            }
+
             renderCourses(filtered);
             renderSpecialRoadmaps(); 
         }
@@ -764,7 +840,7 @@
                             <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
                                 <i class="fas fa-lock text-4xl text-slate-500 mb-4"></i>
                                 <h3 class="text-white font-black text-xl mb-2">Bạn chưa đăng nhập</h3>
-                                <p class="text-slate-400 text-sm mb-6">Đăng nhập để xem các khóa học bạn đã mua.</p>
+                                <p class="text-slate-400 text-sm mb-6">Đăng nhập để xem các khóa học của bạn.</p>
                                 <a href="https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/login.html" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-[#4fb9fd] text-[#020617] font-black text-sm hover:scale-105 transition-transform">
                                     Đăng nhập ngay
                                 </a>
@@ -780,7 +856,7 @@
                             <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
                                 <i class="fas fa-box-open text-4xl text-slate-500 mb-4"></i>
                                 <h3 class="text-white font-black text-xl mb-2">Chưa có khóa học nào</h3>
-                                <p class="text-slate-400 text-sm">Tài khoản này hiện chưa được cấp quyền khóa học nào.</p>
+                                <p class="text-slate-400 text-sm">Tài khoản này hiện chưa được cấp quyền khóa học nào. Sau khi bạn mua khóa, shop sẽ kích hoạt tại đây.</p>
                             </div>
                         </div>
                     `;
@@ -975,13 +1051,53 @@
             }
         });
 
+        function scrollToLibrary() {
+            const library = document.getElementById('course-library');
+            const mainEl = document.querySelector('main');
+
+            if (!library) return;
+
+            if (mainEl && window.innerWidth >= 768) {
+                const toolbarOffset = 120;
+                mainEl.scrollTo({
+                    top: Math.max(library.offsetTop - toolbarOffset, 0),
+                    behavior: 'smooth'
+                });
+            } else {
+                library.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
         // ----------------------------------------------------
         // KÍCH HOẠT HỆ THỐNG GIAO DIỆN
         // ----------------------------------------------------
-       document.addEventListener("DOMContentLoaded", async () => {
-    await initDashboard();
-    await initAuth();
-});
+       if ("scrollRestoration" in history) {
+            history.scrollRestoration = "manual";
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const mainEl = document.querySelector("main");
+            if (mainEl) mainEl.scrollTop = 0;
+            window.scrollTo(0, 0);
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    if (typeof executeSearchAndFilter === "function") {
+                        executeSearchAndFilter();
+                    }
+                });
+            }
+
+            await initDashboard();
+            await initAuth();
+
+            setTimeout(() => {
+                const mainEl = document.querySelector("main");
+                if (mainEl) mainEl.scrollTop = 0;
+                window.scrollTo(0, 0);
+            }, 300);
+        });
     </script>
 </body>
 </html>
