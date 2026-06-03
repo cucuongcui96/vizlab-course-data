@@ -252,13 +252,17 @@
             </button>
         </div>
 
-        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex justify-center">
-            <a href="#" onclick="upgradeMembership(event)" class="relative flex items-center h-10 w-10 group-hover:w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black rounded-xl shadow-[0_0_15px_rgba(226,232,240,0.4)] hover:shadow-[0_0_25px_rgba(226,232,240,0.7)] transition-all duration-300 overflow-hidden">
+        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex flex-col items-center gap-2">
+            <button id="membership-sidebar-action" type="button" onclick="handleMembershipStatusClick(event)" class="relative flex items-center h-10 w-10 group-hover:w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black rounded-xl shadow-[0_0_15px_rgba(226,232,240,0.4)] hover:shadow-[0_0_25px_rgba(226,232,240,0.7)] transition-all duration-300 overflow-hidden">
                 <div class="w-10 h-10 shrink-0 flex items-center justify-center">
-                    <i class="fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]"></i>
+                    <i data-membership-action-icon class="fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]"></i>
                 </div>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap tracking-tight text-sm pl-1">Nâng Cấp Hội Viên</span>
-            </a>
+                <span data-membership-action-text class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap tracking-tight text-sm pl-1">Nâng Cấp Hội Viên</span>
+            </button>
+            <div id="membership-status-mini" class="hidden group-hover:block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left">
+                <div data-membership-status-title class="text-[10px] font-black uppercase tracking-widest text-slate-400 truncate">Chưa kích hoạt</div>
+                <div data-membership-status-subtitle class="text-[11px] font-bold text-slate-300 truncate mt-0.5">Nâng cấp để mở khóa</div>
+            </div>
         </div>
     </aside>
 
@@ -816,6 +820,8 @@
 
         let currentUser = null;
         let ownedCourseIds = [];
+        let userMembership = null;
+        let userIsActiveMember = false;
 
         async function getCurrentUser() {
             const { data, error } = await window.supabaseClient.auth.getUser();
@@ -835,6 +841,109 @@
 
         function userOwnsCourse(courseId) {
             return ownedCourseIds.includes(courseId);
+        }
+
+        function isMembershipRecordActive(record) {
+            if (!record || record.status !== 'active') return false;
+            if (!record.end_date) return true;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const endDate = new Date(record.end_date + 'T23:59:59');
+            return endDate >= today;
+        }
+
+        async function loadMembershipStatus() {
+            userMembership = null;
+            userIsActiveMember = false;
+            if (!currentUser) return null;
+
+            const { data, error } = await window.supabaseClient
+                .from('memberships')
+                .select('id, plan, status, start_date, end_date, note, created_at')
+                .eq('user_id', currentUser.id)
+                .eq('status', 'active')
+                .order('end_date', { ascending: false, nullsFirst: false })
+                .limit(1);
+
+            if (error) {
+                console.error('Lỗi tải trạng thái hội viên:', error.message);
+                return null;
+            }
+
+            const activeMembership = (data || []).find(isMembershipRecordActive) || null;
+            userMembership = activeMembership;
+            userIsActiveMember = Boolean(activeMembership);
+            return activeMembership;
+        }
+
+        function userCanAccessCourse(course) {
+            if (!course) return false;
+            const isSingleCourseOwned = userOwnsCourse(course.id);
+            const isMembershipCourse = course.type === 'member' || course.price === 0 || course.type === 'free';
+            return isSingleCourseOwned || (userIsActiveMember && isMembershipCourse);
+        }
+
+        function formatMembershipPlan(plan) {
+            const map = { pro_month: 'Pro 1 tháng', pro_6months: 'Pro 6 tháng', pro_year: 'Pro 1 năm', '1month': 'Pro 1 tháng', '6months': 'Pro 6 tháng', '1year': 'Pro 1 năm' };
+            return map[plan] || plan || 'Hội viên Pro';
+        }
+
+        function formatDateVN(dateString) {
+            if (!dateString) return 'Không giới hạn';
+            const d = new Date(dateString + 'T00:00:00');
+            if (Number.isNaN(d.getTime())) return dateString;
+            return d.toLocaleDateString('vi-VN');
+        }
+
+        function updateMembershipUI() {
+            const actionBtn = document.getElementById('membership-sidebar-action');
+            const actionText = document.querySelector('[data-membership-action-text]');
+            const actionIcon = document.querySelector('[data-membership-action-icon]');
+            const statusMini = document.getElementById('membership-status-mini');
+            const titleEl = document.querySelector('[data-membership-status-title]');
+            const subtitleEl = document.querySelector('[data-membership-status-subtitle]');
+
+            if (!actionBtn || !actionText) return;
+
+            if (!currentUser) {
+                actionText.textContent = 'Nâng Cấp Hội Viên';
+                if (actionIcon) actionIcon.className = 'fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]';
+                if (statusMini) statusMini.classList.add('hidden');
+                return;
+            }
+
+            if (userIsActiveMember && userMembership) {
+                actionText.textContent = 'Hội Viên Pro';
+                actionBtn.classList.remove('from-slate-200', 'to-slate-400');
+                actionBtn.classList.add('from-emerald-300', 'to-slate-200');
+                if (actionIcon) actionIcon.className = 'fas fa-badge-check text-sm';
+                if (statusMini) statusMini.classList.remove('hidden');
+                if (titleEl) titleEl.textContent = formatMembershipPlan(userMembership.plan) + ' đang hoạt động';
+                if (subtitleEl) subtitleEl.textContent = 'Hết hạn: ' + formatDateVN(userMembership.end_date);
+            } else {
+                actionText.textContent = 'Nâng Cấp Hội Viên';
+                actionBtn.classList.remove('from-emerald-300', 'to-slate-200');
+                actionBtn.classList.add('from-slate-200', 'to-slate-400');
+                if (actionIcon) actionIcon.className = 'fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]';
+                if (statusMini) statusMini.classList.remove('hidden');
+                if (titleEl) titleEl.textContent = 'Chưa kích hoạt Hội Viên';
+                if (subtitleEl) subtitleEl.textContent = 'Nâng cấp để mở khóa khóa 0đ';
+            }
+        }
+
+        function handleMembershipStatusClick(event) {
+            if (event) event.stopPropagation();
+            if (userIsActiveMember && userMembership) {
+                alert(`Hội viên Pro đang hoạt động\nGói: ${formatMembershipPlan(userMembership.plan)}\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
+                return;
+            }
+            openMembershipModal();
+        }
+
+        function getFilterDisplayName(chip) {
+            if (!chip) return '';
+            if (chip.id === 'member') return userIsActiveMember ? 'Khóa Hội Viên Pro' : 'Mở khóa Hội Viên';
+            return chip.name;
         }
 
         function updateAuthUI() {
@@ -857,6 +966,8 @@
 
             loginLinks.forEach(el => { el.style.display = currentUser ? "none" : "flex"; });
             logoutButtons.forEach(el => { el.style.display = currentUser ? "flex" : "none"; });
+            updateMembershipUI();
+            renderFilterChips();
         }
 
         async function signOut() {
@@ -864,6 +975,8 @@
 
             currentUser = null;
             ownedCourseIds = [];
+            userMembership = null;
+            userIsActiveMember = false;
 
             loadCartFromStorage();
             updateAuthUI();
@@ -879,6 +992,7 @@
 
                 if (currentUser) {
                     await loadOwnedCourses();
+                    await loadMembershipStatus();
                 }
 
                 loadCartFromStorage();
@@ -1178,7 +1292,7 @@
 
                 button.innerHTML = `
                     <i class="${chipIcons[chip.id] || 'fas fa-circle'} ${isActive ? 'text-[#020617]' : 'text-[#4fb9fd] group-hover/chip:text-white'}"></i>
-                    <span class="whitespace-nowrap">${chip.name}</span>
+                    <span class="whitespace-nowrap">${getFilterDisplayName(chip)}</span>
                 `;
 
                 button.onclick = () => {
@@ -1205,8 +1319,7 @@
         }
 
         function upgradeMembership(event) {
-            if (event) event.stopPropagation();
-            openMembershipModal();
+            handleMembershipStatusClick(event);
         }
 
       function addToCart(courseId, event) {
@@ -1352,7 +1465,7 @@
                 if (!currentUser) {
                     filtered = [];
                 } else {
-                    filtered = filtered.filter(c => userOwnsCourse(c.id));
+                    filtered = filtered.filter(c => userCanAccessCourse(c));
                 }
             } else if (currentSelectedFilterChip === 'favorite') {
                 filtered = filtered.filter(c => isCourseFavorited(c.id));
@@ -1384,7 +1497,13 @@
                 if (currentSelectedFilterChip === 'owned' && !currentUser) {
                     countEl.textContent = 'Đăng nhập để xem khóa học của bạn';
                 } else if (currentSelectedFilterChip === 'owned') {
-                    countEl.textContent = `Bạn đang có ${filtered.length} khóa học đã được cấp quyền`;
+                    countEl.textContent = userIsActiveMember
+                        ? `Hội viên Pro đang mở ${filtered.length} khóa học cho tài khoản của bạn`
+                        : `Bạn đang có ${filtered.length} khóa học đã được cấp quyền`;
+                } else if (currentSelectedFilterChip === 'member') {
+                    countEl.textContent = userIsActiveMember
+                        ? `Hội viên Pro đang hoạt động · ${filtered.length} khóa hội viên đã mở`
+                        : `Tìm thấy ${filtered.length} khóa học dành cho Hội Viên`;
                 } else if (currentSelectedFilterChip === 'favorite') {
                     countEl.textContent = `Bạn đang có ${filtered.length} khóa học yêu thích`;
                 } else {
@@ -1394,7 +1513,9 @@
 
             if (topSubtitle) {
                 topSubtitle.textContent = currentUser
-                    ? `Đang đăng nhập: ${currentUser.email || 'học viên'}`
+                    ? (userIsActiveMember
+                        ? `Đang đăng nhập: ${currentUser.email || 'học viên'} · Hội viên Pro đến ${formatDateVN(userMembership && userMembership.end_date)}`
+                        : `Đang đăng nhập: ${currentUser.email || 'học viên'}`)
                     : 'Tìm kiếm, lọc và vào học nhanh';
             }
 
@@ -1430,7 +1551,7 @@
                             <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
                                 <i class="fas fa-box-open text-4xl text-slate-500 mb-4"></i>
                                 <h3 class="text-white font-black text-xl mb-2">Chưa có khóa học nào</h3>
-                                <p class="text-slate-400 text-sm">Tài khoản này hiện chưa được cấp quyền khóa học nào. Sau khi bạn mua khóa, shop sẽ kích hoạt tại đây.</p>
+                                <p class="text-slate-400 text-sm">Tài khoản này hiện chưa được cấp khóa mua lẻ hoặc hội viên. Sau khi kích hoạt, khóa sẽ hiển thị tại đây.</p>
                             </div>
                         </div>
                     `;
@@ -1465,7 +1586,7 @@
                 const borderGradients = isMember ? 'from-slate-400/50 to-transparent' : 'from-[#4fb9fd]/50 to-transparent';
                 const textGlow = isMember ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]';
 
-                const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
+                const isOwned = typeof userCanAccessCourse === "function" && userCanAccessCourse(course);
                 const isInCart = isCourseInCart(course.id);
                 const isFavorite = isCourseFavorited(course.id);
 
@@ -1569,7 +1690,7 @@
                 card.className = "special-card btn-glow-border rounded-[2rem] p-[2px] group cursor-pointer w-[300px] md:w-[420px] shrink-0 snap-start hover:-translate-y-2 transition-transform duration-500";
                 card.onclick = () => { window.open(course.href, '_blank'); };
                 
-                const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
+                const isOwned = typeof userCanAccessCourse === "function" && userCanAccessCourse(course);
                 const isInCart = isCourseInCart(course.id);
                 const isFavorite = isCourseFavorited(course.id);
 
@@ -1940,6 +2061,10 @@
             if (plansView) plansView.classList.remove('hidden');
         }
         function openMembershipModal() {
+            if (userIsActiveMember && userMembership) {
+                alert(`Hội viên Pro đang hoạt động\nGói: ${formatMembershipPlan(userMembership.plan)}\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
+                return;
+            }
             const modal = document.getElementById('membership-modal');
             const form = document.getElementById('membership-form');
             const plansView = document.getElementById('membership-plans-view');
