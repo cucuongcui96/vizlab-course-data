@@ -133,7 +133,9 @@
 
   <div id="message" class="message"></div>
 
-  <a class="back-link" href="index.html">← Quay lại danh sách khóa học</a>
+  <a class="back-link" href="https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html">
+    ← Quay lại danh sách khóa học
+  </a>
 </div>
 ```
 
@@ -146,6 +148,8 @@
   <script src="auth.js"></script>
 
   <script>
+    const HOME_URL = "https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html";
+
     const messageEl = document.getElementById("message");
 
     function showMessage(text, type = "success") {
@@ -175,7 +179,7 @@
         showMessage("Đăng nhập thành công. Đang chuyển về trang khóa học...", "success");
 
         setTimeout(() => {
-          window.location.href = "index.html";
+          window.location.href = HOME_URL;
         }, 800);
       }
     }
@@ -196,7 +200,7 @@
       const user = await signUp(email, password, fullName);
 
       if (user) {
-        showMessage("Đăng ký thành công. Bạn có thể cần kiểm tra email xác nhận trước khi đăng nhập.", "success");
+        showMessage("Đăng ký thành công. Nếu hệ thống yêu cầu xác nhận email, bạn hãy kiểm tra email rồi quay lại đăng nhập.", "success");
       }
     }
   </script>
