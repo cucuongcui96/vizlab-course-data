@@ -819,14 +819,26 @@
             return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
         }
 
-        // HÀM CHÍNH ĐỂ RENDER (Được gọi lại mỗi khi file auth.js cập nhật xong dữ liệu sở hữu khóa học)
+        // HÀM CHÍNH ĐỂ RENDER (Được gọi lại mỗi khi Auth / giỏ hàng / yêu thích thay đổi)
         window.executeSearchAndFilter = function() {
             const searchEl = document.getElementById('search-input');
             const rawKeyword = searchEl ? searchEl.value.toLowerCase().trim() : '';
             const keyword = removeAccents(rawKeyword); 
             const searchTerms = keyword.split(/\s+/).filter(t => t.length > 0);
 
-            let filtered = ALL_COURSES;
+            const normalizedSpecialRoadmaps = SPECIAL_ROADMAPS_DATA.map(course => ({
+                ...course,
+                categoryName: course.categoryName || 'Bệ Phóng Chuyên Nghiệp',
+                topicName: course.topicName || 'Lộ trình đặc biệt',
+                topic: course.topic || course.category,
+                isSpecialRoadmap: true
+            }));
+
+            // Riêng mục yêu thích cần lấy cả khóa thường trong Vũ Trụ Sáng Tạo
+            // và các lộ trình trong Bệ Phóng Chuyên Nghiệp.
+            let filtered = currentSelectedFilterChip === 'favorite'
+                ? [...ALL_COURSES, ...normalizedSpecialRoadmaps]
+                : ALL_COURSES;
 
             if (currentSelectedCategory !== 'all') {
                 filtered = filtered.filter(c => c.category === currentSelectedCategory);
@@ -852,8 +864,8 @@
 
             if (searchTerms.length > 0) {
                 filtered = filtered.filter(c => {
-                    const titleNoAccent = removeAccents(c.title.toLowerCase());
-                    const catNoAccent = removeAccents(c.categoryName.toLowerCase());
+                    const titleNoAccent = removeAccents((c.title || '').toLowerCase());
+                    const catNoAccent = removeAccents((c.categoryName || c.topicName || c.category || '').toLowerCase());
                     const tags = searchTags[c.category] || [];
                     const searchableText = `${titleNoAccent} ${catNoAccent} ${removeAccents(tags.join(' '))}`;
 
@@ -981,12 +993,13 @@
                         </button>
                         ${isMember ? `<div class="absolute top-16 right-4 z-20 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(226,232,240,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown text-slate-700"></i> Hội Viên</div>` : ''}
                         ${isInCart && !isOwned && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(79,185,253,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-check"></i> Đã thêm</div>` : ''}
+                        ${course.isSpecialRoadmap && !isInCart && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-purple-500 text-white text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(168,85,247,0.35)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-route"></i> Lộ trình</div>` : ''}
                         <div class="aspect-video relative overflow-hidden bg-black">
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
                             <img src="${course.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy">
                         </div>
                         <div class="p-6 flex flex-col flex-1 relative z-20">
-                            <span class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName}</span>
+                            <span class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
                             <h3 class="text-white font-bold text-lg leading-snug line-clamp-2 mb-6 transition-colors duration-300 ${textGlow}">${course.title}</h3>
                             <div class="mt-auto flex justify-between items-end border-t border-white/5 pt-4">
                                 <div>
