@@ -54,16 +54,16 @@
                 <img src="https://iili.io/B5sIBtt.png" alt="VizLab" class="h-12 w-auto object-contain">
             </a>
             <h1 class="text-white font-black text-2xl tracking-tight">Cổng học viên VizLab</h1>
-            <p class="text-slate-400 text-sm font-medium mt-1">Đăng nhập để quản lý khóa học của bạn</p>
+            <p id="auth-subtitle" class="text-slate-400 text-sm font-medium mt-1">Đăng nhập để quản lý khóa học của bạn</p>
         </div>
 
         <div class="flex flex-col gap-4">
 
-            <div>
+            <div id="name-field" class="hidden">
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
                 <div class="relative">
                     <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                    <input type="text" id="fullName" name="name" autocomplete="name" class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="Chỉ cần nhập khi tạo tài khoản">
+                    <input type="text" id="fullName" name="name" autocomplete="name" class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="Nhập họ tên khi tạo tài khoản">
                 </div>
             </div>
 
@@ -104,13 +104,17 @@
             <div id="message" class="text-center text-xs font-semibold mt-1 hidden opacity-0 transition-opacity duration-300 min-h-[18px]"></div>
 
             <div class="flex flex-col sm:flex-row gap-3 mt-2">
-                <button onclick="handleLogin()" class="flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.22)] hover:shadow-[0_0_30px_rgba(79,185,253,0.44)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
+                <button id="login-btn" onclick="handleLogin()" class="flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.22)] hover:shadow-[0_0_30px_rgba(79,185,253,0.44)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
                     <i class="fas fa-sign-in-alt"></i> Đăng Nhập
                 </button>
-                <button onclick="handleSignup()" class="flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 text-sm">
+                <button id="signup-btn" onclick="handleSignup()" class="flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 text-sm">
                     Tạo Tài Khoản
                 </button>
             </div>
+
+            <button id="back-to-login-btn" type="button" onclick="setAuthMode('login')" class="hidden text-xs font-bold text-slate-500 hover:text-[#4fb9fd] transition-colors -mt-1">
+                Đã có tài khoản? Quay lại đăng nhập
+            </button>
 
         </div>
 
@@ -130,6 +134,48 @@
         const SITE_URL = "https://hoc.vizlab3d.org";
         const REMEMBER_EMAIL_KEY = "vizlab_remember_email";
         const messageEl = document.getElementById("message");
+        let authMode = "login";
+
+        function setAuthMode(mode) {
+            authMode = mode;
+
+            const isSignup = mode === "signup";
+            const nameField = document.getElementById("name-field");
+            const subtitle = document.getElementById("auth-subtitle");
+            const loginBtn = document.getElementById("login-btn");
+            const signupBtn = document.getElementById("signup-btn");
+            const backBtn = document.getElementById("back-to-login-btn");
+            const passwordInput = document.getElementById("password");
+
+            nameField.classList.toggle("hidden", !isSignup);
+            backBtn.classList.toggle("hidden", !isSignup);
+
+            subtitle.textContent = isSignup
+                ? "Tạo tài khoản học viên mới để bắt đầu học"
+                : "Đăng nhập để quản lý khóa học của bạn";
+
+            passwordInput.setAttribute("autocomplete", isSignup ? "new-password" : "current-password");
+
+            loginBtn.innerHTML = isSignup
+                ? '<i class="fas fa-arrow-left"></i> Đăng Nhập'
+                : '<i class="fas fa-sign-in-alt"></i> Đăng Nhập';
+
+            signupBtn.innerHTML = isSignup
+                ? '<i class="fas fa-user-plus"></i> Hoàn Tất Đăng Ký'
+                : 'Tạo Tài Khoản';
+
+            loginBtn.className = isSignup
+                ? "flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm"
+                : "flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.22)] hover:shadow-[0_0_30px_rgba(79,185,253,0.44)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm";
+
+            signupBtn.className = isSignup
+                ? "flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.22)] hover:shadow-[0_0_30px_rgba(79,185,253,0.44)] hover:-translate-y-1 transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                : "flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 text-sm";
+
+            if (!isSignup) {
+                document.getElementById("fullName").value = "";
+            }
+        }
 
         function showMessage(text, type = "success") {
             messageEl.textContent = text;
@@ -185,6 +231,11 @@
         }
 
         async function handleLogin() {
+            if (authMode === "signup") {
+                setAuthMode("login");
+                return;
+            }
+
             const { email, password } = getFormData();
             if (!email || !password) {
                 return showMessage("Bạn cần nhập email và mật khẩu.", "error");
@@ -204,8 +255,18 @@
         }
 
         async function handleSignup() {
+            if (authMode !== "signup") {
+                setAuthMode("signup");
+                showMessage("Nhập họ tên để tạo tài khoản mới.", "info");
+                document.getElementById("fullName").focus();
+                return;
+            }
+
             const { fullName, email, password } = getFormData();
 
+            if (!fullName) {
+                return showMessage("Bạn cần nhập họ và tên khi tạo tài khoản.", "error");
+            }
             if (!email || !password) {
                 return showMessage("Bạn cần nhập email và mật khẩu để đăng ký.", "error");
             }
@@ -255,7 +316,10 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", loadRememberedEmail);
+        document.addEventListener("DOMContentLoaded", () => {
+            loadRememberedEmail();
+            setAuthMode("login");
+        });
 
         document.getElementById('password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') handleLogin();
