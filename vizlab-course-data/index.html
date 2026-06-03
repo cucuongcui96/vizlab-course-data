@@ -838,9 +838,10 @@
         // ----------------------------------------------------
         // KÍCH HOẠT HỆ THỐNG GIAO DIỆN
         // ----------------------------------------------------
-        document.addEventListener("DOMContentLoaded", () => {
-            initDashboard();
-        });
+       document.addEventListener("DOMContentLoaded", async () => {
+    await initDashboard();
+    await initAuth();
+});
     </script>
 </body>
 </html>
