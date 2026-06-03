@@ -51,8 +51,9 @@ async function signIn(email, password) {
   await loadOwnedCourses();
   updateAuthUI();
 
-  if (typeof renderCourses === "function") {
-    renderCourses(typeof currentCourses !== "undefined" ? currentCourses : allCourses);
+  // Gọi hàm filter để render lại giao diện thay vì truyền cứng ALL_COURSES
+  if (typeof executeSearchAndFilter === "function") {
+    executeSearchAndFilter();
   }
 
   return data.user;
@@ -66,8 +67,8 @@ async function signOut() {
 
   updateAuthUI();
 
-  if (typeof renderCourses === "function") {
-    renderCourses(typeof currentCourses !== "undefined" ? currentCourses : allCourses);
+  if (typeof executeSearchAndFilter === "function") {
+    executeSearchAndFilter();
   }
 }
 
@@ -100,20 +101,30 @@ function updateAuthUI() {
   const loginLinks = document.querySelectorAll("[data-login-link]");
   const logoutButtons = document.querySelectorAll("[data-logout-button]");
 
+  // 1. Ẩn chữ "Đang kiểm tra..." vì quá trình check Supabase đã xong
   authStatusEls.forEach(el => {
-    el.textContent = currentUser ? "Đã đăng nhập" : "Chưa đăng nhập";
+    el.style.display = "none";
   });
 
+  // 2. Hiện Email nếu có user (sử dụng flex để giữ cấu trúc CSS)
   userEmailEls.forEach(el => {
-    el.textContent = currentUser ? currentUser.email : "";
+    if (currentUser) {
+      el.style.display = "flex";
+      el.textContent = currentUser.email;
+    } else {
+      el.style.display = "none";
+      el.textContent = "";
+    }
   });
 
+  // 3. Hiện nút Đăng Nhập nếu chưa có user
   loginLinks.forEach(el => {
-    el.style.display = currentUser ? "none" : "inline-block";
+    el.style.display = currentUser ? "none" : "flex";
   });
 
+  // 4. Hiện nút Đăng Xuất nếu đã có user
   logoutButtons.forEach(el => {
-    el.style.display = currentUser ? "inline-block" : "none";
+    el.style.display = currentUser ? "flex" : "none";
   });
 }
 
@@ -126,8 +137,9 @@ async function initAuth() {
 
   updateAuthUI();
 
-  if (typeof renderCourses === "function") {
-    renderCourses(typeof currentCourses !== "undefined" ? currentCourses : allCourses);
+  // Gọi hàm filter để render lại UI khóa học (nhằm kích hoạt nút "Vào Học")
+  if (typeof executeSearchAndFilter === "function") {
+    executeSearchAndFilter();
   }
 }
 
