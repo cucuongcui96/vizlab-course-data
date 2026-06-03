@@ -272,20 +272,47 @@
 
             showMessage("Đang tạo tài khoản...", "info");
 
-            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    emailRedirectTo: SITE_URL + "/login.html",
+                    data: {
+                        full_name: fullName || email.split('@')[0]
+                    }
+                }
+            });
 
             if (error) {
                 showMessage("Đăng ký lỗi: " + error.message, "error");
-            } else if (data.user) {
+                return;
+            }
+
+            if (data.user) {
                 saveRememberedEmail(email);
 
-                await supabaseClient.from("profiles").insert({
-                    id: data.user.id,
-                    email: email,
-                    full_name: fullName || email.split('@')[0]
-                });
+                // Không để lỗi ghi profile làm hỏng quá trình đăng ký.
+                // Supabase Auth vẫn là nguồn chính để tạo tài khoản.
+                try {
+                    await supabaseClient.from("profiles").upsert({
+                        id: data.user.id,
+                        email: email,
+                        full_name: fullName || email.split('@')[0]
+                    }, { onConflict: "id" });
+                } catch (profileError) {
+                    console.warn("Không ghi được profile, nhưng tài khoản Auth vẫn đã được tạo:", profileError);
+                }
 
-                showMessage("Đăng ký thành công! Hãy kiểm tra email để xác nhận nếu hệ thống yêu cầu.", "success");
+                if (data.session) {
+                    showMessage("Đăng ký thành công! Đang đưa bạn về trang học...", "success");
+                    setTimeout(() => { returnToPreviousPage(); }, 1000);
+                } else {
+                    showMessage("Đăng ký thành công! Bạn hãy kiểm tra email để xác nhận tài khoản trước khi đăng nhập.", "success");
+                    setAuthMode("login");
+                }
+            } else {
+                showMessage("Đăng ký thành công! Bạn hãy kiểm tra email để xác nhận tài khoản.", "success");
+                setAuthMode("login");
             }
         }
 
