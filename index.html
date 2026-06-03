@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VizLab - Không Gian Học Tập Tối Đa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.94/build/spline-viewer.js"></script>
+    
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
+        }
+
+        @media (min-width: 768px) {
+            body { overflow: hidden; }
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4fb9fd; }
+        .sidebar-scroll::-webkit-scrollbar { width: 0px; }
+
+        .glass-panel {
+            background: rgba(2, 6, 23, 0.45);
+            backdrop-filter: blur(24px) saturate(120%);
+            -webkit-backdrop-filter: blur(24px) saturate(120%);
+        }
+
+        .btn-glow-border {
+            position: relative; background: #020617; z-index: 1; overflow: hidden;
+        }
+        .btn-glow-border::before {
+            content: ''; position: absolute; inset: -2px;
+            background: conic-gradient(from 90deg at 50% 50%, #020617 0%, #4fb9fd 50%, #8b5cf6 80%, #020617 100%);
+            z-index: -1; animation: spin-bg 3s linear infinite;
+        }
+        .btn-glow-border::after {
+            content: ''; position: absolute; inset: 2px; background: #020617;
+            border-radius: inherit; z-index: -1; transition: background 0.3s;
+        }
+        .btn-glow-border:hover::after { background: rgba(15, 23, 42, 0.8); }
+        @keyframes spin-bg { 100% { transform: rotate(360deg); } }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* BẢO VỆ GIAO DIỆN AUTH-BOX CHỐNG VỠ LAYOUT */
+        .auth-box [style*="display: none"], .auth-box [style*="display:none"] {
+            display: none !important;
+        }
+        .auth-box [data-auth-status]:not([style*="none"]),
+        .auth-box [data-user-email]:not([style*="none"]) {
+            display: flex !important; align-items: center; height: 2.5rem; width: 2.5rem;
+            color: transparent; overflow: hidden; transition: all 0.3s ease; white-space: nowrap; font-size: 0.65rem; font-weight: 700; border-radius: 0.75rem; margin-bottom: 4px;
+        }
+        .auth-box [data-login-link]:not([style*="none"]),
+        .auth-box [data-logout-button]:not([style*="none"]) {
+            display: flex !important;
+        }
+        .group:hover .auth-box [data-auth-status], 
+        .group:hover .auth-box [data-user-email] { width: 100%; }
+        .group:hover .auth-box [data-auth-status] { color: #64748b; }
+        .group:hover .auth-box [data-user-email] { color: #cbd5e1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        
+        @keyframes spin-auth { 100% { transform: rotate(360deg); } }
+        .auth-box [data-auth-status]::before {
+            content: '\f1ce'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center;
+            color: #64748b; flex-shrink: 0; animation: spin-auth 1.5s linear infinite;
+        }
+        .auth-box [data-user-email]::before {
+            content: '\f82f'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center;
+            color: #4fb9fd; flex-shrink: 0;
+        }
+
+
+        /* Floating contact buttons */
+        .floating-contact {
+            position: fixed;
+            right: 18px;
+            bottom: 92px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .floating-contact {
+                right: 26px;
+                bottom: 26px;
+            }
+        }
+
+        .floating-contact-card {
+            pointer-events: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            min-width: 48px;
+            height: 48px;
+            padding: 7px;
+            border-radius: 999px;
+            background: rgba(2, 6, 23, 0.72);
+            border: 1px solid rgba(255,255,255,0.10);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            overflow: hidden;
+            transition: width 0.28s ease, transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+            width: 48px;
+        }
+
+        .floating-contact-card:hover {
+            width: 158px;
+            transform: translateY(-2px);
+            background: rgba(15, 23, 42, 0.92);
+            border-color: rgba(79, 185, 253, 0.35);
+            box-shadow: 0 18px 50px rgba(79,185,253,0.16), 0 16px 40px rgba(0,0,0,0.42);
+        }
+
+        .floating-contact-label {
+            opacity: 0;
+            transform: translateX(8px);
+            white-space: nowrap;
+            color: #f8fafc;
+            font-size: 12px;
+            line-height: 1.15;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+
+        .floating-contact-card:hover .floating-contact-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .floating-contact-label small {
+            display: block;
+            margin-top: 2px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .floating-contact-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.94);
+            overflow: hidden;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+        }
+
+        .floating-contact-icon img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+        }
+
+        .floating-contact-hint {
+            position: absolute;
+            right: 58px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            background: rgba(15, 23, 42, 0.92);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 999px;
+            padding: 7px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 1;
+            transition: opacity 0.24s ease, transform 0.24s ease;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.32);
+        }
+
+        .floating-contact:hover .floating-contact-hint {
+            opacity: 0;
+            transform: translateY(-50%) translateX(8px);
+        }
+
+        @media (max-width: 767px) {
+            .floating-contact-card:hover {
+                width: 48px;
+            }
+            .floating-contact-label,
+            .floating-contact-hint {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
+
+    <header class="md:hidden sticky top-0 z-50 glass-panel border-b border-white/5 h-16 flex items-center justify-between px-6">
+        <a href="#" class="flex items-center gap-2.5 text-2xl font-black tracking-tighter text-white">
+            <img src="https://iili.io/B5sIBtt.png" alt="VizLab" class="h-9 w-9 rounded-xl object-cover shadow-[0_0_18px_rgba(79,185,253,0.22)]">
+            <span>Viz<span class="text-orange-500">Lab</span></span>
+        </a>
+        <button onclick="toggleCart()" class="text-slate-300 hover:text-white relative"><i class="fas fa-shopping-bag text-xl"></i></button>
+    </header>
+
+    <aside class="hidden md:flex group fixed top-0 left-0 h-full w-[68px] hover:w-[250px] transition-all duration-300 ease-in-out glass-panel border-r border-white/5 z-50 flex-col overflow-hidden shadow-[16px_0_28px_rgba(0,0,0,0.42)]">
+        
+        <div class="h-20 flex items-center px-3 border-b border-white/5 whitespace-nowrap shrink-0">
+            <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" class="flex items-center gap-3 min-w-0 rounded-2xl p-1.5 hover:bg-white/5 transition-all">
+                <div class="h-9 w-9 shrink-0 rounded-xl bg-white/95 p-1.5 flex items-center justify-center overflow-hidden shadow-[0_0_18px_rgba(79,185,253,0.24)] group-hover:rotate-3 transition-transform duration-500">
+                    <img src="https://iili.io/B5sIBtt.png" alt="VizLab Logo" class="h-full w-full object-contain">
+                </div>
+                <span class="text-2xl font-black tracking-tighter text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Viz<span class="text-orange-500">Lab</span>
+                </span>
+            </a>
+        </div>
+
+        <div class="flex-1 overflow-y-auto sidebar-scroll py-4 flex flex-col gap-0.5" id="sidebar-menu-container"></div>
+
+        <div class="px-3 py-2.5 border-t border-white/5 shrink-0 flex flex-col justify-center items-center auth-box transition-all w-full">
+            <span data-auth-status>Đang kiểm tra đăng nhập...</span>
+            <span data-user-email style="display:none;"></span>
+            
+            <a href="https://hoc.vizlab3d.org/login.html" data-login-link style="display:none;" class="relative flex items-center h-10 w-10 group-hover:w-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 font-bold rounded-xl transition-all duration-300 overflow-hidden mb-1">
+                <div class="w-10 h-10 shrink-0 flex items-center justify-center"><i class="fas fa-user-circle text-base"></i></div>
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-xs tracking-wide pl-1">Đăng nhập</span>
+            </a>
+            
+            <button onclick="signOut()" data-logout-button style="display:none;" class="relative flex items-center h-10 w-10 group-hover:w-full bg-red-500/10 border border-red-500/20 text-red-400 hover:text-white hover:bg-red-500 font-bold rounded-xl transition-all duration-300 overflow-hidden">
+                <div class="w-10 h-10 shrink-0 flex items-center justify-center"><i class="fas fa-sign-out-alt text-sm"></i></div>
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-[11px] tracking-wide pl-1">Đăng xuất</span>
+            </button>
+        </div>
+
+        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex justify-center">
+            <a href="#" class="relative flex items-center h-10 w-10 group-hover:w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black rounded-xl shadow-[0_0_15px_rgba(226,232,240,0.4)] hover:shadow-[0_0_25px_rgba(226,232,240,0.7)] transition-all duration-300 overflow-hidden">
+                <div class="w-10 h-10 shrink-0 flex items-center justify-center">
+                    <i class="fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]"></i>
+                </div>
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap tracking-tight text-sm pl-1">Nâng Cấp Hội Viên</span>
+            </a>
+        </div>
+    </aside>
+
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] transform translate-x-full transition-transform duration-500 ease-in-out bg-[#020617]/80 backdrop-blur-2xl border-l border-white/10 z-[100] flex flex-col shadow-[[-20px_0_50px_rgba(0,0,0,0.7)]]">
+        <div class="h-24 px-6 border-b border-white/5 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-shopping-bag text-slate-300 text-xl"></i>
+                <h3 class="text-xl font-black text-white tracking-tight">Giỏ hàng của bạn</h3>
+            </div>
+            <button onclick="toggleCart()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+        
+        <div id="cart-items-list" class="flex-1 overflow-y-auto p-6 flex flex-col gap-4"></div>
+        
+        <div class="p-6 border-t border-white/5 bg-black/20 shrink-0">
+            <div id="cart-savings-container"></div>
+            <div class="flex items-center justify-between mb-6">
+                <span class="text-slate-400 font-semibold text-sm">Tổng cộng tạm tính:</span>
+                <span id="cart-total-price" class="text-white font-black text-2xl tracking-tight">0đ</span>
+            </div>
+            <button onclick="openCheckoutModal()" class="w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] transition-all duration-300 tracking-wide uppercase text-sm flex items-center justify-center gap-2">
+                <i class="fas fa-credit-card"></i>
+                Tiến hành thanh toán
+            </button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-[140] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-xl">
+        <div class="absolute inset-0" onclick="closeCheckoutModal()"></div>
+
+        <div class="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-[2rem] border border-white/10 bg-[#020617]/95 shadow-[0_30px_100px_rgba(0,0,0,0.85)]">
+            <div class="sticky top-0 z-10 bg-[#020617]/90 backdrop-blur-2xl border-b border-white/10 px-5 md:px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#4fb9fd] to-violet-500 text-[#020617] flex items-center justify-center shadow-[0_0_28px_rgba(79,185,253,0.35)]">
+                        <i class="fas fa-receipt text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-black text-xl md:text-2xl tracking-tight">Hoàn tất đăng ký</h3>
+                        <p class="text-slate-400 text-xs md:text-sm font-medium">Điền thông tin, thanh toán và gửi yêu cầu kích hoạt khóa học.</p>
+                    </div>
+                </div>
+                <button onclick="closeCheckoutModal()" class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="checkout-form" onsubmit="submitCheckoutForm(event)" class="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-0">
+                <div class="p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
+                    <div class="mb-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-user"></i></span>
+                            <h4 class="text-white font-black text-lg">Thông tin kích hoạt</h4>
+                        </div>
+
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
+                        <input id="checkout-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
+
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Email kích hoạt khóa học</label>
+                        <input id="checkout-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
+                        <p class="text-slate-500 text-xs leading-relaxed">Email này dùng để kích hoạt và gửi hướng dẫn vào học. Hãy nhập chính xác email bạn muốn dùng.</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="h-7 w-7 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center text-xs"><i class="fas fa-wallet"></i></span>
+                            <h4 class="text-white font-black text-lg">Phương thức thanh toán</h4>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mb-5">
+                            <label class="payment-option cursor-pointer rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all relative overflow-hidden" data-payment-card="momo">
+                                <input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectPaymentMethod('momo')">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="h-8 w-8 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-wallet text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-white font-black text-sm leading-tight">MoMo</div>
+                                        <div class="text-slate-500 text-[10px] font-semibold truncate">Ví điện tử</div>
+                                    </div>
+                                    <i class="payment-check fas fa-check-circle ml-auto text-[#4fb9fd] text-sm opacity-0 transition-opacity"></i>
+                                </div>
+                            </label>
+
+                            <label class="payment-option cursor-pointer rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all relative overflow-hidden" data-payment-card="banking">
+                                <input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectPaymentMethod('banking')">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="h-8 w-8 rounded-xl bg-cyan-500/15 text-cyan-300 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-building-columns text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-white font-black text-sm leading-tight">Banking</div>
+                                        <div class="text-slate-500 text-[10px] font-semibold truncate">Ngân hàng</div>
+                                    </div>
+                                    <i class="payment-check fas fa-check-circle ml-auto text-[#4fb9fd] text-sm opacity-0 transition-opacity"></i>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.025] to-black/20 p-4 md:p-5 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+                            <div class="flex flex-col sm:flex-row gap-5 items-center">
+                                <div class="relative w-48 h-48 rounded-[1.35rem] overflow-hidden bg-white p-3 shrink-0 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
+                                    <img id="payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán" class="w-full h-full object-contain">
+                                </div>
+                                <div class="flex-1 text-center sm:text-left">
+                                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 text-[10px] font-black uppercase tracking-widest mb-3">
+                                        <i class="fas fa-lock text-[10px]"></i>
+                                        Xác nhận thủ công
+                                    </div>
+                                    <h5 id="payment-title" class="text-white font-black text-lg mb-2">Quét mã MoMo để thanh toán</h5>
+                                    <p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán xong, tick xác nhận bên dưới rồi bấm gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt khóa học theo email bạn cung cấp.</p>
+                                    <div class="rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 p-3 text-xs text-slate-300 leading-relaxed">
+                                        <div class="font-black text-[#4fb9fd] uppercase tracking-widest text-[10px] mb-1">Nội dung chuyển khoản</div>
+                                        <div id="checkout-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 cursor-pointer hover:bg-white/10 transition-all">
+                        <input id="payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-[#4fb9fd]">
+                        <span class="text-sm text-slate-300 leading-relaxed">
+                            Tôi xác nhận đã thanh toán đúng số tiền tạm tính và đã ghi nội dung chuyển khoản là họ tên học viên ở trên.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="p-5 md:p-8 bg-white/[0.025]">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="h-7 w-7 rounded-xl bg-white/10 text-orange-400 flex items-center justify-center text-xs"><i class="fas fa-bag-shopping"></i></span>
+                        <h4 class="text-white font-black text-lg">Tóm tắt đơn hàng</h4>
+                    </div>
+
+                    <div id="checkout-summary-list" class="space-y-3 mb-5 max-h-[320px] overflow-y-auto pr-1"></div>
+
+                    <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-5">
+                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
+                            <span>Số khóa học</span>
+                            <span id="checkout-total-items" class="font-bold text-slate-200">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
+                            <span>Tạm tính</span>
+                            <span id="checkout-subtotal" class="font-bold text-slate-200">0đ</span>
+                        </div>
+                        <div class="h-px bg-white/10 my-4"></div>
+                        <div class="flex justify-between items-end">
+                            <span class="text-white font-black">Tổng thanh toán</span>
+                            <span id="checkout-total" class="text-[#4fb9fd] font-black text-3xl tracking-tight">0đ</span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="_subject" value="Đăng ký khóa học mới từ VizLab">
+                    <input type="hidden" id="checkout-hidden-items" name="danh_sach_khoa_hoc" value="">
+                    <input type="hidden" id="checkout-hidden-total" name="tong_tien" value="">
+                    <input type="hidden" id="checkout-hidden-user" name="tai_khoan_dang_nhap" value="">
+                    <input type="hidden" id="checkout-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="">
+                    <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
+
+                    <button id="checkout-submit-btn" type="submit" class="w-full bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-4 rounded-2xl shadow-[0_0_28px_rgba(79,185,253,0.28)] hover:shadow-[0_0_38px_rgba(79,185,253,0.45)] hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                        <i class="fas fa-paper-plane"></i>
+                        Gửi đăng ký kích hoạt
+                    </button>
+
+                    <div id="checkout-message" class="hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <main class="ml-0 md:ml-[68px] flex-1 md:h-full overflow-y-auto bg-[#020617] relative pb-24 md:pb-0">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 z-0 pointer-events-none"></div> 
+        
+        <div class="relative z-10 max-w-[1600px] mx-auto px-6 md:px-12 py-8 md:py-10">
+            
+            <div id="top-library-toolbar" class="sticky top-16 md:top-0 z-[60] -mx-2 md:-mx-4 mb-8 md:mb-10 px-2 md:px-4 pt-2 md:pt-0">
+                <div class="rounded-[1.6rem] border border-white/10 bg-[#020617]/82 backdrop-blur-2xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+                    <div class="p-3 md:p-4 flex flex-col xl:flex-row xl:items-center gap-3 md:gap-4">
+                        <div class="flex items-center justify-between gap-3 min-w-0 xl:w-[300px] shrink-0">
+                            <button onclick="scrollToLibrary()" class="flex items-center gap-3 min-w-0 text-left group/top-title">
+                                <span class="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#4fb9fd] to-violet-500 text-[#020617] flex items-center justify-center shadow-[0_0_24px_rgba(79,185,253,0.35)] shrink-0">
+                                    <i class="fas fa-layer-group text-lg"></i>
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block text-white font-black text-base md:text-lg leading-tight tracking-tight group-hover/top-title:text-[#4fb9fd] transition-colors">Thư viện khóa học</span>
+                                    <span class="block text-slate-400 text-[11px] md:text-xs font-semibold truncate" id="top-toolbar-subtitle">Tìm kiếm, lọc và vào học nhanh</span>
+                                </span>
+                            </button>
+
+                            <button onclick="toggleCart()" class="xl:hidden relative flex items-center justify-center h-11 w-11 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-slate-300 hover:text-white transition-all shrink-0">
+                                <i class="fas fa-shopping-bag text-base"></i>
+                                <div id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black text-[10px] h-5 w-5 rounded-full flex items-center justify-center border border-[#020617] scale-0 transition-transform duration-300">0</div>
+                            </button>
+                        </div>
+
+                        <div class="relative group/search flex-1 min-w-0">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-slate-400 text-sm group-focus-within/search:text-[#4fb9fd] transition-colors"></i>
+                            </div>
+                            <input type="text" id="search-input" placeholder="Tìm nhanh trong tất cả chủ đề..."
+                                   class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 font-semibold focus:outline-none focus:border-[#4fb9fd]/50 focus:bg-white/10 transition-all shadow-inner">
+                        </div>
+
+                        <button onclick="toggleCart()" class="hidden xl:flex relative items-center justify-center gap-2 h-12 px-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-slate-300 hover:text-white transition-all shrink-0">
+                            <i class="fas fa-shopping-bag text-base"></i>
+                            <span class="text-xs font-black uppercase tracking-wider">Giỏ hàng</span>
+                            <div id="cart-badge-desktop" class="bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black text-[10px] h-5 min-w-5 px-1.5 rounded-full flex items-center justify-center scale-0 transition-transform duration-300">0</div>
+                        </button>
+                    </div>
+
+                    <div class="px-3 md:px-4 pb-3 md:pb-4">
+                        <div id="filter-chips-container" class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="mb-16 md:mb-20 mt-4 md:mt-0">
+                <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-3">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-1 md:mb-2">Master <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">Collection</span></h2>
+                        <p class="text-slate-400 font-medium text-sm md:text-lg">Trạm thực hành và bóc tách file 3D trực tiếp.</p>
+                    </div>
+                    <div class="flex gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full self-start md:self-auto backdrop-blur-md">
+                        <span class="flex h-3 w-3 relative mt-0.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-gray-300"></span></span>
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">Thực Chiến</span>
+                    </div>
+                </div>
+
+                <div class="relative w-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] h-[400px] md:h-[480px] bg-black border border-white/10">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[90%] md:w-[70%] h-[300px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/15 via-black/0 to-transparent pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 z-0 w-full h-full cursor-grab active:cursor-grabbing pointer-events-none md:pointer-events-auto">
+                        <spline-viewer url="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"></spline-viewer>
+                    </div>
+                    <div class="absolute inset-0 z-10 bg-gradient-to-t md:bg-gradient-to-r from-black via-black/70 md:via-black/80 to-transparent pointer-events-none w-full md:w-[65%]"></div>
+                    <div class="relative z-20 h-full flex flex-col justify-end md:justify-center p-8 md:p-16 w-full md:w-[55%] pointer-events-none">
+                        <h2 class="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1.05] mb-4 md:mb-6 tracking-tighter drop-shadow-2xl pointer-events-auto">
+                            Làm Chủ <br/> <span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500">Quy Trình 3D</span>
+                        </h2>
+                        <p class="text-gray-400 font-light text-sm md:text-lg mb-8 md:mb-10 line-clamp-3 md:line-clamp-none pointer-events-auto max-w-md leading-relaxed">
+                            Bóc tách trực tiếp file dự án thực tế. Trải nghiệm không gian tương tác để thấu hiểu toàn bộ workflow từ dựng hình khối cơ bản đến setup ánh sáng chuẩn mực.
+                        </p>
+                        <div class="flex items-center gap-6 pointer-events-auto">
+                            <button class="bg-white text-black font-black px-6 md:px-8 py-3 md:py-4 rounded-full hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.2)] text-sm md:text-base flex items-center gap-2">
+                                <i class="fas fa-play text-xs"></i> Khám Phá Ngay
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex absolute bottom-10 right-10 z-20 items-center gap-3 pointer-events-none animate-pulse">
+                        <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                            <i class="fas fa-mouse text-gray-300 text-sm"></i>
+                        </div>
+                        <span class="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em]">Kéo để xoay</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16 md:mb-20">
+                <div class="flex items-end justify-between mb-6 md:mb-8 border-b border-white/10 pb-4 relative">
+                    <div>
+                        <h2 class="text-2xl font-black text-white tracking-tight mb-1">Bệ Phóng Chuyên Nghiệp</h2>
+                        <p class="text-slate-400 font-medium text-sm">Hành trình bài bản từ con số 0 đến 3D Artist thực chiến.</p>
+                    </div>
+                    
+                    <div id="slider-progress-container" class="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full overflow-hidden">
+                        <div id="slider-progress-bar" class="h-full bg-gradient-to-r from-[#4fb9fd] to-purple-500 w-0 transition-all duration-100 ease-linear"></div>
+                    </div>
+
+                    <button id="toggle-special" class="flex items-center gap-2 text-xs md:text-sm font-bold text-[#4fb9fd] bg-[#4fb9fd]/10 hover:bg-[#4fb9fd]/20 px-5 py-2.5 rounded-full border border-[#4fb9fd]/30 transition-all z-10">
+                        <span id="toggle-text">Xem tất cả (13+)</span>
+                        <i class="fas fa-chevron-down" id="toggle-icon"></i>
+                    </button>
+                </div>
+
+                <div class="relative group/slider-zone">
+                    <button id="slider-prev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full glass-panel border border-white/10 flex items-center justify-center text-white opacity-0 group-hover/slider-zone:opacity-100 transition-all duration-300 hover:bg-white/10 hover:scale-105 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                        <i class="fas fa-chevron-left text-lg"></i>
+                    </button>
+                    <button id="slider-next" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full glass-panel border border-white/10 flex items-center justify-center text-white opacity-0 group-hover/slider-zone:opacity-100 transition-all duration-300 hover:bg-white/10 hover:scale-105 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                        <i class="fas fa-chevron-right text-lg"></i>
+                    </button>
+                    <div id="special-container" class="flex overflow-x-auto hide-scrollbar gap-6 pb-6 snap-x transition-all duration-500 scroll-smooth"></div>
+                </div>
+                <div id="slider-dots" class="flex items-center justify-center gap-2 mt-4 transition-opacity duration-300"></div>
+            </section>
+
+            <section id="course-library" class="pb-20 relative scroll-mt-32 md:scroll-mt-28">
+                <div class="mb-8 border-b border-white/10 pb-6">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight" id="library-title">Vũ Trụ Sáng Tạo</h2>
+                            <span class="text-slate-400 text-sm font-semibold" id="course-count">Đánh thức nghệ sĩ 3D bên trong bạn</span>
+                        </div>
+                        <button onclick="scrollToLibrary()" class="hidden md:inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#4fb9fd] bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-4 py-2.5 rounded-2xl hover:bg-[#4fb9fd]/20 transition-all">
+                            <i class="fas fa-arrow-down"></i> Khu vực khóa học
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loading-shimmer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div class="animate-pulse bg-white/5 h-64 rounded-2xl"></div>
+                    <div class="animate-pulse bg-white/5 h-64 rounded-2xl"></div>
+                </div>
+                <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden"></div>
+            </section>
+
+            <footer class="mt-10 md:mt-16 mb-10 md:mb-6 relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+                <div class="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-[#4fb9fd]/10 blur-[90px]"></div>
+                <div class="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-orange-500/10 blur-[90px]"></div>
+
+                <div class="relative z-10 p-6 md:p-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-[1.25fr_0.85fr_0.85fr_1fr] gap-8 md:gap-10">
+                        <div>
+                            <a href="#" class="inline-flex items-center gap-2 text-3xl font-black tracking-tighter text-white mb-4">
+                                <span class="h-11 w-11 rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 flex items-center justify-center shadow-[0_0_24px_rgba(79,185,253,0.18)]">
+                                    <i class="fas fa-cube text-[#4fb9fd]"></i>
+                                </span>
+                                Viz<span class="text-orange-500 -ml-1">Lab</span>
+                            </a>
+                            <p class="text-slate-400 text-sm leading-relaxed max-w-md">
+                                Không gian học tập dành cho người học 3D, thiết kế, hậu kỳ và sáng tạo nội dung. Học theo lộ trình, chọn khóa phù hợp và kích hoạt nhanh qua email.
+                            </p>
+
+                            <div class="mt-6 flex flex-wrap gap-2">
+                                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-[11px] font-black text-emerald-300 uppercase tracking-wider">
+                                    <i class="fas fa-check-circle"></i> Học trọn đời
+                                </span>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-3 py-2 text-[11px] font-black text-[#4fb9fd] uppercase tracking-wider">
+                                    <i class="fas fa-closed-captioning"></i> Có phụ đề
+                                </span>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-3 py-2 text-[11px] font-black text-orange-300 uppercase tracking-wider">
+                                    <i class="fas fa-bolt"></i> Kích hoạt nhanh
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Khám phá</h4>
+                            <div class="flex flex-col gap-3 text-sm">
+                                <a href="#course-library" class="text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Tất cả khóa học</a>
+                                <button onclick="currentSelectedFilterChip='owned'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học của tôi</button>
+                                <button onclick="currentSelectedFilterChip='favorites'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học yêu thích</button>
+                                <button onclick="currentSelectedFilterChip='paid'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa lẻ</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Chủ đề nổi bật</h4>
+                            <div class="flex flex-col gap-3 text-sm">
+                                <button onclick="filterCategory('blender'); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Blender 3D</button>
+                                <button onclick="filterCategory('zbrush'); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">ZBrush Sculpt</button>
+                                <button onclick="filterCategory('maya'); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Autodesk Maya</button>
+                                <button onclick="filterCategory('after-effects'); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">After Effects</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Hỗ trợ học viên</h4>
+                            <div class="rounded-3xl bg-black/25 border border-white/10 p-4">
+                                <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                    Cần tư vấn lộ trình, kích hoạt khóa học hoặc hỗ trợ sau thanh toán? Liên hệ VizLab để được hỗ trợ nhanh.
+                                </p>
+                                <div class="flex gap-3">
+                                    <a href="https://www.vizlab3d.org/tiện-ích/liên-hệ" target="_blank" rel="noopener" class="flex-1 h-11 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm font-black text-white">
+                                        <img src="https://i.postimg.cc/htBP5xJc/Logo-Zalo-Arc.png" class="h-5 w-5 object-contain" alt="Zalo"> Zalo
+                                    </a>
+                                    <a href="https://m.me/109209856089250" target="_blank" rel="noopener" class="flex-1 h-11 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm font-black text-white">
+                                        <img src="https://i.postimg.cc/mgy2fDMM/Facebook-Messenger-logo-2018-svg.png" class="h-5 w-5 object-contain" alt="Messenger"> Chat
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                        <p class="text-slate-500 text-xs font-semibold">
+                            © 2026 VizLab. Nền tảng tổng hợp khóa học sáng tạo dành cho học viên Việt Nam.
+                        </p>
+                        <div class="flex flex-wrap gap-3 text-xs font-bold text-slate-500">
+                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-shield-alt text-slate-600"></i> Bảo mật thông tin</span>
+                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-envelope text-slate-600"></i> Kích hoạt qua email</span>
+                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-headset text-slate-600"></i> Hỗ trợ sau mua</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 left-0 w-full h-[72px] glass-panel z-50 border-t border-white/10 flex items-center justify-around px-2 pb-2 pt-1">
+        <a href="#" class="flex flex-col items-center justify-center text-white w-16 gap-1"><i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold uppercase">Trang Chủ</span></a>
+        <a href="#" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-layer-group text-xl"></i><span class="text-[9px] font-bold uppercase">Chủ Đề</span></a>
+        <a href="#course-library" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-search text-xl"></i><span class="text-[9px] font-bold uppercase">Tìm Kiếm</span></a>
+    </nav>
+
+
+
+    <!-- Floating contact shortcuts -->
+    <div class="floating-contact" aria-label="Liên hệ tư vấn VizLab">
+        <div class="floating-contact-hint">Cần tư vấn?</div>
+        <a class="floating-contact-card" href="https://www.vizlab3d.org/tiện-ích/liên-hệ" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua Zalo">
+            <span class="floating-contact-label">Zalo<small>Tư vấn nhanh</small></span>
+            <span class="floating-contact-icon">
+                <img src="https://i.postimg.cc/htBP5xJc/Logo-Zalo-Arc.png" alt="Zalo">
+            </span>
+        </a>
+        <a class="floating-contact-card" href="https://m.me/109209856089250" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua Messenger">
+            <span class="floating-contact-label">Messenger<small>Chat trực tiếp</small></span>
+            <span class="floating-contact-icon">
+                <img src="https://i.postimg.cc/mgy2fDMM/Facebook-Messenger-logo-2018-svg.png" alt="Messenger">
+            </span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // ----------------------------------------------------
+        // 1. CẤU HÌNH SUPABASE & HỆ THỐNG XÁC THỰC (AUTH)
+        // ----------------------------------------------------
+        const SUPABASE_URL = "https://xxsledmpzvyzajiqpmwo.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_GNn61UbuKm6z1xm4LkEx7w_1UHVozJL";
+        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let ownedCourseIds = [];
+
+        async function getCurrentUser() {
+            const { data, error } = await window.supabaseClient.auth.getUser();
+            if (error) { currentUser = null; return null; }
+            currentUser = data.user || null;
+            return currentUser;
+        }
+
+        async function loadOwnedCourses() {
+            ownedCourseIds = [];
+            if (!currentUser) return [];
+            const { data, error } = await window.supabaseClient.from("enrollments").select("course_id").eq("user_id", currentUser.id);
+            if (error) { console.error("Lỗi tải khóa đã mua:", error.message); return []; }
+            ownedCourseIds = data.map(item => item.course_id);
+            return ownedCourseIds;
+        }
+
+        function userOwnsCourse(courseId) {
+            return ownedCourseIds.includes(courseId);
+        }
+
+        function updateAuthUI() {
+            const authStatusEls = document.querySelectorAll("[data-auth-status]");
+            const userEmailEls = document.querySelectorAll("[data-user-email]");
+            const loginLinks = document.querySelectorAll("[data-login-link]");
+            const logoutButtons = document.querySelectorAll("[data-logout-button]");
+
+            authStatusEls.forEach(el => { el.style.display = "none"; });
+
+            userEmailEls.forEach(el => {
+                if (currentUser) {
+                    el.style.display = "flex";
+                    el.textContent = currentUser.email;
+                } else {
+                    el.style.display = "none";
+                    el.textContent = "";
+                }
+            });
+
+            loginLinks.forEach(el => { el.style.display = currentUser ? "none" : "flex"; });
+            logoutButtons.forEach(el => { el.style.display = currentUser ? "flex" : "none"; });
+        }
+
+        async function signOut() {
+            await window.supabaseClient.auth.signOut();
+
+            currentUser = null;
+            ownedCourseIds = [];
+
+            loadCartFromStorage();
+            updateAuthUI();
+
+            if (typeof executeSearchAndFilter === "function") {
+                executeSearchAndFilter();
+            }
+        }
+
+        async function initAuth() {
+            try {
+                await getCurrentUser();
+
+                if (currentUser) {
+                    await loadOwnedCourses();
+                }
+
+                loadCartFromStorage();
+                loadFavoriteCoursesFromStorage();
+
+            } catch (error) {
+                console.error("Hệ thống Auth gặp sự cố:", error);
+            } finally {
+                updateAuthUI();
+
+                if (typeof executeSearchAndFilter === "function") {
+                    executeSearchAndFilter();
+                }
+            }
+        }
+
+        // ----------------------------------------------------
+        // 2. DỮ LIỆU & RENDER WEBSITE
+        // ----------------------------------------------------
+        const SPECIAL_ROADMAPS_DATA = [
+            { id: 'roadmap-zbrush-1', title: 'ZBrush Masterclass: Quy Trình Thiết Kế, Điêu Khắc 3D & Tối Ưu Sản Xuất Khép', subtitle: 'Khóa học Toàn Diện nhất', category: 'zbrush', price: 499000, href: 'https://www.vizlab3d.org/list/combo-làm-chủ-thiết-kế-in-3d/zbrush-masterclass-quy-trình-thiết-kế-điêu-khắc-3d-tối-ưu-sản-xuất-khép', image: 'https://iili.io/B6e057f.jpg', rating: 5.0, originalPrice: 990000, type: 'paid', cc: true, specialBadge: '🔥 COMBO HOT', isFeaturedCombo: true },
+            { id: 'roadmap-blender-1', title: 'Lộ trình Blender Toàn Diện 9 Giai Đoạn', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 599000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước', image: 'https://iili.io/KcQ48ru.png', rating: 4.92, originalPrice: 539000, type: 'paid', cc: true, specialBadge: '30% OFF' },
+            { id: 'roadmap-blender-2', title: 'Nâng Tầm Hình Ảnh Sản Phẩm Với Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/nâng-tầm-hình-ảnh-sản-phẩm-với-blender', image: 'https://iili.io/KEkzL3g.png', rating: 4.93, originalPrice: 459000, type: 'paid', cc: true, specialBadge: '30% OFF' },
+            { id: 'roadmap-animation-1', title: 'Lộ trình Blender Animation Chuyên Sâu', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'animation', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/khóa-học-blender-animation-chuyên-sâu', image: 'https://i.postimg.cc/sxJzj9vj/1104-2.gif', rating: 4.96, originalPrice: 0, type: 'paid', cc: true },
+            { id: 'roadmap-blender-3', title: 'Dựng Nhân Vật 3D Chuyên Sâu trong Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/combo-dựng-nhân-vật-blender-lộ-trình-9-giai-đoạn-tặng-kèm', image: 'https://iili.io/Kv3NgVI.png', rating: 4.94, originalPrice: 0, type: 'paid', cc: true },
+            { id: 'roadmap-zbrush-2', title: 'Biến Nhân Vật Anime Thành Figure 3D', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 459000, href: 'https://www.vizlab3d.org/biến-nhân-vật-anime-thành-figure-3d', image: 'https://iili.io/f9mmld7.png', rating: 4.97, originalPrice: 0, type: 'paid', cc: true, specialBadge: '30% OFF' },
+            { id: 'roadmap-zbrush-3', title: 'Thành thạo Zbrush Điêu Khắc Nhân vật', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 395000, href: 'https://www.vizlab3d.org/zbp0a/thành-thạo-zbrush-điêu-khắc-nhân-vật-3d-cho-người-mới-bắt-đầu', image: 'https://iili.io/fB50Wjn.jpg', rating: 4.91, originalPrice: 0, type: 'paid', cc: true, specialBadge: '65% OFF' },
+            { id: 'roadmap-blender-4', title: 'Nhập Môn Blender Toàn Diện', subtitle: 'Từ Cơ Bản - Trung Cấp', category: 'blender', price: 399000, href: 'https://www.vizlab3d.org/list/khóa-học-nhập-môn-blender-toàn-diện', image: 'https://iili.io/fA6kDf2.png', rating: 4.98, originalPrice: 0, type: 'paid', cc: true, specialBadge: '78% OFF' },
+            { id: 'roadmap-animation-2', title: 'Lộ trình iClone 3D Animation Toàn Diện', subtitle: 'Sản xuất hoạt hình nhanh', category: 'animation', price: 0, href: 'https://www.vizlab3d.org/lộ-trình/iclone-khóa-học-3d-animation-toàn-diện-làm-video-youtube-hoạt-hình', image: 'https://iili.io/FSehye2.gif', rating: 5.0, originalPrice: 0, type: 'free', specialBadge: '🎁 iClone' },
+            { id: 'roadmap-houdini-1', title: 'Rebelway – Giới Thiệu về Houdini FX', subtitle: 'Kỹ xảo điện ảnh chuẩn VFX', category: 'houdini', price: 0, href: 'https://www.vizlab3d.org/3d-game-development/houdini/rebelway-giới-thiệu-về-houdini-fx', image: 'https://i.postimg.cc/Gt8LTcDs/Intro-to-Houdini-FX-2022.jpg', rating: 4.95, originalPrice: 0, type: 'free', specialBadge: 'Houdini' },
+            { id: 'roadmap-houdini-2', title: 'CGMA – Houdini Production Studio: Hiệu Ứng Phá Hủy', subtitle: 'Destruction FX cao cấp', category: 'houdini', price: 0, href: 'https://www.vizlab3d.org/3d-game-development/houdini/khóa-học-cgma-houdini-production-studio-hiệu-ứng-phá-hủy-destruction-fx', image: 'https://i.postimg.cc/YScWX2Qp/Houdini_Production_Studio_Destruction_FX_thumb.jpg', rating: 4.99, originalPrice: 0, type: 'free', specialBadge: 'CGMA Studio' },
+            { id: 'roadmap-houdini-3', title: 'Rebelway – Giới Thiệu về Houdini Dành Cho Nghệ Sĩ', subtitle: 'Houdini cho Artist', category: 'houdini', price: 0, href: 'https://www.vizlab3d.org/3d-game-development/houdini/rebelway-giới-thiệu-về-houdini-dành-cho-nghệ-sĩ-3D', image: 'https://i.postimg.cc/K8F1wMLq/maxresdefault_(6).jpg', rating: 4.92, originalPrice: 0, type: 'free', specialBadge: 'Artist VFX' },
+            { id: 'roadmap-maya-1', title: 'Khóa học cơ bản về Maya: Hướng dẫn Hoạt hình 3D', subtitle: 'Hoạt hình 3D Maya cốt lõi', category: 'maya', price: 0, href: 'https://www.vizlab3d.org/3d-game-development/maya/khóa-học-cơ-bản-về-maya-hướng-dẫn-toàn-diện-về-hoạt-hình-3d', image: 'https://i.postimg.cc/qqF7HDXK/screenshot-1746176647.png', rating: 4.90, originalPrice: 0, type: 'free', specialBadge: 'Maya Core' }
+        ];
+
+        const sources = [
+            { id: 'blender', name: 'Blender 3D', icon: 'fas fa-cubes', varName: 'blenderCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/blender.js' },
+            { id: '3ds-max', name: '3ds Max', icon: 'fas fa-cube', varName: 'threeDsMaxCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/3ds-max.js' },
+            { id: 'maya', name: 'Autodesk Maya', icon: 'fas fa-shapes', varName: 'mayaCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/maya.js' },
+            { id: 'zbrush', name: 'ZBrush Sculpt', icon: 'fas fa-user-ninja', varName: 'zbrushCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/zbrush.js' },
+            { id: 'houdini', name: 'Houdini FX', icon: 'fas fa-bolt', varName: 'houdiniCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/houdini.js' },
+            { id: 'unreal-engine', name: 'Unreal Engine 5', icon: 'fas fa-gamepad', varName: 'unrealEngineCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/unreal-engine.js' },
+            { id: 'motionanimation', name: 'Motion Animation', icon: 'fas fa-running', varName: 'motionAnimationCourses', group: '3D & Nghệ Thuật Không Gian', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/motionanimation.js' },
+            { id: 'photoshop', name: 'Photoshop', icon: 'fas fa-image', varName: 'photoshopCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/photoshop.js' },
+            { id: 'illustrator', name: 'Illustrator', icon: 'fas fa-pen-nib', varName: 'illustratorCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/illustrator.js' },
+            { id: 'digital-painting', name: 'Digital Painting', icon: 'fas fa-paint-brush', varName: 'digitalPaintingCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/digital-painting.js' },
+            { id: 'art-drawing', name: 'Art Drawing', icon: 'fas fa-palette', varName: 'artDrawingCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/art-drawing.js' },
+            { id: 'procreate', name: 'Procreate iPad', icon: 'fas fa-pen-alt', varName: 'procreateCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/procreate.js' },
+            { id: 'ux-ui-figma', name: 'UX/UI Figma', icon: 'fab fa-figma', varName: 'uxUiFigmaCourses', group: '2D & Thiết Kế Phẳng', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/ux-ui-figma.js' },
+            { id: 'adobe-premiere', name: 'Adobe Premiere', icon: 'fas fa-video', varName: 'adobePremiereCourses', group: 'Hậu Kỳ & Biên Tập Video', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/adobe-premiere.js' },
+            { id: 'after-effects', name: 'After Effects', icon: 'fas fa-magic', varName: 'afterEffectsCourses', group: 'Hậu Kỳ & Biên Tập Video', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/after-effects.js' },
+            { id: 'davinci-resolve', name: 'DaVinci Resolve', icon: 'fas fa-film', varName: 'davinciResolveCourses', group: 'Hậu Kỳ & Biên Tập Video', url: 'https://raw.githubusercontent.com/cucuongcui96/vizlab-course-data/refs/heads/main/vizlab-course-data/data/courses/davinci-resolve.js' }
+        ];
+
+        const filterTypes = [
+            { id: 'all', name: 'Khám phá Tất cả' },
+            { id: 'owned', name: 'Khóa học của tôi' },
+            { id: 'favorite', name: 'Khóa học yêu thích' },
+            { id: 'member', name: 'Mở khóa Hội Viên' },
+            { id: 'paid', name: 'Sở hữu Khóa Lẻ' },
+            { id: 'under200', name: 'Dễ dàng Nhập môn (< 200k)' },
+            { id: 'over200', name: 'Đầu tư Chuyên sâu (≥ 200k)' }
+        ];
+
+        const searchTags = {
+            'blender': ['3d', 'dung hinh', 'mo hinh', 'hoat hinh', 'bld', 'san pham'],
+            '3ds-max': ['3d', 'kien truc', 'noi that', 'max', 'render'],
+            'maya': ['3d', 'hoat hinh', 'nhan vat', 'animation'],
+            'zbrush': ['nan tuong', 'dieu khac', 'sculpt', 'nhan vat', 'zb', 'figure'],
+            'houdini': ['ky xao', 'vfx', 'pha huy', 'mo phong', 'hieu ungu'],
+            'unreal-engine': ['game', 'ue5', 'moi truong', 'thiet ke game', 'vr'],
+            'motionanimation': ['chuyen dong', 'hoat hinh', 'animation', '2d', '3d'],
+            'photoshop': ['chinh anh', 'pts', 'ps', 'ghep anh', '2d', 'banner'],
+            'illustrator': ['ve may', 'logo', 'ai', 'vector', 'nhan dien thuong hieu'],
+            'digital-painting': ['ve may', 've wacom', 've bang dien tu', 'concept art', 'minh hoa'],
+            'art-drawing': ['ve tay', 'hoi hoa', 'co ban', 'skecth', 'phac thao'],
+            'procreate': ['ve ipad', 'apple pencil', 'minh hoa', 've may'],
+            'ux-ui-figma': ['web', 'app', 'giao dien', 'figma', 'ux ui', 'thiet ke web'],
+            'adobe-premiere': ['dung phim', 'cat ghep video', 'edit video', 'pr', 'vlog'],
+            'after-effects': ['ky xao', 'ae', 'motion graphic', 'hieu ungu video', 'vfx'],
+            'davinci-resolve': ['chinh mau', 'color grading', 'dung phim', 'edit video']
+        };
+
+        let ALL_COURSES = []; 
+        let currentSelectedCategory = 'all';
+        let currentSelectedFilterChip = 'all'; 
+        let cart = [];
+        const GUEST_CART_KEY = "vizlab_cart_guest";
+        let favoriteCourseIds = [];
+        const GUEST_FAVORITES_KEY = "vizlab_favorites_guest";
+
+        function getCartStorageKey() {
+            if (currentUser && currentUser.id) {
+                return "vizlab_cart_user_" + currentUser.id;
+            }
+
+            return GUEST_CART_KEY;
+        }
+
+        function saveCartToStorage() {
+            const cartKey = getCartStorageKey();
+
+            const cartIds = cart.map(item => ({
+                id: item.id,
+                title: item.title,
+                topic: item.topic || item.category
+            }));
+
+            localStorage.setItem(cartKey, JSON.stringify(cartIds));
+        }
+
+        function loadCartFromStorage() {
+            const cartKey = getCartStorageKey();
+            const savedCart = localStorage.getItem(cartKey);
+
+            if (!savedCart) {
+                cart = [];
+                updateCartUI();
+                return;
+            }
+
+            try {
+                const savedItems = JSON.parse(savedCart);
+
+                cart = savedItems
+                    .map(savedItem => {
+                        return ALL_COURSES.find(course => course.id === savedItem.id)
+                            || SPECIAL_ROADMAPS_DATA.find(course => course.id === savedItem.id)
+                            || ALL_COURSES.find(course => course.title === savedItem.title)
+                            || SPECIAL_ROADMAPS_DATA.find(course => course.title === savedItem.title);
+                    })
+                    .filter(Boolean);
+
+                updateCartUI();
+            } catch (error) {
+                console.error("Lỗi đọc giỏ hàng:", error);
+                cart = [];
+                updateCartUI();
+            }
+        }
+
+        function clearCartStorage() {
+            const cartKey = getCartStorageKey();
+            localStorage.removeItem(cartKey);
+            cart = [];
+            updateCartUI();
+
+            if (typeof executeSearchAndFilter === "function") {
+                executeSearchAndFilter();
+            }
+        }
+
+        function isCourseInCart(courseId) {
+            return cart.some(item => item.id === courseId);
+        }
+
+        function getFavoriteStorageKey() {
+            if (currentUser && currentUser.id) {
+                return "vizlab_favorites_user_" + currentUser.id;
+            }
+            return GUEST_FAVORITES_KEY;
+        }
+
+        function saveFavoriteCoursesToStorage() {
+            localStorage.setItem(getFavoriteStorageKey(), JSON.stringify(favoriteCourseIds));
+        }
+
+        function loadFavoriteCoursesFromStorage() {
+            const savedFavorites = localStorage.getItem(getFavoriteStorageKey());
+            if (!savedFavorites) {
+                favoriteCourseIds = [];
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(savedFavorites);
+                favoriteCourseIds = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                console.error("Lỗi đọc khóa học yêu thích:", error);
+                favoriteCourseIds = [];
+            }
+        }
+
+        function isCourseFavorited(courseId) {
+            return favoriteCourseIds.includes(courseId);
+        }
+
+        function toggleFavoriteCourse(courseId, event) {
+            if (event) event.stopPropagation();
+            if (!courseId) return;
+
+            if (isCourseFavorited(courseId)) {
+                favoriteCourseIds = favoriteCourseIds.filter(id => id !== courseId);
+            } else {
+                favoriteCourseIds.push(courseId);
+            }
+
+            saveFavoriteCoursesToStorage();
+
+            if (typeof executeSearchAndFilter === "function") {
+                executeSearchAndFilter();
+            }
+        }
+
+        let progressInterval = null;
+        let isSliderPaused = false;
+        let currentProgress = 0;
+        const slideDuration = 2500; 
+        const progressStep = 40;    
+
+        async function initDashboard() {
+            renderSidebarCategories();
+            renderFilterChips(); 
+            initSliderControls(); 
+            updateCartUI(); 
+            
+            const fetchPromises = sources.map(async (src) => {
+                try {
+                    const response = await fetch(src.url);
+                    if (!response.ok) return [];
+                    const text = await response.text();
+                    const rawArray = new Function(`${text}; return ${src.varName};`)();
+                    
+                    return rawArray.map(item => {
+                        const oldPrice = item.price !== undefined ? Number(item.price) : 0;
+                        let finalPrice = oldPrice;
+                        let originalPriceForDisplay = 0;
+                        let courseType = 'paid';
+
+                        if (oldPrice > 0 && oldPrice < 99000) {
+                            courseType = 'member'; finalPrice = 0; 
+                        } else if (oldPrice >= 99000 && oldPrice <= 155000) {
+                            finalPrice = 99000; courseType = 'paid'; if(oldPrice > 99000) originalPriceForDisplay = oldPrice;
+                        } else if (oldPrice > 155000 && oldPrice <= 255000) {
+                            finalPrice = 179000; courseType = 'paid'; originalPriceForDisplay = oldPrice;
+                        } else if (oldPrice > 255000 && oldPrice <= 355000) {
+                            finalPrice = 249000; courseType = 'paid'; originalPriceForDisplay = oldPrice;
+                        } else if (oldPrice > 355000 && oldPrice <= 455000) {
+                            finalPrice = 349000; courseType = 'paid'; originalPriceForDisplay = oldPrice;
+                        } else if (oldPrice > 455000) {
+                            finalPrice = 459000; courseType = 'paid'; originalPriceForDisplay = oldPrice;
+                        } else if (oldPrice === 0) {
+                            courseType = 'member'; finalPrice = 0;
+                        }
+
+                        return {
+                            ...item,
+                            id: item.id || item.title, 
+                            title: item.title || item.name || 'Khóa học Đồ họa',
+                            image: item.image || item.img || item.thumbnail || 'https://iili.io/Kv3NgVI.png',
+                            price: finalPrice,
+                            originalPrice: originalPriceForDisplay, 
+                            type: courseType,
+                            topic: item.topic || src.id,
+                            topicName: item.topicName || src.name,
+                            category: src.id,
+                            categoryName: src.name,
+                            href: item.href || item.link || '#'
+                        };
+                    });
+                } catch (e) {
+                    console.error(`Không thể đọc tệp dữ liệu của: ${src.name}`, e);
+                }
+                return [];
+            });
+
+            const results = await Promise.all(fetchPromises);
+            ALL_COURSES = results.flat(); 
+
+            loadCartFromStorage();
+            loadFavoriteCoursesFromStorage();
+
+            document.getElementById('loading-shimmer').classList.add('hidden');
+            document.getElementById('course-grid').classList.remove('hidden');
+            
+            // Vẽ giao diện lần đầu sau khi tải xong mảng dữ liệu
+            executeSearchAndFilter();
+        }
+
+        function renderFilterChips() {
+            const container = document.getElementById('filter-chips-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const chipIcons = {
+                all: 'fas fa-compass',
+                owned: 'fas fa-graduation-cap',
+                favorite: 'fas fa-heart',
+                member: 'fas fa-crown',
+                paid: 'fas fa-bag-shopping',
+                under200: 'fas fa-seedling',
+                over200: 'fas fa-rocket'
+            };
+
+            filterTypes.forEach(chip => {
+                const isActive = currentSelectedFilterChip === chip.id;
+                const button = document.createElement('button');
+
+                button.className = isActive
+                    ? "group/chip shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-wide bg-gradient-to-r from-slate-100 to-slate-300 text-[#020617] border border-white/60 shadow-[0_0_24px_rgba(226,232,240,0.24)] transition-all duration-300"
+                    : "group/chip shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-wide bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:border-[#4fb9fd]/30 transition-all duration-300";
+
+                button.innerHTML = `
+                    <i class="${chipIcons[chip.id] || 'fas fa-circle'} ${isActive ? 'text-[#020617]' : 'text-[#4fb9fd] group-hover/chip:text-white'}"></i>
+                    <span class="whitespace-nowrap">${chip.name}</span>
+                `;
+
+                button.onclick = () => {
+                    currentSelectedFilterChip = chip.id;
+                    renderFilterChips();
+                    executeSearchAndFilter();
+                    scrollToLibrary();
+                };
+
+                container.appendChild(button);
+            });
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const isHidden = drawer.classList.contains('translate-x-full');
+            if(isHidden) {
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+            } else {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function upgradeMembership(event) {
+            if(event) event.stopPropagation(); 
+            alert("💎 Đây là Đặc Quyền Hội Viên! Vui lòng nâng cấp tài khoản để mở khóa toàn bộ Vũ Trụ Sáng Tạo.");
+        }
+
+      function addToCart(courseId, event) {
+    if (event) event.stopPropagation();
+
+    let course = ALL_COURSES.find(c => c.id === courseId);
+    if (!course) {
+        course = SPECIAL_ROADMAPS_DATA.find(c => c.id === courseId);
+    }
+
+    if (!course) return;
+
+    const alreadyInCart = cart.some(item => item.id === course.id);
+
+    if (alreadyInCart) {
+        const drawer = document.getElementById("cart-drawer");
+        if (drawer.classList.contains("translate-x-full")) toggleCart();
+        return;
+    }
+
+    cart.push(course);
+    saveCartToStorage();
+    updateCartUI();
+    executeSearchAndFilter();
+
+    const drawer = document.getElementById("cart-drawer");
+    if (drawer.classList.contains("translate-x-full")) toggleCart();
+}
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCartToStorage();
+            updateCartUI();
+
+            if (typeof executeSearchAndFilter === "function") {
+                executeSearchAndFilter();
+            }
+        }
+
+        function updateCartUI() {
+            const badges = [document.getElementById('cart-badge'), document.getElementById('cart-badge-desktop')].filter(Boolean);
+            badges.forEach(badge => {
+                badge.innerText = cart.length;
+                if (cart.length > 0) {
+                    badge.classList.remove('scale-0');
+                    badge.classList.add('scale-100');
+                } else {
+                    badge.classList.remove('scale-100');
+                    badge.classList.add('scale-0');
+                }
+            });
+
+            const list = document.getElementById('cart-items-list');
+            list.innerHTML = '';
+            
+            const savingsContainer = document.getElementById('cart-savings-container');
+            
+            if(cart.length === 0) {
+                list.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-center py-24 text-slate-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-20"></i><p class="font-medium text-sm">Giỏ hàng của bạn đang trống.</p></div>`;
+                document.getElementById('cart-total-price').innerText = '0đ';
+                if(savingsContainer) savingsContainer.innerHTML = '';
+                return;
+            }
+
+            let total = 0;
+            let totalOriginal = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                let itemOriginal = (item.originalPrice && item.originalPrice > item.price) ? item.originalPrice : item.price;
+                totalOriginal += itemOriginal;
+
+                const isMember = item.type === 'member';
+                const hasDiscount = item.originalPrice > item.price;
+
+                const row = document.createElement('div');
+                row.className = "flex gap-4 bg-white/5 p-4 rounded-2xl border border-white/5 relative group/item animate-[fadeIn_0.3s_ease-out]";
+                row.innerHTML = `
+                    <div class="w-20 aspect-video rounded-lg overflow-hidden shrink-0 bg-black border border-white/5"><img src="${item.image}" class="w-full h-full object-cover"></div>
+                    <div class="flex-1 min-w-0 pr-6">
+                        <h4 class="text-white font-bold text-sm truncate">${item.title}</h4>
+                        <span class="text-[10px] text-slate-400 block mt-0.5 uppercase tracking-wider">${item.categoryName}</span>
+                        <div class="mt-2 flex items-end gap-2">
+                            <span class="text-sm font-black ${isMember ? 'text-slate-400' : 'text-[#4fb9fd]'}" >${isMember ? '0đ (Hội Viên)' : item.price.toLocaleString('vi-VN') + 'đ'}</span>
+                            ${hasDiscount ? `<span class="text-[10px] text-slate-500 line-through mb-[2px]">${item.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="absolute top-4 right-4 text-slate-500 hover:text-red-400 transition-colors"><i class="fas fa-trash-alt text-xs"></i></button>
+                `;
+                list.appendChild(row);
+            });
+            
+            document.getElementById('cart-total-price').innerText = total.toLocaleString('vi-VN') + 'đ';
+
+            let savings = totalOriginal - total;
+            if(savingsContainer) {
+                if(savings > 0) {
+                    savingsContainer.innerHTML = `
+                        <div class="mb-4 bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-xl p-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-gift text-emerald-400"></i>
+                                <span class="text-emerald-400 font-semibold text-xs">Bạn đã tiết kiệm được:</span>
+                            </div>
+                            <span class="text-emerald-400 font-black text-sm">${savings.toLocaleString('vi-VN')}đ</span>
+                        </div>
+                    `;
+                } else {
+                    savingsContainer.innerHTML = '';
+                }
+            }
+        }
+
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        // HÀM CHÍNH ĐỂ RENDER (Được gọi lại mỗi khi Auth / giỏ hàng / yêu thích thay đổi)
+        window.executeSearchAndFilter = function() {
+            const searchEl = document.getElementById('search-input');
+            const rawKeyword = searchEl ? searchEl.value.toLowerCase().trim() : '';
+            const keyword = removeAccents(rawKeyword); 
+            const searchTerms = keyword.split(/\s+/).filter(t => t.length > 0);
+
+            const normalizedSpecialRoadmaps = SPECIAL_ROADMAPS_DATA.map(course => ({
+                ...course,
+                categoryName: course.categoryName || 'Bệ Phóng Chuyên Nghiệp',
+                topicName: course.topicName || 'Lộ trình đặc biệt',
+                topic: course.topic || course.category,
+                isSpecialRoadmap: true
+            }));
+
+            // Riêng mục yêu thích cần lấy cả khóa thường trong Vũ Trụ Sáng Tạo
+            // và các lộ trình trong Bệ Phóng Chuyên Nghiệp.
+            let filtered = currentSelectedFilterChip === 'favorite'
+                ? [...ALL_COURSES, ...normalizedSpecialRoadmaps]
+                : ALL_COURSES;
+
+            if (currentSelectedCategory !== 'all') {
+                filtered = filtered.filter(c => c.category === currentSelectedCategory);
+            }
+
+            if (currentSelectedFilterChip === 'owned') {
+                if (!currentUser) {
+                    filtered = [];
+                } else {
+                    filtered = filtered.filter(c => userOwnsCourse(c.id));
+                }
+            } else if (currentSelectedFilterChip === 'favorite') {
+                filtered = filtered.filter(c => isCourseFavorited(c.id));
+            } else if (currentSelectedFilterChip === 'member') {
+                filtered = filtered.filter(c => c.type === 'member');
+            } else if (currentSelectedFilterChip === 'paid') {
+                filtered = filtered.filter(c => c.type === 'paid');
+            } else if (currentSelectedFilterChip === 'under200') {
+                filtered = filtered.filter(c => c.price < 200000 && c.type === 'paid');
+            } else if (currentSelectedFilterChip === 'over200') {
+                filtered = filtered.filter(c => c.price >= 200000 && c.type === 'paid');
+            }
+
+            if (searchTerms.length > 0) {
+                filtered = filtered.filter(c => {
+                    const titleNoAccent = removeAccents((c.title || '').toLowerCase());
+                    const catNoAccent = removeAccents((c.categoryName || c.topicName || c.category || '').toLowerCase());
+                    const tags = searchTags[c.category] || [];
+                    const searchableText = `${titleNoAccent} ${catNoAccent} ${removeAccents(tags.join(' '))}`;
+
+                    return searchTerms.every(term => searchableText.includes(term));
+                });
+            }
+
+            const countEl = document.getElementById('course-count');
+            const topSubtitle = document.getElementById('top-toolbar-subtitle');
+
+            if (countEl) {
+                if (currentSelectedFilterChip === 'owned' && !currentUser) {
+                    countEl.textContent = 'Đăng nhập để xem khóa học của bạn';
+                } else if (currentSelectedFilterChip === 'owned') {
+                    countEl.textContent = `Bạn đang có ${filtered.length} khóa học đã được cấp quyền`;
+                } else if (currentSelectedFilterChip === 'favorite') {
+                    countEl.textContent = `Bạn đang có ${filtered.length} khóa học yêu thích`;
+                } else {
+                    countEl.textContent = `Tìm thấy ${filtered.length} khóa học phù hợp`;
+                }
+            }
+
+            if (topSubtitle) {
+                topSubtitle.textContent = currentUser
+                    ? `Đang đăng nhập: ${currentUser.email || 'học viên'}`
+                    : 'Tìm kiếm, lọc và vào học nhanh';
+            }
+
+            renderCourses(filtered);
+            renderSpecialRoadmaps(); 
+        }
+
+        function renderCourses(courses) {
+            const grid = document.getElementById('course-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            if (courses.length === 0) {
+                if (currentSelectedFilterChip === 'owned' && !currentUser) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+                                <i class="fas fa-lock text-4xl text-slate-500 mb-4"></i>
+                                <h3 class="text-white font-black text-xl mb-2">Bạn chưa đăng nhập</h3>
+                                <p class="text-slate-400 text-sm mb-6">Đăng nhập để xem các khóa học của bạn.</p>
+                                <a href="https://hoc.vizlab3d.org/login.html" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-[#4fb9fd] text-[#020617] font-black text-sm hover:scale-105 transition-transform">
+                                    Đăng nhập ngay
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (currentSelectedFilterChip === 'owned' && currentUser) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+                                <i class="fas fa-box-open text-4xl text-slate-500 mb-4"></i>
+                                <h3 class="text-white font-black text-xl mb-2">Chưa có khóa học nào</h3>
+                                <p class="text-slate-400 text-sm">Tài khoản này hiện chưa được cấp quyền khóa học nào. Sau khi bạn mua khóa, shop sẽ kích hoạt tại đây.</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (currentSelectedFilterChip === 'favorite') {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+                                <i class="fas fa-heart text-4xl text-slate-500 mb-4"></i>
+                                <h3 class="text-white font-black text-xl mb-2">Chưa có khóa học yêu thích</h3>
+                                <p class="text-slate-400 text-sm">Bấm biểu tượng trái tim trên thẻ khóa học để lưu khóa bạn quan tâm.</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-16 font-medium">Không tìm thấy khóa học nào phù hợp trong Vũ Trụ Sáng Tạo.</div>`;
+                return;
+            }
+
+            courses.forEach(course => {
+                const isMember = course.type === 'member';
+                const hasDiscount = course.originalPrice > 0; 
+                const card = document.createElement('div');
+                card.className = "group relative rounded-[1.5rem] cursor-pointer transition-all duration-500 hover:-translate-y-3 z-10 hover:z-20";
+                card.onclick = () => { window.open(course.href, '_blank'); };
+                
+                const glowGradients = isMember ? 'from-slate-400/50 to-transparent shadow-[0_0_30px_rgba(226,232,240,0.2)]' : 'from-[#4fb9fd]/50 to-transparent shadow-[0_0_30px_rgba(79,185,253,0.2)]';
+                const borderGradients = isMember ? 'from-slate-400/50 to-transparent' : 'from-[#4fb9fd]/50 to-transparent';
+                const textGlow = isMember ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]';
+
+                const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
+                const isInCart = isCourseInCart(course.id);
+                const isFavorite = isCourseFavorited(course.id);
+
+                const actionButton = isOwned
+                    ? `<div onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-emerald-400 flex items-center justify-center gap-2 text-sm text-[#020617] transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(52,211,153,0.35)]" title="Vào học">
+                           <i class="fas fa-check-circle text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Vào học</span>
+                       </div>`
+                    : isMember 
+                        ? `<div onclick="upgradeMembership(event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-slate-200 flex items-center justify-center gap-2 text-sm text-slate-900 transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(226,232,240,0.4)]" title="Nâng Cấp Hội Viên">
+                               <i class="fas fa-crown"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Hội Viên</span>
+                           </div>`
+                        : isInCart
+                            ? `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-[#4fb9fd] text-[#020617] flex items-center justify-center gap-2 text-sm transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(79,185,253,0.4)]" title="Đã thêm vào giỏ">
+                                   <i class="fas fa-check text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Đã thêm</span>
+                               </div>`
+                            : `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center gap-2 text-sm text-slate-300 transition-all duration-300 hover:scale-105 hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.4)]" title="Thêm vào giỏ hàng">
+                                   <i class="fas fa-cart-plus text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Thêm</span>
+                               </div>`;
+
+                card.innerHTML = `
+                    <div class="absolute inset-0 rounded-[1.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b ${glowGradients} blur-[4px] -z-10"></div>
+                    <div class="absolute inset-0 rounded-[1.5rem] opacity-30 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b ${borderGradients} p-[1px] -z-10">
+                        <div class="absolute inset-0 bg-[#0f172a] rounded-[1.4rem]"></div>
+                    </div>
+
+                    <div class="relative h-full flex flex-col bg-[#0f172a]/95 backdrop-blur-md rounded-[1.4rem] overflow-hidden border border-white/5 border-t-white/10 transition-all duration-500 group-hover:bg-transparent">
+                        <button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 right-4 z-30 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}">
+                            <i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i>
+                        </button>
+                        ${isInCart && !isOwned && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(79,185,253,0.4)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-check"></i> Đã thêm</div>` : ''}
+                        ${course.isSpecialRoadmap && !isInCart && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-purple-500 text-white text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(168,85,247,0.35)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-route"></i> Lộ trình</div>` : ''}
+                        <div class="aspect-video relative overflow-hidden bg-black">
+                            <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
+                            <img src="${course.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy">
+                        </div>
+                        <div class="p-6 flex flex-col flex-1 relative z-20">
+                            <span class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
+                            <h3 class="text-white font-bold text-lg leading-snug line-clamp-2 mb-6 transition-colors duration-300 ${textGlow}">${course.title}</h3>
+                            <div class="mt-auto flex justify-between items-end border-t border-white/5 pt-4">
+                                <div>
+                                    ${hasDiscount ? `<span class="block text-slate-500 line-through text-[11px] font-semibold -mb-1">${course.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                                    <span class="text-white font-black text-xl tracking-tight ${isMember ? 'text-slate-300' : ''}">${isMember ? '0đ' : course.price.toLocaleString('vi-VN') + 'đ'}</span>
+                                </div>
+                                ${actionButton}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderSidebarCategories() {
+            const container = document.getElementById('sidebar-menu-container');
+            container.innerHTML = ''; 
+            
+            const isAllActive = currentSelectedCategory === 'all';
+            const allBtn = document.createElement('button');
+            allBtn.id = 'btn-all'; allBtn.className = `category-btn relative flex items-center w-full py-2.5 pl-[21px] pr-3 transition-all overflow-hidden whitespace-nowrap group/btn ${isAllActive ? 'text-white font-bold' : 'text-slate-500 hover:text-white'}`;
+            allBtn.onclick = () => { filterCategory('all'); document.getElementById('course-library').scrollIntoView({ behavior: 'smooth' }); };
+            allBtn.innerHTML = `<div class="active-bar absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-300 ${isAllActive ? 'h-1/2 bg-slate-200 shadow-[0_0_10px_rgba(226,232,240,0.5)]' : 'h-0 bg-slate-200 group-hover/btn:h-1.5 group-hover/btn:bg-slate-500'}"></div><div class="w-5 flex justify-center shrink-0"><i class="fas fa-border-all text-sm transition-colors ${isAllActive ? 'text-slate-200' : 'text-slate-500 group-hover/btn:text-slate-300'}"></i></div><span class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wide text-sm font-semibold">Tất cả chủ đề</span>`;
+            container.appendChild(allBtn);
+
+            const groups = {};
+            sources.forEach(src => { if(!groups[src.group]) groups[src.group] = []; groups[src.group].push(src); });
+
+            for(const [groupName, items] of Object.entries(groups)) {
+                const label = document.createElement('span');
+                label.className = "text-[9px] uppercase font-black text-slate-600 tracking-widest pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0"; label.innerText = groupName;
+                container.appendChild(label);
+
+                items.forEach(src => {
+                    const isActive = currentSelectedCategory === src.id;
+                    const btn = document.createElement('button');
+                    btn.id = `btn-${src.id}`; btn.className = `category-btn relative flex items-center w-full py-2.5 pl-[21px] pr-3 transition-all overflow-hidden whitespace-nowrap group/btn ${isActive ? 'text-white font-bold' : 'text-slate-500 hover:text-white'}`;
+                    btn.onclick = () => { filterCategory(src.id); document.getElementById('course-library').scrollIntoView({ behavior: 'smooth' }); };
+                    btn.innerHTML = `<div class="active-bar absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-300 ${isActive ? 'h-1/2 bg-slate-200 shadow-[0_0_10px_rgba(226,232,240,0.5)]' : 'h-0 bg-slate-200 group-hover/btn:h-1.5 group-hover/btn:bg-slate-500'}"></div><div class="w-5 flex justify-center shrink-0"><i class="${src.icon} text-sm transition-colors ${isActive ? 'text-slate-200' : 'text-slate-500 group-hover/btn:text-slate-300'}"></i></div><span class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wide text-sm font-semibold">${src.name}</span>`;
+                    container.appendChild(btn);
+                });
+            }
+        }
+
+        function filterCategory(categoryId) {
+            currentSelectedCategory = categoryId;
+            renderSidebarCategories();
+            const srcObj = sources.find(s => s.id === categoryId);
+            document.getElementById('library-title').innerText = srcObj ? `Vũ Trụ Sáng Tạo: ${srcObj.name}` : "Vũ Trụ Sáng Tạo";
+            executeSearchAndFilter();
+        }
+
+        function renderSpecialRoadmaps() {
+            const container = document.getElementById('special-container');
+            const dotsContainer = document.getElementById('slider-dots');
+            if(!container) return;
+            container.innerHTML = ''; if (dotsContainer) dotsContainer.innerHTML = '';
+            
+            SPECIAL_ROADMAPS_DATA.forEach((course, index) => {
+                const isFree = course.price === 0;
+                const hasOriginalPrice = course.originalPrice && course.originalPrice > course.price;
+                const card = document.createElement('div');
+                card.className = "special-card btn-glow-border rounded-[2rem] p-[2px] group cursor-pointer w-[300px] md:w-[420px] shrink-0 snap-start hover:-translate-y-2 transition-transform duration-500";
+                card.onclick = () => { window.open(course.href, '_blank'); };
+                
+                const isOwned = typeof userOwnsCourse === "function" && userOwnsCourse(course.id);
+                const isInCart = isCourseInCart(course.id);
+                const isFavorite = isCourseFavorited(course.id);
+
+                const actionBtnSpecial = isOwned
+                    ? `<div onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-emerald-400 flex items-center justify-center gap-2 text-sm md:text-base text-[#020617] shadow-[0_0_15px_rgba(52,211,153,0.35)] transition-all hover:scale-105" title="Vào học">
+                           <i class="fas fa-check-circle"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Vào học</span>
+                       </div>`
+                    : isFree
+                        ? `<div onclick="upgradeMembership(event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-slate-200 flex items-center justify-center gap-2 text-sm md:text-base text-slate-900 shadow-[0_0_15px_rgba(226,232,240,0.5)] transition-all hover:scale-105" title="Nâng Cấp Hội Viên">
+                               <i class="fas fa-crown"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Hội Viên</span>
+                           </div>`
+                        : isInCart
+                            ? `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-[#4fb9fd] text-[#020617] flex items-center justify-center gap-2 text-sm md:text-base shadow-[0_0_20px_rgba(79,185,253,0.5)] transition-all hover:scale-105" title="Đã thêm vào giỏ hàng">
+                                   <i class="fas fa-check"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Đã thêm</span>
+                               </div>`
+                            : `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center gap-2 text-sm md:text-base text-slate-300 hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.5)] transition-all hover:scale-105" title="Thêm vào giỏ hàng">
+                                   <i class="fas fa-cart-plus"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Thêm Giỏ</span>
+                               </div>`;
+
+                card.innerHTML = `
+                    <div class="bg-[#0f172a] h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
+                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
+                        <div class="p-6 md:p-8 flex flex-col flex-1 -mt-12 relative z-10">
+                            <span class="text-[10px] uppercase font-black tracking-widest text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
+                            <h3 class="text-lg md:text-xl font-black text-white leading-tight mb-3 ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${course.title}</h3>
+                            <p class="text-slate-400 font-medium text-xs md:text-sm line-clamp-1 mb-6">${course.subtitle || 'Lộ trình tối ưu chuyên nghiệp.'}</p>
+                            <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-4">
+                                <div>${hasOriginalPrice ? `<span class="block text-slate-500 line-through text-xs font-semibold">${course.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}<span class="text-white font-black text-xl md:text-2xl tracking-tight ${isFree ? 'text-slate-300' : 'text-[#4fb9fd]'}">${isFree ? '0đ (Hội Viên)' : course.price.toLocaleString('vi-VN') + 'đ'}</span></div>
+                                ${actionBtnSpecial}
+                            </div>
+                        </div>
+                    </div>`;
+                container.appendChild(card);
+                if (dotsContainer) {
+                    const dot = document.createElement('button'); dot.className = index === 0 ? 'w-6 h-2 rounded-full transition-all duration-300 bg-[#4fb9fd]' : 'w-2 h-2 rounded-full transition-all duration-300 bg-white/20 hover:bg-white/50 cursor-pointer'; dot.onclick = () => scrollToCard(index); dotsContainer.appendChild(dot);
+                }
+            });
+        }
+
+        function initSliderControls() {
+            const container = document.getElementById('special-container');
+            const prevBtn = document.getElementById('slider-prev'); const nextBtn = document.getElementById('slider-next'); const dotsContainer = document.getElementById('slider-dots');
+            if (!container) return;
+            if (nextBtn) nextBtn.addEventListener('click', slideNext); if (prevBtn) prevBtn.addEventListener('click', slidePrev);
+            container.addEventListener('scroll', () => { const cards = container.querySelectorAll('.special-card'); if (!cards.length) return; const scrollAmount = cards[0].offsetWidth + 24; const activeIndex = Math.round(container.scrollLeft / scrollAmount); updateDots(activeIndex); });
+            [container, prevBtn, nextBtn, dotsContainer].forEach(el => { if (el) { el.addEventListener('mouseenter', () => { isSliderPaused = true; }); el.addEventListener('mouseleave', () => { isSliderPaused = false; }); } });
+            startAutoSlideLoop();
+        }
+
+        function updateDots(activeIndex) { const dotsContainer = document.getElementById('slider-dots'); if(!dotsContainer) return; const dots = dotsContainer.children; Array.from(dots).forEach((dot, index) => { dot.className = index === activeIndex ? 'w-6 h-2 rounded-full transition-all duration-300 bg-[#4fb9fd]' : 'w-2 h-2 rounded-full transition-all duration-300 bg-white/20 hover:bg-white/50 cursor-pointer'; }); }
+        function scrollToCard(index) { const container = document.getElementById('special-container'); const cards = container.querySelectorAll('.special-card'); if (!cards.length) return; const scrollAmount = cards[0].offsetWidth + 24; container.scrollTo({ left: index * scrollAmount, behavior: 'smooth' }); currentProgress = 0; }
+        function startAutoSlideLoop() { const progressBar = document.getElementById('slider-progress-bar'); if (!progressBar) return; clearInterval(progressInterval); currentProgress = 0; progressBar.style.width = '0%'; progressInterval = setInterval(() => { if (!isSliderPaused) { currentProgress += (progressStep / slideDuration) * 100; progressBar.style.width = `${Math.min(currentProgress, 100)}%`; if (currentProgress >= 100) { currentProgress = 0; progressBar.style.width = '0%'; slideNext(); } } }, progressStep); }
+        function stopAutoSlideLoop() { clearInterval(progressInterval); const progressBar = document.getElementById('slider-progress-bar'); if (progressBar) progressBar.style.width = '0%'; }
+        function slideNext() { const container = document.getElementById('special-container'); if (!container) return; const card = container.querySelector('.special-card'); if (!card) return; const scrollAmount = card.offsetWidth + 24; if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 15) { container.scrollTo({ left: 0, behavior: 'smooth' }); } else { container.scrollBy({ left: scrollAmount, behavior: 'smooth' }); } currentProgress = 0; }
+        function slidePrev() { const container = document.getElementById('special-container'); if (!container) return; const card = container.querySelector('.special-card'); if (!card) return; const scrollAmount = card.offsetWidth + 24; if (container.scrollLeft <= 10) { container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' }); } else { container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); } currentProgress = 0; }
+
+        document.getElementById('toggle-special').addEventListener('click', () => {
+            const container = document.getElementById('special-container'); const text = document.getElementById('toggle-text'); const icon = document.getElementById('toggle-icon'); const cards = document.querySelectorAll('.special-card');
+            const prevBtn = document.getElementById('slider-prev'); const nextBtn = document.getElementById('slider-next'); const progressZone = document.getElementById('slider-progress-container'); const dotsContainer = document.getElementById('slider-dots');
+            const isExpanded = container.classList.contains('grid');
+            if(!isExpanded) {
+                stopAutoSlideLoop(); if(progressZone) progressZone.classList.add('hidden'); if(prevBtn) prevBtn.classList.add('hidden'); if(nextBtn) nextBtn.classList.add('hidden'); if(dotsContainer) dotsContainer.classList.add('hidden');
+                container.classList.remove('flex', 'overflow-x-auto', 'snap-x', 'hide-scrollbar', 'pb-6', 'scroll-smooth'); container.classList.add('grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4', 'gap-6', 'md:gap-8');
+                cards.forEach(card => { card.classList.remove('w-[300px]', 'md:w-[420px]', 'shrink-0', 'snap-start'); card.classList.add('w-full'); const innerContent = card.querySelector('.p-6.md\\:p-8'); if(innerContent) innerContent.classList.replace('md:p-8', 'md:p-5'); });
+                text.innerText = "Thu gọn"; icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                if(progressZone) progressZone.classList.remove('hidden'); if(prevBtn) prevBtn.classList.remove('hidden'); if(nextBtn) nextBtn.classList.remove('hidden'); if(dotsContainer) dotsContainer.classList.remove('hidden');
+                container.classList.add('flex', 'overflow-x-auto', 'snap-x', 'hide-scrollbar', 'pb-6', 'scroll-smooth'); container.classList.remove('grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4', 'gap-6', 'md:gap-8');
+                cards.forEach(card => { card.classList.remove('w-full'); card.classList.add('w-[300px]', 'md:w-[420px]', 'shrink-0', 'snap-start'); const innerContent = card.querySelector('.p-6.md\\:p-5'); if(innerContent) innerContent.classList.replace('md:p-5', 'md:p-8'); });
+                text.innerText = "Xem tất cả (13+)"; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); container.scrollTo({ left: 0, behavior: 'smooth' }); startAutoSlideLoop(); 
+            }
+        });
+
+        function scrollToLibrary() {
+            const library = document.getElementById('course-library');
+            const mainEl = document.querySelector('main');
+
+            if (!library) return;
+
+            if (mainEl && window.innerWidth >= 768) {
+                const toolbarOffset = 120;
+                mainEl.scrollTo({
+                    top: Math.max(library.offsetTop - toolbarOffset, 0),
+                    behavior: 'smooth'
+                });
+            } else {
+                library.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        const CHECKOUT_FORM_ENDPOINT = "https://formspree.io/f/xrbavvpy";
+        const PAYMENT_QR = {
+            momo: {
+                label: "MoMo",
+                title: "Quét mã MoMo để thanh toán",
+                image: "https://iili.io/f9UTZhv.jpg"
+            },
+            banking: {
+                label: "Banking",
+                title: "Quét mã ngân hàng để chuyển khoản",
+                image: "https://iili.io/f9UTbBp.jpg"
+            }
+        };
+
+        function formatCurrency(value) {
+            return Number(value || 0).toLocaleString('vi-VN') + 'đ';
+        }
+
+        function getCartTotal() {
+            return cart.reduce((sum, item) => sum + Number(item.price || 0), 0);
+        }
+
+        function getCartItemsText() {
+            return cart.map((item, index) => {
+                return `${index + 1}. ${item.title} | ID: ${item.id} | Giá: ${formatCurrency(item.price)} | Chủ đề: ${item.categoryName || item.topicName || item.category || ''}`;
+            }).join('\n');
+        }
+
+        function updateCheckoutSummary() {
+            const list = document.getElementById('checkout-summary-list');
+            const totalItemsEl = document.getElementById('checkout-total-items');
+            const subtotalEl = document.getElementById('checkout-subtotal');
+            const totalEl = document.getElementById('checkout-total');
+            const hiddenItems = document.getElementById('checkout-hidden-items');
+            const hiddenTotal = document.getElementById('checkout-hidden-total');
+            const hiddenUser = document.getElementById('checkout-hidden-user');
+            const hiddenTransferNote = document.getElementById('checkout-hidden-transfer-note');
+
+            if (!list) return;
+
+            list.innerHTML = '';
+
+            if (cart.length === 0) {
+                list.innerHTML = `<div class="rounded-2xl bg-white/5 border border-white/10 p-6 text-center text-slate-500 text-sm"><i class="fas fa-bag-shopping text-3xl mb-3 opacity-30"></i><p>Giỏ hàng đang trống.</p></div>`;
+            } else {
+                cart.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = "flex gap-3 rounded-2xl bg-white/5 border border-white/10 p-3";
+                    row.innerHTML = `
+                        <div class="w-16 aspect-video rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
+                            <img src="${item.image}" class="w-full h-full object-cover" alt="${item.title}">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h5 class="text-white font-bold text-xs leading-snug line-clamp-2">${item.title}</h5>
+                            <p class="text-slate-500 text-[10px] uppercase tracking-wider mt-1">${item.categoryName || item.topicName || 'Khóa học'}</p>
+                            <p class="text-[#4fb9fd] font-black text-sm mt-1">${formatCurrency(item.price)}</p>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+
+            const total = getCartTotal();
+            if (totalItemsEl) totalItemsEl.textContent = cart.length + ' khóa';
+            if (subtotalEl) subtotalEl.textContent = formatCurrency(total);
+            if (totalEl) totalEl.textContent = formatCurrency(total);
+            if (hiddenItems) hiddenItems.value = getCartItemsText();
+            if (hiddenTotal) hiddenTotal.value = formatCurrency(total);
+            if (hiddenUser) hiddenUser.value = currentUser ? `${currentUser.email} | ${currentUser.id}` : 'Chưa đăng nhập';
+            if (hiddenTransferNote) hiddenTransferNote.value = document.getElementById('checkout-transfer-note')?.textContent || 'Tên học viên';
+        }
+
+        function updateTransferNote() {
+            const nameInput = document.getElementById('checkout-fullname');
+            const noteEl = document.getElementById('checkout-transfer-note');
+            if (!noteEl) return;
+            const fullName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Tên học viên';
+            noteEl.textContent = fullName;
+        }
+
+        function selectPaymentMethod(method) {
+            const config = PAYMENT_QR[method] || PAYMENT_QR.momo;
+            const image = document.getElementById('payment-qr-image');
+            const title = document.getElementById('payment-title');
+
+            if (image) image.src = config.image;
+            if (title) title.textContent = config.title;
+
+            document.querySelectorAll('[data-payment-card]').forEach(card => {
+                const active = card.dataset.paymentCard === method;
+                card.classList.toggle('border-[#4fb9fd]', active);
+                card.classList.toggle('bg-[#4fb9fd]/10', active);
+                card.classList.toggle('shadow-[0_0_24px_rgba(79,185,253,0.18)]', active);
+                const checkIcon = card.querySelector('.payment-check');
+                if (checkIcon) checkIcon.classList.toggle('opacity-100', active);
+                if (checkIcon) checkIcon.classList.toggle('opacity-0', !active);
+            });
+        }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                alert('Giỏ hàng của bạn đang trống. Hãy thêm khóa học trước khi thanh toán.');
+                return;
+            }
+
+            const modal = document.getElementById('checkout-modal');
+            const form = document.getElementById('checkout-form');
+            const message = document.getElementById('checkout-message');
+            const emailInput = document.getElementById('checkout-email');
+            const nameInput = document.getElementById('checkout-fullname');
+            const submitBtn = document.getElementById('checkout-submit-btn');
+            const confirmCheckbox = document.getElementById('payment-confirmed');
+
+            if (form) form.reset();
+            if (message) {
+                message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
+                message.textContent = '';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký kích hoạt';
+            }
+            if (confirmCheckbox) confirmCheckbox.checked = false;
+            if (emailInput && currentUser && currentUser.email) emailInput.value = currentUser.email;
+            if (nameInput) nameInput.value = '';
+
+            selectPaymentMethod('momo');
+            updateTransferNote();
+            updateCheckoutSummary();
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkout-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        function showCheckoutMessage(text, type = 'success') {
+            const message = document.getElementById('checkout-message');
+            if (!message) return;
+            const base = 'mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
+            message.className = base + (type === 'error'
+                ? ' bg-red-500/10 border border-red-500/20 text-red-300'
+                : ' bg-emerald-500/10 border border-emerald-500/20 text-emerald-300');
+            message.textContent = text;
+        }
+
+        async function submitCheckoutForm(event) {
+            event.preventDefault();
+
+            if (cart.length === 0) {
+                showCheckoutMessage('Giỏ hàng đang trống, chưa thể gửi đăng ký.', 'error');
+                return;
+            }
+
+            const form = event.target;
+            const confirmed = document.getElementById('payment-confirmed');
+            const submitBtn = document.getElementById('checkout-submit-btn');
+
+            if (!confirmed || !confirmed.checked) {
+                showCheckoutMessage('Bạn cần tick xác nhận đã thanh toán trước khi gửi đăng ký.', 'error');
+                return;
+            }
+
+            updateCheckoutSummary();
+            updateTransferNote();
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi đăng ký...';
+            }
+
+            const formData = new FormData(form);
+            formData.set('danh_sach_khoa_hoc', getCartItemsText());
+            formData.set('tong_tien', formatCurrency(getCartTotal()));
+            formData.set('so_luong_khoa_hoc', String(cart.length));
+            formData.set('tai_khoan_dang_nhap', currentUser ? `${currentUser.email} | ${currentUser.id}` : 'Chưa đăng nhập');
+            formData.set('noi_dung_chuyen_khoan', document.getElementById('checkout-transfer-note')?.textContent || 'Tên học viên');
+            formData.set('thoi_gian_gui', new Date().toLocaleString('vi-VN'));
+
+            try {
+                const response = await fetch(CHECKOUT_FORM_ENDPOINT, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Không gửi được Formspree');
+                }
+
+                showCheckoutMessage('Đăng ký thành công! Bên mình đã nhận thông tin và sẽ kiểm tra thanh toán để kích hoạt khóa học cho bạn.', 'success');
+                clearCartStorage();
+                updateCheckoutSummary();
+
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký';
+                }
+
+                setTimeout(() => {
+                    closeCheckoutModal();
+                }, 2200);
+
+            } catch (error) {
+                console.error('Lỗi gửi đăng ký:', error);
+                showCheckoutMessage('Có lỗi khi gửi đăng ký. Bạn vui lòng thử lại hoặc nhắn trực tiếp cho shop để được hỗ trợ.', 'error');
+
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký kích hoạt';
+                }
+            }
+        }
+
+        // ----------------------------------------------------
+        // KÍCH HOẠT HỆ THỐNG GIAO DIỆN
+        // ----------------------------------------------------
+       if ("scrollRestoration" in history) {
+            history.scrollRestoration = "manual";
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const mainEl = document.querySelector("main");
+            if (mainEl) mainEl.scrollTop = 0;
+            window.scrollTo(0, 0);
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    if (typeof executeSearchAndFilter === "function") {
+                        executeSearchAndFilter();
+                    }
+                });
+            }
+
+            const checkoutNameInput = document.getElementById('checkout-fullname');
+            if (checkoutNameInput) {
+                checkoutNameInput.addEventListener('input', updateTransferNote);
+            }
+
+            const checkoutEmailInput = document.getElementById('checkout-email');
+            if (checkoutEmailInput) {
+                checkoutEmailInput.addEventListener('input', updateCheckoutSummary);
+            }
+
+            await initDashboard();
+            await initAuth();
+
+            setTimeout(() => {
+                const mainEl = document.querySelector("main");
+                if (mainEl) mainEl.scrollTop = 0;
+                window.scrollTo(0, 0);
+            }, 300);
+        });
+    </script>
+</body>
+</html>
