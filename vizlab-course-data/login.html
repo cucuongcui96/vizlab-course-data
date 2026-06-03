@@ -93,13 +93,12 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://xxsledmpzvyzajiqpmwo.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_GNn61UbuKm6z1xm4LkEx7w_1UHVozJL";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const HOME_URL = "https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html";
         const messageEl = document.getElementById("message");
 
         function showMessage(text, type = "success") {
@@ -118,6 +117,17 @@
             return { fullName, email, password };
         }
 
+        // 🌟 THUẬT TOÁN TÌM ĐƯỜNG VỀ TRANG CŨ CỦA KHÁCH HÀNG
+        function returnToPreviousPage() {
+            // Kiểm tra xem trình duyệt có nhớ trang trước đó không (Và phải đảm bảo nó thuộc về VizLab)
+            if (document.referrer && document.referrer.includes("vizlab3d.org")) {
+                window.location.href = document.referrer;
+            } else {
+                // Nếu không có trí nhớ, mặc định văng về trang chủ
+                window.location.href = "https://www.vizlab3d.org/";
+            }
+        }
+
         async function handleLogin() {
             const { email, password } = getFormData();
             if (!email || !password) {
@@ -131,8 +141,10 @@
             if (error) {
                 showMessage("Đăng nhập thất bại: " + error.message, "error");
             } else if (data.user) {
-                showMessage("Đăng nhập thành công! Đang chuyển hướng...", "success");
-                setTimeout(() => { window.location.href = HOME_URL; }, 800);
+                showMessage("Đăng nhập thành công! Đang trở lại vị trí cũ...", "success");
+                
+                // Gọi thuật toán quay về sau 1 giây
+                setTimeout(() => { returnToPreviousPage(); }, 1000);
             }
         }
 
@@ -153,7 +165,6 @@
             if (error) {
                 showMessage("Đăng ký lỗi: " + error.message, "error");
             } else if (data.user) {
-                // Tạo profile lưu tên người dùng
                 await supabaseClient.from("profiles").insert({
                     id: data.user.id,
                     email: email,
@@ -163,7 +174,6 @@
             }
         }
 
-        // Bắt sự kiện Enter ở ô password để đăng nhập nhanh
         document.getElementById('password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') handleLogin();
         });
