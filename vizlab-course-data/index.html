@@ -583,22 +583,32 @@ const GUEST_CART_KEY = "vizlab_cart_guest";
             alert("💎 Đây là Đặc Quyền Hội Viên! Vui lòng nâng cấp tài khoản để mở khóa toàn bộ Vũ Trụ Sáng Tạo.");
         }
 
-        function addToCart(title, event) {
-            if(event) event.stopPropagation(); 
-            
-            let course = ALL_COURSES.find(c => c.title === title);
-            if (!course) {
-                course = SPECIAL_ROADMAPS_DATA.find(c => c.title === title);
-            }
-            
-            if (!course || cart.some(item => item.title === title)) return;
-            
-            cart.push(course);
-            updateCartUI();
-            
-            const drawer = document.getElementById('cart-drawer');
-            if (drawer.classList.contains('translate-x-full')) toggleCart();
-        }
+      function addToCart(courseId, event) {
+    if (event) event.stopPropagation();
+
+    let course = ALL_COURSES.find(c => c.id === courseId);
+    if (!course) {
+        course = SPECIAL_ROADMAPS_DATA.find(c => c.id === courseId);
+    }
+
+    if (!course) return;
+
+    const alreadyInCart = cart.some(item => item.id === course.id);
+
+    if (alreadyInCart) {
+        const drawer = document.getElementById("cart-drawer");
+        if (drawer.classList.contains("translate-x-full")) toggleCart();
+        return;
+    }
+
+    cart.push(course);
+    saveCartToStorage();
+    updateCartUI();
+    executeSearchAndFilter();
+
+    const drawer = document.getElementById("cart-drawer");
+    if (drawer.classList.contains("translate-x-full")) toggleCart();
+}
 
         function removeFromCart(index) {
             cart.splice(index, 1);
