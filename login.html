@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="vi" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -9,261 +8,258 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-```
-<style>
-    body { 
-        background-color: #020617; 
-        color: #f8fafc; 
-        font-family: 'Inter', sans-serif; 
-        overflow: hidden;
-    }
-
-    .glass-panel { 
-        background: rgba(2, 6, 23, 0.55); 
-        backdrop-filter: blur(30px) saturate(150%); 
-        border: 1px solid rgba(255,255,255,0.05); 
-    }
-
-    .input-glass {
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid rgba(255,255,255,0.1);
-        transition: all 0.3s ease;
-    }
-
-    .input-glass:focus {
-        background: rgba(255,255,255,0.05);
-        border-color: #4fb9fd;
-        box-shadow: 0 0 15px rgba(79,185,253,0.2);
-    }
-</style>
-```
-
+    <style>
+        body { 
+            background-color: #020617; 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden;
+        }
+        .glass-panel { 
+            background: rgba(2, 6, 23, 0.62); 
+            backdrop-filter: blur(30px) saturate(150%); 
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+        .input-glass {
+            background: rgba(0, 0, 0, 0.40);
+            border: 1px solid rgba(255,255,255,0.10);
+            transition: all 0.3s ease;
+        }
+        .input-glass:focus {
+            background: rgba(255,255,255,0.055);
+            border-color: #4fb9fd;
+            box-shadow: 0 0 18px rgba(79,185,253,0.22);
+        }
+        .soft-orb {
+            background:
+                radial-gradient(circle at 30% 20%, rgba(79,185,253,.28), transparent 34%),
+                radial-gradient(circle at 70% 70%, rgba(249,115,22,.18), transparent 36%),
+                radial-gradient(circle at 50% 50%, rgba(139,92,246,.14), transparent 42%);
+        }
+    </style>
 </head>
-
 <body class="h-screen w-full flex items-center justify-center relative bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] bg-[#020617]">
 
-```
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#4fb9fd]/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute inset-0 soft-orb opacity-80 pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-[#4fb9fd]/10 rounded-full blur-[130px] pointer-events-none"></div>
 
-<div class="glass-panel w-full max-w-md p-10 rounded-[2.5rem] z-10 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden">
-    
-    <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#4fb9fd]/50 to-transparent"></div>
+    <div class="glass-panel w-[calc(100%-24px)] max-w-md p-7 sm:p-10 rounded-[2.2rem] z-10 shadow-[0_30px_80px_rgba(0,0,0,0.76)] relative overflow-hidden">
 
-    <div class="text-center mb-8">
-        <a href="https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html" class="inline-flex items-center gap-2 text-3xl font-black tracking-tighter text-white mb-2 hover:scale-105 transition-transform duration-300">
-            <i class="fas fa-cube text-[#4fb9fd]"></i> Viz<span class="text-orange-500">Lab</span>
-        </a>
-        <p id="form-subtitle" class="text-slate-400 text-sm font-medium">
-            Đăng nhập để tiếp tục học tập
-        </p>
+        <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#4fb9fd]/60 to-transparent"></div>
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-[#4fb9fd]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center mb-8">
+            <a href="https://hoc.vizlab3d.org/" class="inline-flex items-center justify-center mb-3 hover:scale-105 transition-transform duration-300">
+                <img src="https://iili.io/B5sIBtt.png" alt="VizLab" class="h-12 w-auto object-contain">
+            </a>
+            <h1 class="text-white font-black text-2xl tracking-tight">Cổng học viên VizLab</h1>
+            <p class="text-slate-400 text-sm font-medium mt-1">Đăng nhập để quản lý khóa học của bạn</p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
+                <div class="relative">
+                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text" id="fullName" name="name" autocomplete="name" class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="Chỉ cần nhập khi tạo tài khoản">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Email</label>
+                <div class="relative">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="email" id="email" name="email" required autocomplete="email" class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="artist@example.com">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Mật khẩu</label>
+                <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" class="input-glass w-full rounded-xl py-3 pl-11 pr-12 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="••••••••">
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all" aria-label="Hiện hoặc ẩn mật khẩu">
+                        <i id="password-eye-icon" class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 -mt-1">
+                <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" id="rememberEmail" class="h-4 w-4 rounded border-white/20 bg-black/40 accent-[#4fb9fd]">
+                    <span class="text-xs text-slate-400 font-semibold">Ghi nhớ email</span>
+                </label>
+                <button type="button" onclick="handleForgotPassword()" class="text-xs font-black text-[#4fb9fd] hover:text-white transition-colors">
+                    Quên mật khẩu?
+                </button>
+            </div>
+
+            <div class="rounded-2xl bg-white/[0.035] border border-white/10 p-3 text-[11px] text-slate-500 leading-relaxed">
+                <i class="fas fa-shield-halved text-[#4fb9fd] mr-1"></i>
+                Vì bảo mật, website không lưu mật khẩu thô. Trình duyệt có thể tự ghi nhớ mật khẩu nếu bạn cho phép.
+            </div>
+
+            <div id="message" class="text-center text-xs font-semibold mt-1 hidden opacity-0 transition-opacity duration-300 min-h-[18px]"></div>
+
+            <div class="flex flex-col sm:flex-row gap-3 mt-2">
+                <button onclick="handleLogin()" class="flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.22)] hover:shadow-[0_0_30px_rgba(79,185,253,0.44)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
+                    <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+                </button>
+                <button onclick="handleSignup()" class="flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 text-sm">
+                    Tạo Tài Khoản
+                </button>
+            </div>
+
+        </div>
+
+        <div class="mt-8 text-center border-t border-white/5 pt-6">
+            <a href="https://hoc.vizlab3d.org/" class="text-xs text-slate-500 hover:text-[#4fb9fd] font-semibold transition-colors flex items-center justify-center gap-1.5">
+                <i class="fas fa-arrow-left"></i> Trở về Khám phá
+            </a>
+        </div>
     </div>
 
-    <div class="flex flex-col gap-4">
-        
-        <div id="nameField" style="display:none;">
-            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
-            <div class="relative">
-                <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                <input type="text" id="fullName" class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="Nhập tên của bạn">
-            </div>
-        </div>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://xxsledmpzvyzajiqpmwo.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_GNn61UbuKm6z1xm4LkEx7w_1UHVozJL";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        <div>
-            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Email</label>
-            <div class="relative">
-                <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                <input type="email" id="email" required class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="artist@example.com">
-            </div>
-        </div>
+        const SITE_URL = "https://hoc.vizlab3d.org";
+        const REMEMBER_EMAIL_KEY = "vizlab_remember_email";
+        const messageEl = document.getElementById("message");
 
-        <div>
-            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Mật khẩu</label>
-            <div class="relative">
-                <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                <input type="password" id="password" required class="input-glass w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none" placeholder="••••••••">
-            </div>
-        </div>
+        function showMessage(text, type = "success") {
+            messageEl.textContent = text;
+            messageEl.classList.remove('hidden', 'opacity-0', 'text-red-400', 'text-emerald-400', 'text-[#4fb9fd]');
 
-        <div id="message" class="text-center text-xs font-semibold mt-1 hidden opacity-0 transition-opacity duration-300 min-h-[16px]"></div>
-
-        <div class="flex flex-col sm:flex-row gap-3 mt-4">
-            <button id="mainActionBtn" onclick="handleLogin()" class="flex-1 bg-gradient-to-r from-[#4fb9fd] to-blue-600 text-white font-black py-3 rounded-xl shadow-[0_0_20px_rgba(79,185,253,0.2)] hover:shadow-[0_0_30px_rgba(79,185,253,0.4)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
-                <i class="fas fa-sign-in-alt"></i> Đăng Nhập
-            </button>
-
-            <button id="switchModeBtn" onclick="showSignupMode()" class="flex-1 bg-white/5 text-slate-300 font-bold py-3 rounded-xl border border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10 hover:-translate-y-1 transition-all duration-300 text-sm">
-                Tạo Tài Khoản
-            </button>
-        </div>
-        
-    </div>
-
-    <div class="mt-8 text-center border-t border-white/5 pt-6">
-        <a href="https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html" class="text-xs text-slate-500 hover:text-[#4fb9fd] font-semibold transition-colors flex items-center justify-center gap-1.5">
-            <i class="fas fa-arrow-left"></i> Trở về Khám phá
-        </a>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    const SUPABASE_URL = "https://xxsledmpzvyzajiqpmwo.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_GNn61UbuKm6z1xm4LkEx7w_1UHVozJL";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const HOME_URL = "https://cucuongcui96.github.io/vizlab-course-data/vizlab-course-data/index.html";
-
-    let isSignupMode = false;
-
-    const messageEl = document.getElementById("message");
-    const nameField = document.getElementById("nameField");
-    const mainActionBtn = document.getElementById("mainActionBtn");
-    const switchModeBtn = document.getElementById("switchModeBtn");
-    const formSubtitle = document.getElementById("form-subtitle");
-
-    function showMessage(text, type = "success") {
-        messageEl.textContent = text;
-        messageEl.classList.remove("hidden", "opacity-0", "text-red-400", "text-emerald-400", "text-[#4fb9fd]");
-
-        if (type === "error") {
-            messageEl.classList.add("text-red-400", "opacity-100");
-        } else if (type === "success") {
-            messageEl.classList.add("text-emerald-400", "opacity-100");
-        } else {
-            messageEl.classList.add("text-[#4fb9fd]", "opacity-100");
-        }
-    }
-
-    function clearMessage() {
-        messageEl.textContent = "";
-        messageEl.classList.add("hidden", "opacity-0");
-        messageEl.classList.remove("text-red-400", "text-emerald-400", "text-[#4fb9fd]");
-    }
-
-    function getFormData() {
-        const fullName = document.getElementById("fullName").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        return { fullName, email, password };
-    }
-
-    function showLoginMode() {
-        isSignupMode = false;
-        clearMessage();
-
-        nameField.style.display = "none";
-        formSubtitle.textContent = "Đăng nhập để tiếp tục học tập";
-
-        mainActionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng Nhập';
-        mainActionBtn.setAttribute("onclick", "handleLogin()");
-
-        switchModeBtn.textContent = "Tạo Tài Khoản";
-        switchModeBtn.setAttribute("onclick", "showSignupMode()");
-    }
-
-    function showSignupMode() {
-        isSignupMode = true;
-        clearMessage();
-
-        nameField.style.display = "block";
-        formSubtitle.textContent = "Tạo tài khoản học viên mới";
-
-        mainActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Đăng Ký';
-        mainActionBtn.setAttribute("onclick", "handleSignup()");
-
-        switchModeBtn.textContent = "Quay lại đăng nhập";
-        switchModeBtn.setAttribute("onclick", "showLoginMode()");
-    }
-
-    function returnToPreviousPage() {
-        const ref = document.referrer;
-
-        if (ref && (ref.includes("vizlab3d.org") || ref.includes("github.io"))) {
-            window.location.href = ref;
-        } else {
-            window.location.href = HOME_URL;
-        }
-    }
-
-    async function handleLogin() {
-        const { email, password } = getFormData();
-
-        if (!email || !password) {
-            return showMessage("Bạn cần nhập email và mật khẩu.", "error");
+            if (type === "error") messageEl.classList.add('text-red-400', 'opacity-100');
+            else if (type === "success") messageEl.classList.add('text-emerald-400', 'opacity-100');
+            else messageEl.classList.add('text-[#4fb9fd]', 'opacity-100');
         }
 
-        showMessage("Đang đăng nhập...", "info");
-
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
-
-        if (error) {
-            return showMessage("Đăng nhập thất bại: " + error.message, "error");
+        function getFormData() {
+            const fullName = document.getElementById("fullName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            return { fullName, email, password };
         }
 
-        if (data.user) {
-            showMessage("Đăng nhập thành công! Đang quay lại trang khóa học...", "success");
+        function returnToPreviousPage() {
+            const ref = document.referrer;
 
-            setTimeout(() => {
-                returnToPreviousPage();
-            }, 800);
-        }
-    }
-
-    async function handleSignup() {
-        const { fullName, email, password } = getFormData();
-
-        if (!email || !password) {
-            return showMessage("Bạn cần nhập email và mật khẩu để đăng ký.", "error");
-        }
-
-        if (password.length < 6) {
-            return showMessage("Mật khẩu nên có ít nhất 6 ký tự.", "error");
-        }
-
-        showMessage("Đang tạo tài khoản...", "info");
-
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password
-        });
-
-        if (error) {
-            return showMessage("Đăng ký lỗi: " + error.message, "error");
-        }
-
-        if (data.user) {
-            await supabaseClient.from("profiles").upsert({
-                id: data.user.id,
-                email: email,
-                full_name: fullName || email.split("@")[0]
-            });
-
-            showMessage("Đăng ký thành công! Hãy kiểm tra email xác nhận nếu hệ thống yêu cầu.", "success");
-
-            setTimeout(() => {
-                showLoginMode();
-            }, 1200);
-        }
-    }
-
-    document.getElementById("password").addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-            if (isSignupMode) {
-                handleSignup();
+            if (ref && (ref.includes("vizlab3d.org") || ref.includes("github.io"))) {
+                window.location.href = ref;
             } else {
-                handleLogin();
+                window.location.href = SITE_URL + "/";
             }
         }
-    });
 
-    showLoginMode();
-</script>
-```
+        function saveRememberedEmail(email) {
+            const rememberEmail = document.getElementById("rememberEmail").checked;
+            if (rememberEmail && email) {
+                localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+            } else {
+                localStorage.removeItem(REMEMBER_EMAIL_KEY);
+            }
+        }
 
+        function loadRememberedEmail() {
+            const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
+            if (savedEmail) {
+                document.getElementById("email").value = savedEmail;
+                document.getElementById("rememberEmail").checked = true;
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("password");
+            const icon = document.getElementById("password-eye-icon");
+            const isHidden = passwordInput.type === "password";
+
+            passwordInput.type = isHidden ? "text" : "password";
+            icon.classList.toggle("fa-eye", !isHidden);
+            icon.classList.toggle("fa-eye-slash", isHidden);
+        }
+
+        async function handleLogin() {
+            const { email, password } = getFormData();
+            if (!email || !password) {
+                return showMessage("Bạn cần nhập email và mật khẩu.", "error");
+            }
+
+            showMessage("Đang kết nối trạm không gian...", "info");
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                showMessage("Đăng nhập thất bại: " + error.message, "error");
+            } else if (data.user) {
+                saveRememberedEmail(email);
+                showMessage("Đăng nhập thành công! Đang trở lại vị trí cũ...", "success");
+                setTimeout(() => { returnToPreviousPage(); }, 900);
+            }
+        }
+
+        async function handleSignup() {
+            const { fullName, email, password } = getFormData();
+
+            if (!email || !password) {
+                return showMessage("Bạn cần nhập email và mật khẩu để đăng ký.", "error");
+            }
+            if (password.length < 6) {
+                return showMessage("Mật khẩu nên có ít nhất 6 ký tự.", "error");
+            }
+
+            showMessage("Đang tạo tài khoản...", "info");
+
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+            if (error) {
+                showMessage("Đăng ký lỗi: " + error.message, "error");
+            } else if (data.user) {
+                saveRememberedEmail(email);
+
+                await supabaseClient.from("profiles").insert({
+                    id: data.user.id,
+                    email: email,
+                    full_name: fullName || email.split('@')[0]
+                });
+
+                showMessage("Đăng ký thành công! Hãy kiểm tra email để xác nhận nếu hệ thống yêu cầu.", "success");
+            }
+        }
+
+        async function handleForgotPassword() {
+            const email = document.getElementById("email").value.trim();
+
+            if (!email) {
+                showMessage("Bạn hãy nhập email trước, sau đó bấm Quên mật khẩu.", "error");
+                document.getElementById("email").focus();
+                return;
+            }
+
+            showMessage("Đang gửi email đặt lại mật khẩu...", "info");
+
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: SITE_URL + "/reset-password.html"
+            });
+
+            if (error) {
+                showMessage("Không gửi được email đặt lại mật khẩu: " + error.message, "error");
+            } else {
+                localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+                showMessage("Đã gửi email đặt lại mật khẩu. Bạn hãy kiểm tra hộp thư hoặc mục spam.", "success");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadRememberedEmail);
+
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
 </body>
 </html>
