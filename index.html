@@ -607,6 +607,203 @@
             .mobile-topic-btn.active i { color: #020617; }
         }
 
+
+
+        /* Mobile refinements: full membership modal + scroll cue for topics */
+        @media (max-width: 767px) {
+            #membership-modal {
+                align-items: stretch !important;
+                justify-content: stretch !important;
+                padding: 0 !important;
+                background: rgba(2, 6, 23, 0.90) !important;
+            }
+            #membership-modal > .relative {
+                width: 100% !important;
+                max-width: none !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+                border-radius: 0 !important;
+                border-left: 0 !important;
+                border-right: 0 !important;
+                border-bottom: 0 !important;
+                overflow-y: auto !important;
+                overscroll-behavior: contain;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            #membership-modal .sticky {
+                position: sticky !important;
+                top: 0 !important;
+                padding: 14px 16px !important;
+            }
+            #membership-modal .sticky .h-11.w-11 {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 14px !important;
+            }
+            #membership-modal .sticky button.h-11.w-11 {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 14px !important;
+            }
+            #membership-modal h3 { font-size: 18px !important; }
+            #membership-modal h3 + p {
+                max-width: 230px !important;
+                white-space: normal !important;
+                line-height: 1.25 !important;
+            }
+            #membership-plans-view {
+                min-height: calc(100dvh - 72px) !important;
+                padding: 16px 14px calc(24px + env(safe-area-inset-bottom)) !important;
+            }
+            #membership-plans-view .text-center.max-w-3xl {
+                margin-bottom: 16px !important;
+            }
+            #membership-plans-view .text-center.max-w-3xl h4,
+            #membership-plans-view .text-center.max-w-3xl p {
+                display: none !important;
+            }
+            #membership-plans-view .grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            .membership-plan-btn {
+                padding: 16px !important;
+                border-radius: 20px !important;
+            }
+            #membership-form.hidden {
+                display: none !important;
+            }
+            #membership-form:not(.hidden) {
+                display: block !important;
+                min-height: calc(100dvh - 72px) !important;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            #membership-form > div {
+                padding: 16px !important;
+                border-right: 0 !important;
+            }
+            #membership-form > div:last-child {
+                padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+            }
+            #membership-form .rounded-\[1\.75rem\] {
+                border-radius: 20px !important;
+            }
+            #membership-form .relative.w-48.h-48 {
+                width: 144px !important;
+                height: 144px !important;
+                border-radius: 18px !important;
+            }
+            #membership-summary-price,
+            #membership-total-price {
+                color: #f8fafc !important;
+            }
+
+            .mobile-topic-sheet {
+                max-height: min(82vh, 680px) !important;
+            }
+            .mobile-sheet-body {
+                max-height: calc(min(82vh, 680px) - 16px) !important;
+                padding-bottom: 74px !important;
+            }
+            .mobile-topic-scroll-cue {
+                position: sticky;
+                bottom: -1px;
+                margin: 12px -14px -74px;
+                height: 72px;
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                padding-bottom: 14px;
+                pointer-events: none;
+                background: linear-gradient(to top, rgba(15,23,42,.98) 0%, rgba(15,23,42,.86) 42%, rgba(15,23,42,0) 100%);
+                transition: opacity .22s ease, transform .22s ease;
+            }
+            .mobile-topic-scroll-cue.is-hidden {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            .mobile-topic-scroll-cue span {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                border-radius: 999px;
+                background: rgba(255,255,255,.08);
+                border: 1px solid rgba(255,255,255,.12);
+                color: #cbd5e1;
+                font-size: 10px;
+                font-weight: 900;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+                padding: 8px 11px;
+                box-shadow: 0 10px 24px rgba(0,0,0,.28);
+            }
+            .mobile-topic-scroll-cue i {
+                color: #7dd3fc;
+                animation: mobileCueBounce 1.15s ease-in-out infinite;
+            }
+            @keyframes mobileCueBounce {
+                0%, 100% { transform: translateY(-1px); }
+                50% { transform: translateY(3px); }
+            }
+        }
+
+
+        /* Mobile: đưa liên hệ vào bảng Chủ Đề, không hiện nút nổi ngoài màn hình */
+        @media (max-width: 767px) {
+            .floating-contact {
+                display: none !important;
+            }
+
+            .mobile-contact-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                padding-bottom: 6px;
+            }
+
+            .mobile-contact-btn {
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 12px;
+                border-radius: 17px;
+                background: rgba(255,255,255,.045);
+                border: 1px solid rgba(255,255,255,.08);
+                color: #e2e8f0;
+                font-size: 11px;
+                font-weight: 900;
+                text-align: left;
+                transition: background .2s ease, transform .2s ease, border-color .2s ease;
+            }
+
+            .mobile-contact-btn:active {
+                transform: scale(.98);
+                background: rgba(255,255,255,.08);
+                border-color: rgba(148,163,184,.25);
+            }
+
+            .mobile-contact-btn img {
+                width: 24px;
+                height: 24px;
+                object-fit: contain;
+                border-radius: 8px;
+                background: rgba(255,255,255,.92);
+                padding: 2px;
+                flex: 0 0 24px;
+            }
+
+            .mobile-contact-btn small {
+                display: block;
+                margin-top: 2px;
+                color: #94a3b8;
+                font-size: 9px;
+                font-weight: 800;
+                letter-spacing: .04em;
+                text-transform: uppercase;
+            }
+        }
+
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
@@ -1176,6 +1373,21 @@
 
             <div class="mobile-sheet-section-title">Chủ đề khóa học</div>
             <div id="mobile-topic-list" class="mobile-topic-grid"></div>
+            <div id="mobile-topic-scroll-cue" class="mobile-topic-scroll-cue">
+                <span>Vuốt lên để xem thêm <i class="fas fa-chevron-down"></i></span>
+            </div>
+
+            <div class="mobile-sheet-section-title">Liên hệ hỗ trợ</div>
+            <div class="mobile-contact-grid">
+                <a class="mobile-contact-btn" href="https://www.vizlab3d.org/tiện-ích/liên-hệ" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ VizLab qua Zalo">
+                    <img src="https://i.postimg.cc/htBP5xJc/Logo-Zalo-Arc.png" alt="Zalo">
+                    <span>Zalo<small>Tư vấn nhanh</small></span>
+                </a>
+                <a class="mobile-contact-btn" href="https://m.me/109209856089250" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ VizLab qua Messenger">
+                    <img src="https://i.postimg.cc/mgy2fDMM/Facebook-Messenger-logo-2018-svg.png" alt="Messenger">
+                    <span>Messenger<small>Chat trực tiếp</small></span>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -2483,6 +2695,10 @@
             renderMobileTopicSheet();
             const backdrop = document.getElementById('mobile-sheet-backdrop');
             const sheet = document.getElementById('mobile-topic-sheet');
+            const body = sheet ? sheet.querySelector('.mobile-sheet-body') : null;
+            const cue = document.getElementById('mobile-topic-scroll-cue');
+            if (body) body.scrollTop = 0;
+            if (cue) cue.classList.remove('is-hidden');
             if (backdrop) backdrop.classList.add('is-open');
             if (sheet) sheet.classList.add('is-open');
             document.body.style.overflow = 'hidden';
@@ -2583,6 +2799,15 @@
                         executeSearchAndFilter();
                     }
                 });
+            }
+
+            const mobileSheetBody = document.querySelector('#mobile-topic-sheet .mobile-sheet-body');
+            const mobileTopicCue = document.getElementById('mobile-topic-scroll-cue');
+            if (mobileSheetBody && mobileTopicCue) {
+                mobileSheetBody.addEventListener('scroll', () => {
+                    const nearBottom = mobileSheetBody.scrollTop > 24 || (mobileSheetBody.scrollTop + mobileSheetBody.clientHeight >= mobileSheetBody.scrollHeight - 24);
+                    mobileTopicCue.classList.toggle('is-hidden', nearBottom);
+                }, { passive: true });
             }
 
             const checkoutNameInput = document.getElementById('checkout-fullname');
