@@ -190,12 +190,22 @@
         }
 
         function returnToPreviousPage() {
-            const ref = document.referrer;
+            const ref = document.referrer || "";
+            const fallbackUrl = SITE_URL + "/";
 
-            if (ref && (ref.includes("vizlab3d.org") || ref.includes("github.io"))) {
-                window.location.href = ref;
+            // Không quay lại trang đặt lại mật khẩu hoặc trang đăng nhập,
+            // tránh lỗi đăng nhập xong lại nhảy về form nhập mật khẩu mới.
+            const isUnsafeReturn =
+                ref.includes("reset-password.html") ||
+                ref.includes("login.html") ||
+                ref.includes("type=recovery") ||
+                ref.includes("access_token=") ||
+                ref.includes("refresh_token=");
+
+            if (ref && !isUnsafeReturn && (ref.includes("vizlab3d.org") || ref.includes("github.io"))) {
+                window.location.replace(ref);
             } else {
-                window.location.href = SITE_URL + "/";
+                window.location.replace(fallbackUrl);
             }
         }
 
@@ -342,6 +352,14 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadRememberedEmail();
             setAuthMode("login");
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("password_updated") === "1") {
+                showMessage("Mật khẩu đã được cập nhật. Bạn có thể đăng nhập bằng mật khẩu mới.", "success");
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
         });
 
         document.getElementById('password').addEventListener('keypress', function (e) {
