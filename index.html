@@ -960,6 +960,126 @@
             }
         }
 
+        /* Membership modal v2: duration tabs + Plus/Pro cards */
+        @media (max-width: 767px) {
+            #membership-plans-view .membership-duration-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+            #membership-plans-view .membership-duration-btn {
+                min-height: 62px !important;
+                padding: 10px 8px !important;
+                border-radius: 18px !important;
+            }
+            #membership-plans-view #membership-card-plus,
+            #membership-plans-view #membership-card-pro {
+                border-radius: 24px !important;
+                padding: 18px !important;
+            }
+            #membership-plus-price,
+            #membership-pro-price {
+                font-size: 42px !important;
+            }
+        }
+
+
+        /* Membership duration tabs: compact version, keep previous design */
+        #membership-plans-view .membership-duration-grid {
+            max-width: 700px !important;
+            gap: 6px !important;
+            padding: 6px !important;
+            border-radius: 22px !important;
+        }
+        #membership-plans-view .membership-duration-btn {
+            min-height: 56px !important;
+            padding: 8px 10px !important;
+            border-radius: 16px !important;
+        }
+        #membership-plans-view .membership-duration-btn span:first-of-type {
+            font-size: 13px !important;
+            line-height: 1.15 !important;
+        }
+        #membership-plans-view .membership-duration-btn span:nth-of-type(2) {
+            font-size: 10px !important;
+            margin-top: 3px !important;
+        }
+        #membership-plans-view .membership-duration-btn .absolute {
+            top: 4px !important;
+            right: 6px !important;
+            font-size: 8px !important;
+            padding: 1px 6px !important;
+        }
+        @media (min-width: 768px) {
+            #membership-plans-view .membership-duration-btn {
+                min-height: 58px !important;
+                padding: 9px 12px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            #membership-plans-view .membership-duration-grid {
+                max-width: 100% !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 5px !important;
+                padding: 5px !important;
+            }
+            #membership-plans-view .membership-duration-btn {
+                min-height: 50px !important;
+                padding: 7px 4px !important;
+                border-radius: 14px !important;
+            }
+            #membership-plans-view .membership-duration-btn span:first-of-type {
+                font-size: 11px !important;
+            }
+            #membership-plans-view .membership-duration-btn span:nth-of-type(2) {
+                display: none !important;
+            }
+            #membership-plans-view .membership-duration-btn .absolute {
+                display: none !important;
+            }
+        }
+
+
+        /* Fix: đồng bộ size chữ các mốc thời hạn trong gói hội viên */
+        #membership-plans-view .membership-duration-btn > span:first-of-type {
+            font-size: 13px !important;
+            line-height: 1.15 !important;
+            letter-spacing: -0.01em !important;
+            white-space: nowrap !important;
+        }
+        @media (min-width: 768px) {
+            #membership-plans-view .membership-duration-btn > span:first-of-type {
+                font-size: 13px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            #membership-plans-view .membership-duration-btn > span:first-of-type {
+                font-size: 11px !important;
+            }
+        }
+
+
+        /* Fix mạnh: đồng bộ size chữ 1 Tháng / 3 Tháng / 6 Tháng / 1 Năm */
+        #membership-duration-1month > span:nth-of-type(1),
+        #membership-duration-3months > span:nth-of-type(1),
+        #membership-duration-6months > span:nth-of-type(2),
+        #membership-duration-1year > span:nth-of-type(2) {
+            font-size: 13px !important;
+            line-height: 1.15 !important;
+            letter-spacing: -0.01em !important;
+            white-space: nowrap !important;
+            font-weight: 900 !important;
+        }
+
+        @media (max-width: 767px) {
+            #membership-duration-1month > span:nth-of-type(1),
+            #membership-duration-3months > span:nth-of-type(1),
+            #membership-duration-6months > span:nth-of-type(2),
+            #membership-duration-1year > span:nth-of-type(2) {
+                font-size: 11px !important;
+                line-height: 1.15 !important;
+            }
+        }
+
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
@@ -1005,17 +1125,13 @@
             </button>
         </div>
 
-        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex flex-col items-center gap-2">
+        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex flex-col items-center gap-1">
             <button id="membership-sidebar-action" type="button" onclick="handleMembershipStatusClick(event)" class="relative flex items-center h-10 w-10 group-hover:w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black rounded-xl shadow-[0_0_15px_rgba(226,232,240,0.4)] hover:shadow-[0_0_25px_rgba(226,232,240,0.7)] transition-all duration-300 overflow-hidden">
                 <div class="w-10 h-10 shrink-0 flex items-center justify-center">
                     <i data-membership-action-icon class="fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]"></i>
                 </div>
                 <span data-membership-action-text class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap tracking-tight text-sm pl-1">Nâng Cấp Hội Viên</span>
             </button>
-            <div id="membership-status-mini" class="hidden group-hover:block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left">
-                <div data-membership-status-title class="text-[10px] font-black uppercase tracking-widest text-slate-400 truncate">Chưa kích hoạt</div>
-                <div data-membership-status-subtitle class="text-[11px] font-bold text-slate-300 truncate mt-0.5">Nâng cấp để mở khóa</div>
-            </div>
         </div>
     </aside>
 
@@ -1173,91 +1289,128 @@
     <div id="membership-modal" class="fixed inset-0 z-[145] hidden items-center justify-center p-4 bg-black/75 backdrop-blur-xl">
         <div class="absolute inset-0" onclick="closeMembershipModal()"></div>
         <div class="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-[2rem] border border-white/10 bg-[#020617]/96 shadow-[0_30px_110px_rgba(0,0,0,0.9)]">
-            <div class="sticky top-0 z-10 bg-[#020617]/90 backdrop-blur-2xl border-b border-white/10 px-5 md:px-8 py-5 flex items-center justify-between">
+            <div class="sticky top-0 z-10 bg-[#020617]/92 backdrop-blur-2xl border-b border-white/10 px-5 md:px-8 py-5 flex items-center justify-between">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="h-11 w-11 rounded-2xl bg-white/8 border border-white/10 text-[#4fb9fd] flex items-center justify-center shadow-[0_0_30px_rgba(79,185,253,0.35)] shrink-0">
+                    <div class="h-11 w-11 rounded-2xl bg-white/8 border border-white/10 text-[#4fb9fd] flex items-center justify-center shadow-[0_0_30px_rgba(79,185,253,0.25)] shrink-0">
                         <i class="fas fa-crown text-base"></i>
                     </div>
                     <div class="min-w-0">
                         <h3 class="text-white font-black text-xl md:text-2xl tracking-tight">Nâng cấp Hội Viên VizLab</h3>
-                        <p class="text-slate-400 text-xs md:text-sm font-medium truncate">Chọn gói phù hợp, sau đó thanh toán và gửi thông tin kích hoạt.</p>
+                        <p class="text-slate-400 text-xs md:text-sm font-medium truncate">Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.</p>
                     </div>
                 </div>
                 <button onclick="closeMembershipModal()" class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all shrink-0"><i class="fas fa-times"></i></button>
             </div>
 
-            <!-- View 1: Chọn gói hội viên -->
             <div id="membership-plans-view" class="p-5 md:p-8">
-                <div class="text-center max-w-3xl mx-auto mb-8">
-                    <div class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/25 text-[#4fb9fd] px-3 py-1.5 text-[10px] font-black uppercase tracking-widest mb-4">
-                        <i class="fas fa-crown text-[#4fb9fd]"></i> VizLab Pass All-Access
+                <div class="text-center max-w-4xl mx-auto mb-8">
+                    <div class="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest mb-4">
+                        <i class="fas fa-sparkles text-[#4fb9fd]"></i> Bảng giá hội viên
                     </div>
-                    <h2 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4">Học không giới hạn với <span class="text-[#4fb9fd]">một gói Hội Viên</span></h2>
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">Truy cập kho khóa Hội Viên, lộ trình Master và tài nguyên học tập. Chọn gói phù hợp, bấm thanh toán rồi hoàn tất đăng ký như mua khóa học bình thường.</p>
+                    <h2 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4">Mở khóa hệ sinh thái học tập <span class="text-[#4fb9fd]">VizLab</span></h2>
+                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">Plus phù hợp nếu bạn muốn học toàn bộ thư viện khóa học thường. Pro phù hợp nếu bạn muốn mở toàn bộ hệ thống, bao gồm cả Bệ Phóng Chuyên Nghiệp.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
-                    <div id="membership-plan-1month" class="membership-plan-btn rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-5 md:p-6 transition-all hover:-translate-y-1 hover:bg-white/[0.07] hover:border-[#4fb9fd]/40">
-                        <div class="flex items-center justify-between mb-5">
-                            <span class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center"><i class="fas fa-calendar-day text-sm"></i></span>
-                            <span class="rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black px-3 py-1 uppercase tracking-wider">Linh hoạt</span>
-                        </div>
-                        <h4 class="text-white font-black text-xl mb-1">1 Tháng</h4>
-                        <p class="text-slate-400 text-xs font-semibold mb-5">Phù hợp để trải nghiệm hệ thống.</p>
-                        <div class="mb-5">
-                            <div class="flex items-end gap-1"><span class="text-4xl font-black text-white">149K</span><span class="text-slate-400 text-sm font-bold mb-1">/tháng</span></div>
-                            <div class="text-slate-500 line-through text-sm font-bold mt-1">249.000đ</div>
-                        </div>
-                        <button type="button" onclick="openMembershipPayment('1month')" class="w-full rounded-2xl bg-white/5 border border-white/10 text-white font-black py-3.5 hover:bg-white hover:text-[#020617] transition-all">Thanh toán gói này</button>
-                    </div>
-
-                    <div id="membership-plan-6months" class="membership-plan-btn rounded-[1.6rem] border border-[#4fb9fd]/35 bg-white/[0.055] p-5 md:p-6 transition-all hover:-translate-y-1 shadow-[0_18px_50px_rgba(0,0,0,0.28)] relative overflow-hidden">
-                        <div class="absolute top-0 right-0 rounded-bl-2xl bg-white/10 border-l border-b border-white/10 text-slate-200 text-[10px] font-black px-4 py-1.5 uppercase tracking-wider">Phổ biến</div>
-                        <div class="flex items-center justify-between mb-5 mt-2">
-                            <span class="h-11 w-11 rounded-2xl bg-[#4fb9fd]/15 border border-[#4fb9fd]/25 text-[#4fb9fd] flex items-center justify-center"><i class="fas fa-star text-sm"></i></span>
-                            <span class="rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 text-[#4fb9fd] text-[10px] font-black px-3 py-1 uppercase tracking-wider">Tiết kiệm 34%</span>
-                        </div>
-                        <h4 class="text-white font-black text-xl mb-1">6 Tháng</h4>
-                        <p class="text-slate-300 text-xs font-semibold mb-5">Lựa chọn cân bằng, dễ chốt nhất.</p>
-                        <div class="mb-5">
-                            <div class="flex items-end gap-1"><span class="text-4xl font-black text-white">98K</span><span class="text-slate-400 text-sm font-bold mb-1">/tháng</span></div>
-                            <div class="text-slate-400 text-sm font-bold mt-1">590.000đ / 6 tháng</div>
-                        </div>
-                        <button type="button" onclick="openMembershipPayment('6months')" class="w-full rounded-2xl bg-[#4fb9fd] text-[#020617] font-black py-3.5 shadow-[0_0_22px_rgba(79,185,253,0.20)] hover:bg-white hover:-translate-y-0.5 transition-all">Thanh toán gói này</button>
-                    </div>
-
-                    <div id="membership-plan-1year" class="membership-plan-btn rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-5 md:p-6 transition-all hover:-translate-y-1 hover:bg-white/[0.07] hover:border-[#4fb9fd]/35">
-                        <div class="flex items-center justify-between mb-5">
-                            <span class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center"><i class="fas fa-crown text-sm"></i></span>
-                            <span class="rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black px-3 py-1 uppercase tracking-wider">Tiết kiệm 50%</span>
-                        </div>
-                        <h4 class="text-white font-black text-xl mb-1">1 Năm</h4>
-                        <p class="text-slate-400 text-xs font-semibold mb-5">Tối ưu nhất cho học dài hạn.</p>
-                        <div class="mb-5">
-                            <div class="flex items-end gap-1"><span class="text-4xl font-black text-white">74K</span><span class="text-slate-400 text-sm font-bold mb-1">/tháng</span></div>
-                            <div class="text-slate-400 text-sm font-bold mt-1">890.000đ / 12 tháng</div>
-                        </div>
-                        <button type="button" onclick="openMembershipPayment('1year')" class="w-full rounded-2xl bg-white/5 border border-white/10 text-white font-black py-3.5 hover:bg-white hover:text-[#020617] transition-all">Thanh toán gói này</button>
+                <div class="flex justify-center mb-6">
+                    <div class="membership-duration-grid inline-grid grid-cols-2 md:grid-cols-4 gap-2 rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.26)] w-full max-w-3xl">
+                        <button id="membership-duration-1month" type="button" onclick="selectMembershipDuration('1month')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all">
+                            <span class="block text-white font-black text-sm md:text-base">1 Tháng</span>
+                            <span class="block text-slate-500 text-[11px] font-semibold mt-1">Linh hoạt</span>
+                        </button>
+                        <button id="membership-duration-3months" type="button" onclick="selectMembershipDuration('3months')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all">
+                            <span class="block text-white font-black text-sm md:text-base">3 Tháng</span>
+                            <span class="block text-slate-500 text-[11px] font-semibold mt-1">Học mục tiêu</span>
+                        </button>
+                        <button id="membership-duration-6months" type="button" onclick="selectMembershipDuration('6months')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all relative overflow-hidden">
+                            <span class="absolute top-1.5 right-2 rounded-full bg-[#4fb9fd] text-[#020617] text-[9px] font-black px-2 py-0.5 uppercase tracking-widest">Phổ biến</span>
+                            <span class="block text-white font-black text-sm md:text-base">6 Tháng</span>
+                            <span class="block text-slate-500 text-[11px] font-semibold mt-1">Cân bằng tốt</span>
+                        </button>
+                        <button id="membership-duration-1year" type="button" onclick="selectMembershipDuration('1year')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all relative overflow-hidden">
+                            <span class="absolute top-1.5 right-2 rounded-full bg-violet-500 text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-widest">Tiết kiệm</span>
+                            <span class="block text-white font-black text-sm md:text-base">1 Năm</span>
+                            <span class="block text-slate-500 text-[11px] font-semibold mt-1">Lợi nhất</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 md:p-6">
-                    <div class="flex items-center gap-3 mb-5">
-                        <span class="h-9 w-9 rounded-2xl bg-[#4fb9fd]/10 text-[#4fb9fd] flex items-center justify-center"><i class="fas fa-check-circle"></i></span>
-                        <h4 class="text-white font-black text-lg">Quyền lợi Hội Viên</h4>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+                    <div id="membership-card-plus" class="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 md:p-7 shadow-[0_18px_60px_rgba(0,0,0,0.24)]">
+                        <div class="flex items-start justify-between gap-4 mb-6">
+                            <div>
+                                <div class="text-[#7fb9ff] font-black text-lg md:text-xl mb-1">VizLab Plus</div>
+                                <p class="text-slate-400 text-sm font-semibold">Học toàn bộ thư viện khóa học thường</p>
+                            </div>
+                            <div class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center shrink-0"><i class="fas fa-book-open text-sm"></i></div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-end gap-2 mb-2">
+                                <span class="text-slate-400 text-base font-bold">đ</span>
+                                <span id="membership-plus-price" class="text-white font-black text-5xl tracking-tight leading-none">449K</span>
+                                <span class="text-slate-500 text-base font-semibold mb-1">/ gói</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span id="membership-plus-monthly" class="text-[#4fb9fd] text-sm font-black">~75K/tháng</span>
+                                <span id="membership-plus-badge" class="hidden rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#4fb9fd]"></span>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="openMembershipPaymentByTier('plus')" class="w-full rounded-[1.25rem] bg-white/8 border border-white/10 text-white font-black py-4 hover:bg-white/12 transition-all mb-6">Chọn gói Plus</button>
+
+                        <div class="space-y-3 text-sm text-slate-300">
+                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Bao gồm</div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Truy cập toàn bộ khóa học trong <strong class="text-white">Vũ Trụ Sáng Tạo</strong></span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Học không giới hạn trong thời hạn gói</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Phụ đề, tài nguyên, file đính kèm nếu khóa hỗ trợ</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Cập nhật các khóa học thường mới</span></div>
+                            <div class="flex gap-3 text-slate-500"><i class="fas fa-minus mt-1 text-xs"></i><span>Không bao gồm <strong>Bệ Phóng Chuyên Nghiệp</strong></span></div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Truy cập toàn bộ các khóa Hội Viên từ cơ bản đến nâng cao.</div>
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Học không giới hạn bất cứ lúc nào, trên mọi thiết bị.</div>
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Được tham gia lộ trình Master chuyên sâu độc quyền.</div>
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Tải tài liệu, file project, 3D models nếu khóa hỗ trợ.</div>
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Quà tặng kèm: phần mềm, Add-ons và Ebook học tập.</div>
-                        <div class="flex items-start gap-3 text-sm text-slate-300"><span class="h-6 w-6 rounded-full bg-white/5 border border-white/10 text-[#4fb9fd] flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-check text-[10px]"></i></span>Cập nhật thêm module mới theo hệ thống VizLab.</div>
+
+                    <div id="membership-card-pro" class="rounded-[2rem] border border-[#4fb9fd]/30 bg-[linear-gradient(180deg,rgba(79,185,253,0.10),rgba(255,255,255,0.03))] p-6 md:p-7 shadow-[0_24px_70px_rgba(79,185,253,0.10)] relative overflow-hidden">
+                        <div class="absolute top-4 right-4 rounded-full bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1 uppercase tracking-widest">Khuyên dùng</div>
+                        <div class="flex items-start justify-between gap-4 mb-6 pr-24 md:pr-28">
+                            <div>
+                                <div class="text-[#ff9857] font-black text-lg md:text-xl mb-1">VizLab Pro</div>
+                                <p class="text-slate-300 text-sm font-semibold">Toàn bộ Plus + Bệ Phóng Chuyên Nghiệp</p>
+                            </div>
+                            <div class="h-11 w-11 rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 text-[#4fb9fd] flex items-center justify-center shrink-0"><i class="fas fa-crown text-sm"></i></div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-end gap-2 mb-2">
+                                <span class="text-slate-400 text-base font-bold">đ</span>
+                                <span id="membership-pro-price" class="text-white font-black text-5xl tracking-tight leading-none">590K</span>
+                                <span class="text-slate-500 text-base font-semibold mb-1">/ gói</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span id="membership-pro-monthly" class="text-[#4fb9fd] text-sm font-black">~98K/tháng</span>
+                                <span id="membership-pro-badge" class="hidden rounded-full bg-white/8 border border-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-slate-200"></span>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="openMembershipPaymentByTier('pro')" class="w-full rounded-[1.25rem] bg-[#4fb9fd] text-[#020617] font-black py-4 shadow-[0_0_24px_rgba(79,185,253,0.20)] hover:shadow-[0_0_34px_rgba(79,185,253,0.30)] hover:-translate-y-0.5 transition-all mb-6">Chọn gói Pro</button>
+
+                        <div class="space-y-3 text-sm text-slate-200">
+                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Bao gồm</div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Bao gồm toàn bộ quyền lợi của <strong class="text-white">VizLab Plus</strong></span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa toàn bộ phần <strong class="text-white">Bệ Phóng Chuyên Nghiệp</strong></span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Phù hợp nếu bạn học nghiêm túc, dài hạn</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Ưu tiên cho các combo / lộ trình chuyên sâu khi có áp dụng</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa toàn bộ hệ thống học tập VizLab</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-5 md:p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center md:text-left">
+                        <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-slate-300 text-sm font-semibold"><i class="fas fa-shield-halved text-[#4fb9fd] mr-2"></i>Thanh toán an toàn</div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-slate-300 text-sm font-semibold"><i class="fas fa-bolt text-[#4fb9fd] mr-2"></i>Kích hoạt nhanh sau khi xác nhận</div>
+                        <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-slate-300 text-sm font-semibold"><i class="fas fa-headset text-[#4fb9fd] mr-2"></i>Hỗ trợ qua Zalo / Messenger</div>
                     </div>
                 </div>
             </div>
-
-            <!-- View 2: Thanh toán hội viên -->
             <form id="membership-form" onsubmit="submitMembershipForm(event)" class="hidden grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]" style="display:none;">
                 <div class="p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
                     <button type="button" onclick="backToMembershipPlans()" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-5 transition-all"><i class="fas fa-arrow-left"></i> Quay lại chọn gói</button>
@@ -1273,14 +1426,14 @@
                         <label class="membership-payment-option cursor-pointer rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="banking"><input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectMembershipPaymentMethod('banking')"><div class="flex items-center gap-2.5"><div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-building-columns text-sm"></i></div><div><div class="text-white font-black text-sm">Banking</div><div class="text-slate-500 text-[10px] font-semibold">Ngân hàng</div></div></div></label>
                     </div>
                     <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 cursor-pointer hover:bg-white/10 transition-all mb-5"><input id="membership-payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-[#4fb9fd]"><span class="text-sm text-slate-300 leading-relaxed">Tôi xác nhận đã thanh toán đúng số tiền và ghi nội dung chuyển khoản là họ tên học viên ở trên.</span></label>
-                    <input type="hidden" name="_subject" value="Đăng ký Hội Viên VizLab mới"><input type="hidden" name="loai_don" value="Đăng ký Hội Viên"><input type="hidden" id="membership-hidden-plan" name="goi_hoi_vien" value="6 Tháng"><input type="hidden" id="membership-hidden-price" name="so_tien" value="590.000đ"><input type="hidden" id="membership-hidden-user" name="tai_khoan_dang_nhap" value=""><input type="hidden" id="membership-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="Tên học viên"><input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
+                    <input type="hidden" name="_subject" value="Đăng ký Hội Viên VizLab mới"><input type="hidden" name="loai_don" value="Đăng ký Hội Viên"><input type="hidden" id="membership-hidden-plan" name="goi_hoi_vien" value="VizLab Pro 6 tháng"><input type="hidden" id="membership-hidden-plan-id" name="ma_goi_hoi_vien" value="pro_6months"><input type="hidden" id="membership-hidden-price" name="so_tien" value="590.000đ"><input type="hidden" id="membership-hidden-user" name="tai_khoan_dang_nhap" value=""><input type="hidden" id="membership-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="Tên học viên"><input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
                     <button id="membership-submit-btn" type="submit" class="w-full bg-[#4fb9fd] text-[#020617] font-black py-4 rounded-2xl shadow-[0_0_24px_rgba(79,185,253,0.22)] hover:shadow-[0_0_34px_rgba(79,185,253,0.32)] hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"><i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên</button>
                     <div id="membership-message" class="hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed"></div>
                 </div>
                 <div class="p-5 md:p-8 bg-white/[0.025]">
                     <div class="flex items-center gap-2 mb-5"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-receipt"></i></span><h4 class="text-white font-black text-lg">Thanh toán Hội Viên</h4></div>
                     <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-5">
-                        <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Gói đăng ký</span><span id="membership-summary-plan" class="font-bold text-slate-200">6 Tháng</span></div>
+                        <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Gói đăng ký</span><span id="membership-summary-plan" class="font-bold text-slate-200">VizLab Pro 6 tháng</span></div>
                         <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Số tiền</span><span id="membership-summary-price" class="font-black text-[#4fb9fd]">590.000đ</span></div>
                         <div class="h-px bg-white/10 my-4"></div>
                         <div class="flex justify-between items-end"><span class="text-white font-black">Tổng thanh toán</span><span id="membership-total-price" class="text-[#4fb9fd] font-black text-3xl tracking-tight">590.000đ</span></div>
@@ -1665,16 +1818,54 @@
             return activeMembership;
         }
 
+        function getMembershipTier() {
+            if (!userIsActiveMember || !userMembership) return null;
+            const plan = String(userMembership.plan || '').toLowerCase();
+            if (plan.startsWith('plus_')) return 'plus';
+            if (plan.startsWith('pro_')) return 'pro';
+            // Tương thích gói cũ: 1month / 6months / 1year trước đây được xem như Pro
+            if (['1month', '3months', '6months', '1year', 'pro_month', 'pro_3months', 'pro_6months', 'pro_year'].includes(plan)) return 'pro';
+            return 'pro';
+        }
+
+        function isSpecialRoadmapCourse(course) {
+            if (!course) return false;
+            return Boolean(
+                course.isFeaturedCombo ||
+                (course.id && String(course.id).startsWith('roadmap-')) ||
+                SPECIAL_ROADMAPS_DATA.some(item => item.id === course.id)
+            );
+        }
+
         function userCanAccessCourse(course) {
             if (!course) return false;
             const isSingleCourseOwned = userOwnsCourse(course.id);
+            if (isSingleCourseOwned) return true;
+            if (!userIsActiveMember || !userMembership) return false;
+
+            const tier = getMembershipTier();
             const isMembershipCourse = course.type === 'member' || course.price === 0 || course.type === 'free';
-            return isSingleCourseOwned || (userIsActiveMember && isMembershipCourse);
+            const isSpecial = isSpecialRoadmapCourse(course);
+
+            if (tier === 'pro') {
+                return isMembershipCourse || isSpecial;
+            }
+
+            if (tier === 'plus') {
+                return isMembershipCourse && !isSpecial;
+            }
+
+            return false;
         }
 
         function formatMembershipPlan(plan) {
-            const map = { pro_month: 'Pro 1 tháng', pro_6months: 'Pro 6 tháng', pro_year: 'Pro 1 năm', '1month': 'Pro 1 tháng', '6months': 'Pro 6 tháng', '1year': 'Pro 1 năm' };
-            return map[plan] || plan || 'Hội viên Pro';
+            const map = {
+                plus_1month: 'Plus 1 tháng', plus_3months: 'Plus 3 tháng', plus_6months: 'Plus 6 tháng', plus_1year: 'Plus 1 năm',
+                pro_1month: 'Pro 1 tháng', pro_3months: 'Pro 3 tháng', pro_6months: 'Pro 6 tháng', pro_1year: 'Pro 1 năm',
+                pro_month: 'Pro 1 tháng', pro_3months: 'Pro 3 tháng', pro_year: 'Pro 1 năm',
+                '1month': 'Pro 1 tháng', '3months': 'Pro 3 tháng', '6months': 'Pro 6 tháng', '1year': 'Pro 1 năm'
+            };
+            return map[plan] || plan || 'Hội viên';
         }
 
         function formatDateVN(dateString) {
@@ -1702,7 +1893,7 @@
             }
 
             if (userIsActiveMember && userMembership) {
-                actionText.textContent = 'Hội Viên Pro';
+                actionText.textContent = getMembershipTier() === 'plus' ? 'Hội Viên Plus' : 'Hội Viên Pro';
                 actionBtn.classList.remove('from-slate-200', 'to-slate-400');
                 actionBtn.classList.add('from-emerald-300', 'to-slate-200');
                 if (actionIcon) actionIcon.className = 'fas fa-badge-check text-sm';
@@ -1723,7 +1914,7 @@
         function handleMembershipStatusClick(event) {
             if (event) event.stopPropagation();
             if (userIsActiveMember && userMembership) {
-                alert(`Hội viên Pro đang hoạt động\nGói: ${formatMembershipPlan(userMembership.plan)}\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
+                alert(`${formatMembershipPlan(userMembership.plan)} đang hoạt động\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
                 return;
             }
             openMembershipModal();
@@ -1731,7 +1922,7 @@
 
         function getFilterDisplayName(chip) {
             if (!chip) return '';
-            if (chip.id === 'member') return userIsActiveMember ? 'Khóa Hội Viên Pro' : 'Mở khóa Hội Viên';
+            if (chip.id === 'member') return userIsActiveMember ? (getMembershipTier() === 'plus' ? 'Khóa Hội Viên Plus' : 'Khóa Hội Viên Pro') : 'Mở khóa Hội Viên';
             return chip.name;
         }
 
@@ -2114,7 +2305,11 @@
 
                 button.onclick = () => {
                     currentSelectedFilterChip = chip.id;
+                    if (chip.id === 'owned' || chip.id === 'favorite') {
+                        currentSelectedCategory = 'all';
+                    }
                     renderFilterChips();
+                    renderSidebarCategories();
                     executeSearchAndFilter();
                     scrollToLibrary();
                 };
@@ -2548,6 +2743,33 @@
             allBtn.innerHTML = `<div class="active-bar absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-300 ${isAllActive ? 'h-1/2 bg-slate-200 shadow-[0_0_10px_rgba(226,232,240,0.5)]' : 'h-0 bg-slate-200 group-hover/btn:h-1.5 group-hover/btn:bg-slate-500'}"></div><div class="w-5 flex justify-center shrink-0"><i class="fas fa-border-all text-sm transition-colors ${isAllActive ? 'text-slate-200' : 'text-slate-500 group-hover/btn:text-slate-300'}"></i></div><span class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wide text-sm font-semibold">Tất cả chủ đề</span>`;
             container.appendChild(allBtn);
 
+            const accountLabel = document.createElement('span');
+            accountLabel.className = "text-[9px] uppercase font-black text-slate-600 tracking-widest pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0";
+            accountLabel.innerText = "Tài khoản";
+            container.appendChild(accountLabel);
+
+            const accountItems = [
+                { id: 'owned', name: 'Khóa học của tôi', icon: 'fas fa-graduation-cap' },
+                { id: 'favorite', name: 'Khóa học yêu thích', icon: 'fas fa-heart' }
+            ];
+
+            accountItems.forEach(item => {
+                const isActive = currentSelectedFilterChip === item.id;
+                const btn = document.createElement('button');
+                btn.id = `btn-account-${item.id}`;
+                btn.className = `category-btn relative flex items-center w-full py-2.5 pl-[21px] pr-3 transition-all overflow-hidden whitespace-nowrap group/btn ${isActive ? 'text-white font-bold' : 'text-slate-500 hover:text-white'}`;
+                btn.onclick = () => {
+                    currentSelectedCategory = 'all';
+                    currentSelectedFilterChip = item.id;
+                    renderSidebarCategories();
+                    renderFilterChips();
+                    executeSearchAndFilter();
+                    document.getElementById('course-library').scrollIntoView({ behavior: 'smooth' });
+                };
+                btn.innerHTML = `<div class="active-bar absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-300 ${isActive ? 'h-1/2 bg-[#4fb9fd] shadow-[0_0_10px_rgba(79,185,253,0.45)]' : 'h-0 bg-slate-200 group-hover/btn:h-1.5 group-hover/btn:bg-slate-500'}"></div><div class="w-5 flex justify-center shrink-0"><i class="${item.icon} text-sm transition-colors ${isActive ? 'text-[#4fb9fd]' : 'text-slate-500 group-hover/btn:text-slate-300'}"></i></div><span class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wide text-sm font-semibold">${item.name}</span>`;
+                container.appendChild(btn);
+            });
+
             const groups = {};
             sources.forEach(src => { if(!groups[src.group]) groups[src.group] = []; groups[src.group].push(src); });
 
@@ -2569,6 +2791,10 @@
 
         function filterCategory(categoryId) {
             currentSelectedCategory = categoryId;
+            if (currentSelectedFilterChip === 'owned' || currentSelectedFilterChip === 'favorite') {
+                currentSelectedFilterChip = 'all';
+                renderFilterChips();
+            }
             renderSidebarCategories();
             const srcObj = sources.find(s => s.id === categoryId);
             document.getElementById('library-title').innerText = srcObj ? `Vũ Trụ Sáng Tạo: ${srcObj.name}` : "Vũ Trụ Sáng Tạo";
@@ -2907,21 +3133,102 @@
         // ----------------------------------------------------
 
         const MEMBERSHIP_PRICING = {
-            '1month': { name: '1 Tháng', monthlyDisplay: '149K', oldMonthlyDisplay: '249.000đ', billingText: 'Thanh toán trọn gói 149.000đ cho 1 tháng', priceRaw: '149.000đ', discount: 'Giảm 40%' },
-            '6months': { name: '6 Tháng', monthlyDisplay: '98K', oldMonthlyDisplay: '149.000đ', billingText: 'Thanh toán trọn gói 590.000đ cho 6 tháng', priceRaw: '590.000đ', discount: 'Tiết kiệm 34%' },
-            '1year': { name: '1 Năm', monthlyDisplay: '74K', oldMonthlyDisplay: '149.000đ', billingText: 'Thanh toán trọn gói 890.000đ cho 12 tháng', priceRaw: '890.000đ', discount: 'Tiết kiệm 50%' }
+            'plus_1month': { tier: 'plus', name: 'VizLab Plus 1 tháng', shortName: 'Plus 1 tháng', priceRaw: '99.000đ', monthlyDisplay: '99K', monthlyText: '99K/tháng' },
+            'plus_3months': { tier: 'plus', name: 'VizLab Plus 3 tháng', shortName: 'Plus 3 tháng', priceRaw: '249.000đ', monthlyDisplay: '249K', monthlyText: '~83K/tháng' },
+            'plus_6months': { tier: 'plus', name: 'VizLab Plus 6 tháng', shortName: 'Plus 6 tháng', priceRaw: '449.000đ', monthlyDisplay: '449K', monthlyText: '~75K/tháng' },
+            'plus_1year': { tier: 'plus', name: 'VizLab Plus 1 năm', shortName: 'Plus 1 năm', priceRaw: '690.000đ', monthlyDisplay: '690K', monthlyText: '~58K/tháng' },
+            'pro_1month': { tier: 'pro', name: 'VizLab Pro 1 tháng', shortName: 'Pro 1 tháng', priceRaw: '149.000đ', monthlyDisplay: '149K', monthlyText: '149K/tháng' },
+            'pro_3months': { tier: 'pro', name: 'VizLab Pro 3 tháng', shortName: 'Pro 3 tháng', priceRaw: '349.000đ', monthlyDisplay: '349K', monthlyText: '~116K/tháng' },
+            'pro_6months': { tier: 'pro', name: 'VizLab Pro 6 tháng', shortName: 'Pro 6 tháng', priceRaw: '590.000đ', monthlyDisplay: '590K', monthlyText: '~98K/tháng' },
+            'pro_1year': { tier: 'pro', name: 'VizLab Pro 1 năm', shortName: 'Pro 1 năm', priceRaw: '890.000đ', monthlyDisplay: '890K', monthlyText: '~74K/tháng' },
+            '1month': { tier: 'pro', name: 'VizLab Pro 1 tháng', shortName: 'Pro 1 tháng', priceRaw: '149.000đ', monthlyDisplay: '149K', monthlyText: '149K/tháng' },
+            '6months': { tier: 'pro', name: 'VizLab Pro 6 tháng', shortName: 'Pro 6 tháng', priceRaw: '590.000đ', monthlyDisplay: '590K', monthlyText: '~98K/tháng' },
+            '1year': { tier: 'pro', name: 'VizLab Pro 1 năm', shortName: 'Pro 1 năm', priceRaw: '890.000đ', monthlyDisplay: '890K', monthlyText: '~74K/tháng' }
         };
         const MEMBERSHIP_PAYMENT_QR = { momo: { image: 'https://iili.io/f9UTZhv.jpg', title: 'Quét mã MoMo để thanh toán' }, banking: { image: 'https://iili.io/f9UTbBp.jpg', title: 'Quét mã Banking để thanh toán' } };
-        let currentMembershipPlanId = '6months';
+        const MEMBERSHIP_DURATION_META = {
+            '1month': { plusBadge: '', proBadge: '', label: '1 tháng' },
+            '3months': { plusBadge: '', proBadge: '', label: '3 tháng' },
+            '6months': { plusBadge: 'Tiết kiệm tốt', proBadge: 'Phổ biến', label: '6 tháng' },
+            '1year': { plusBadge: 'Tiết kiệm nhất', proBadge: 'Tiết kiệm nhất', label: '1 năm' }
+        };
+        let currentMembershipPlanId = 'pro_6months';
+        let currentMembershipDuration = '6months';
+
         function selectMembershipPlan(planId) {
             currentMembershipPlanId = planId;
-            const plan = MEMBERSHIP_PRICING[planId] || MEMBERSHIP_PRICING['6months'];
-            document.querySelectorAll('.membership-plan-btn').forEach(btn => { btn.classList.remove('border-[#4fb9fd]/60', 'bg-[#4fb9fd]/10', 'shadow-[0_0_24px_rgba(79,185,253,0.16)]'); btn.classList.add('border-white/10', 'bg-white/[0.04]'); });
-            const activeBtn = document.getElementById(`membership-plan-${planId}`);
-            if (activeBtn) { activeBtn.classList.remove('border-white/10', 'bg-white/[0.04]'); activeBtn.classList.add('border-[#4fb9fd]/60', 'bg-[#4fb9fd]/10', 'shadow-[0_0_24px_rgba(79,185,253,0.16)]'); }
-            const ids = { 'membership-main-price': plan.monthlyDisplay, 'membership-old-price': plan.oldMonthlyDisplay, 'membership-billing-text': plan.billingText, 'membership-discount': plan.discount, 'membership-summary-plan': plan.name, 'membership-summary-price': plan.priceRaw, 'membership-total-price': plan.priceRaw, 'membership-hidden-plan': plan.name, 'membership-hidden-price': plan.priceRaw };
-            Object.entries(ids).forEach(([id, value]) => { const el = document.getElementById(id); if (!el) return; if (el.tagName === 'INPUT') el.value = value; else el.textContent = value; });
+            const plan = MEMBERSHIP_PRICING[planId] || MEMBERSHIP_PRICING['pro_6months'];
+            const ids = {
+                'membership-summary-plan': plan.name,
+                'membership-summary-price': plan.priceRaw,
+                'membership-total-price': plan.priceRaw,
+                'membership-hidden-plan': plan.name,
+                'membership-hidden-plan-id': planId,
+                'membership-hidden-price': plan.priceRaw
+            };
+            Object.entries(ids).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.tagName === 'INPUT') el.value = value;
+                else el.textContent = value;
+            });
         }
+
+        function selectMembershipDuration(duration) {
+            currentMembershipDuration = duration;
+            document.querySelectorAll('.membership-duration-btn').forEach(btn => {
+                const subtitle = btn.querySelectorAll('span')[1];
+                btn.classList.remove('bg-[#4fb9fd]', 'shadow-[0_0_30px_rgba(79,185,253,0.22)]');
+                btn.classList.add('bg-transparent');
+                if (subtitle) {
+                    subtitle.classList.remove('text-[#03233b]/70');
+                    subtitle.classList.add('text-slate-500');
+                }
+            });
+            const activeBtn = document.getElementById(`membership-duration-${duration}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-[#4fb9fd]', 'shadow-[0_0_30px_rgba(79,185,253,0.22)]');
+                activeBtn.classList.remove('bg-transparent');
+                const subtitle = activeBtn.querySelectorAll('span')[1];
+                if (subtitle) {
+                    subtitle.classList.remove('text-slate-500');
+                    subtitle.classList.add('text-[#03233b]/70');
+                }
+            }
+            updateMembershipPricingCards();
+        }
+
+        function updateMembershipPricingCards() {
+            const plusPlan = MEMBERSHIP_PRICING[`plus_${currentMembershipDuration}`] || MEMBERSHIP_PRICING['plus_6months'];
+            const proPlan = MEMBERSHIP_PRICING[`pro_${currentMembershipDuration}`] || MEMBERSHIP_PRICING['pro_6months'];
+            const meta = MEMBERSHIP_DURATION_META[currentMembershipDuration] || MEMBERSHIP_DURATION_META['6months'];
+
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+            setText('membership-plus-price', plusPlan.monthlyDisplay);
+            setText('membership-plus-monthly', plusPlan.monthlyText);
+            setText('membership-pro-price', proPlan.monthlyDisplay);
+            setText('membership-pro-monthly', proPlan.monthlyText);
+
+            const plusBadge = document.getElementById('membership-plus-badge');
+            const proBadge = document.getElementById('membership-pro-badge');
+            if (plusBadge) {
+                plusBadge.textContent = meta.plusBadge;
+                plusBadge.classList.toggle('hidden', !meta.plusBadge);
+            }
+            if (proBadge) {
+                proBadge.textContent = meta.proBadge;
+                proBadge.classList.toggle('hidden', !meta.proBadge);
+            }
+        }
+
+        function openMembershipPaymentByTier(tier) {
+            const planId = `${tier}_${currentMembershipDuration}`;
+            openMembershipPayment(planId);
+        }
+
         function selectMembershipPaymentMethod(method) {
             const config = MEMBERSHIP_PAYMENT_QR[method] || MEMBERSHIP_PAYMENT_QR.momo;
             const image = document.getElementById('membership-payment-qr-image'); const title = document.getElementById('membership-payment-title');
@@ -2934,7 +3241,7 @@
             if (noteEl) noteEl.textContent = fullName; if (hiddenNote) hiddenNote.value = fullName;
         }
         function openMembershipPayment(planId) {
-            selectMembershipPlan(planId || currentMembershipPlanId || '6months');
+            selectMembershipPlan(planId || currentMembershipPlanId || 'pro_6months');
             const plansView = document.getElementById('membership-plans-view');
             const paymentView = document.getElementById('membership-form');
             const message = document.getElementById('membership-message');
@@ -2959,8 +3266,11 @@
             if (plansView) plansView.classList.remove('hidden');
         }
         function openMembershipModal() {
+            currentMembershipDuration = '6months';
+            currentMembershipPlanId = 'pro_6months';
             if (userIsActiveMember && userMembership) {
-                alert(`Hội viên Pro đang hoạt động\nGói: ${formatMembershipPlan(userMembership.plan)}\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
+                alert(`${formatMembershipPlan(userMembership.plan)} đang hoạt động
+Hết hạn: ${formatDateVN(userMembership.end_date)}`);
                 return;
             }
             const modal = document.getElementById('membership-modal');
@@ -2970,7 +3280,8 @@
             if (form) { form.reset(); form.classList.add('hidden'); form.style.display = 'none'; }
             if (plansView) plansView.classList.remove('hidden');
             if (message) { message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.textContent = ''; }
-            selectMembershipPlan(currentMembershipPlanId || '6months');
+            selectMembershipDuration('6months');
+            selectMembershipPlan('pro_6months');
             if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.classList.add('overflow-hidden'); }
         }
         function closeMembershipModal() { const modal = document.getElementById('membership-modal'); if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.classList.remove('overflow-hidden'); } }
@@ -2978,7 +3289,7 @@
         async function submitMembershipForm(event) {
             event.preventDefault(); const form = event.target; const confirmed = document.getElementById('membership-payment-confirmed'); const submitBtn = document.getElementById('membership-submit-btn'); const hiddenUser = document.getElementById('membership-hidden-user');
             if (!confirmed || !confirmed.checked) { showMembershipMessage('Bạn cần tick xác nhận đã thanh toán trước khi gửi đăng ký hội viên.', 'error'); return; }
-            updateMembershipTransferNote(); selectMembershipPlan(currentMembershipPlanId || '6months'); if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
+            updateMembershipTransferNote(); selectMembershipPlan('pro_6months'); if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
             if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang gửi đăng ký...'; }
             try { const response = await fetch('https://formspree.io/f/xrbavvpy', { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } }); if (!response.ok) throw new Error('Formspree error'); showMembershipMessage('Đăng ký hội viên thành công. Bên mình sẽ kiểm tra giao dịch và kích hoạt tài khoản theo email bạn cung cấp.', 'success'); if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký'; }
             catch (error) { console.error('Lỗi gửi đăng ký hội viên:', error); showMembershipMessage('Chưa gửi được đăng ký. Bạn kiểm tra mạng rồi thử lại hoặc liên hệ Zalo/Messenger để được hỗ trợ.', 'error'); if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; } }
