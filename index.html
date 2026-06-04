@@ -269,7 +269,8 @@
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
                 border-radius: 16px !important;
-                font-size: 13px !important;
+                font-size: 16px !important;
+                line-height: 44px !important;
             }
             #top-library-toolbar button[onclick="toggleCart()"] {
                 height: 44px !important;
@@ -1411,7 +1412,10 @@
     </main>
 
     <nav class="md:hidden fixed bottom-0 left-0 w-full h-[72px] glass-panel z-50 border-t border-white/10 flex items-center justify-around px-2 pb-2 pt-1">
-        <a href="#" class="flex flex-col items-center justify-center text-white w-16 gap-1"><i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold uppercase">Trang Chủ</span></a>
+        <a id="mobile-bottom-login-link" href="https://hoc.vizlab3d.org/login.html" class="flex flex-col items-center justify-center text-white w-16 gap-1">
+            <i id="mobile-bottom-login-icon" class="fas fa-user-circle text-xl"></i>
+            <span id="mobile-bottom-login-text" class="text-[9px] font-bold uppercase">Đăng nhập</span>
+        </a>
         <button type="button" onclick="openMobileTopicSheet()" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-layer-group text-xl"></i><span class="text-[9px] font-bold uppercase">Chủ Đề</span></button>
         <button type="button" onclick="toggleMobileSearch()" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-search text-xl"></i><span class="text-[9px] font-bold uppercase">Tìm Kiếm</span></button>
     </nav>
@@ -1636,6 +1640,27 @@
 
             loginLinks.forEach(el => { el.style.display = currentUser ? "none" : "flex"; });
             logoutButtons.forEach(el => { el.style.display = currentUser ? "flex" : "none"; });
+
+            const mobileBottomLoginLink = document.getElementById("mobile-bottom-login-link");
+            const mobileBottomLoginIcon = document.getElementById("mobile-bottom-login-icon");
+            const mobileBottomLoginText = document.getElementById("mobile-bottom-login-text");
+            if (mobileBottomLoginLink && mobileBottomLoginIcon && mobileBottomLoginText) {
+                if (currentUser) {
+                    mobileBottomLoginLink.href = "javascript:void(0)";
+                    mobileBottomLoginLink.onclick = function(event) {
+                        event.preventDefault();
+                        openMobileTopicSheet();
+                    };
+                    mobileBottomLoginIcon.className = "fas fa-user-check text-xl";
+                    mobileBottomLoginText.textContent = "Tài khoản";
+                } else {
+                    mobileBottomLoginLink.href = "https://hoc.vizlab3d.org/login.html";
+                    mobileBottomLoginLink.onclick = null;
+                    mobileBottomLoginIcon.className = "fas fa-user-circle text-xl";
+                    mobileBottomLoginText.textContent = "Đăng nhập";
+                }
+            }
+
             updateMembershipUI();
             renderFilterChips();
             if (typeof renderMobileTopicSheet === "function") renderMobileTopicSheet();
