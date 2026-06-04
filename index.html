@@ -1450,7 +1450,7 @@
                             <div class="flex flex-col gap-3 text-sm">
                                 <a href="#course-library" class="text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Tất cả khóa học</a>
                                 <button onclick="currentSelectedFilterChip='owned'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học của tôi</button>
-                                <button onclick="currentSelectedFilterChip='favorites'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học yêu thích</button>
+                                <button onclick="currentSelectedFilterChip='favorite'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học yêu thích</button>
                                 <button onclick="currentSelectedFilterChip='paid'; renderFilterChips(); executeSearchAndFilter(); document.getElementById('course-library').scrollIntoView({behavior:'smooth'});" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa lẻ</button>
                             </div>
                         </div>
@@ -1516,6 +1516,14 @@
                 <i id="mobile-bottom-login-icon" class="fas fa-user-circle"></i>
                 <span><span id="mobile-bottom-login-text">Đăng nhập</span><small>Vào học và quản lý khóa</small></span>
             </a>
+            <button type="button" onclick="selectMobileFilterFromSideMenu('owned')" class="mobile-side-item">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Khóa học của tôi<small>Khóa đã mua và khóa đã mở</small></span>
+            </button>
+            <button type="button" onclick="selectMobileFilterFromSideMenu('favorite')" class="mobile-side-item">
+                <i class="fas fa-heart"></i>
+                <span>Khóa học yêu thích<small>Danh sách bạn đã lưu</small></span>
+            </button>
             <button type="button" onclick="openMobileTopicFromSideMenu()" class="mobile-side-item">
                 <i class="fas fa-layer-group"></i>
                 <span>Chủ đề<small>Chọn nhóm khóa học</small></span>
@@ -1544,7 +1552,7 @@
             <div class="mobile-topic-grid">
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('all')"><i class="fas fa-compass"></i> Khám phá tất cả</button>
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('owned')"><i class="fas fa-graduation-cap"></i> Khóa học của tôi</button>
-                <button class="mobile-topic-btn" onclick="selectMobileFilter('favorites')"><i class="fas fa-heart"></i> Yêu thích</button>
+                <button class="mobile-topic-btn" onclick="selectMobileFilter('favorite')"><i class="fas fa-heart"></i> Yêu thích</button>
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('member')"><i class="fas fa-crown"></i> Hội viên</button>
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('paid')"><i class="fas fa-briefcase"></i> Khóa lẻ</button>
                 <button class="mobile-topic-btn" onclick="handleMembershipStatusClick(event); closeMobileTopicSheet();"><i class="fas fa-gem"></i> Nâng cấp Pro</button>
@@ -1848,8 +1856,6 @@
 
         const filterTypes = [
             { id: 'all', name: 'Khám phá Tất cả' },
-            { id: 'owned', name: 'Khóa học của tôi' },
-            { id: 'favorite', name: 'Khóa học yêu thích' },
             { id: 'member', name: 'Mở khóa Hội Viên' },
             { id: 'paid', name: 'Sở hữu Khóa Lẻ' },
             { id: 'under200', name: 'Dễ dàng Nhập môn (< 200k)' },
@@ -3048,6 +3054,11 @@
 
         function closeMobileSearch() {
             document.body.classList.remove('mobile-search-open');
+        }
+
+        function selectMobileFilterFromSideMenu(filterId) {
+            closeMobileSideMenu();
+            selectMobileFilter(filterId);
         }
 
         function selectMobileFilter(filterId) {
