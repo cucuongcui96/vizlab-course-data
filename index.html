@@ -237,7 +237,7 @@
             main {
                 height: auto !important;
                 min-height: calc(100dvh - 56px);
-                padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+                padding-bottom: calc(28px + env(safe-area-inset-bottom)) !important;
             }
             main > .relative.z-10.max-w-\[1600px\] {
                 padding-left: 14px !important;
@@ -446,20 +446,107 @@
             #membership-plans-view .grid { gap: 12px !important; }
             .membership-plan-btn { padding: 16px !important; border-radius: 20px !important; }
 
-            nav.md\:hidden {
-                height: calc(64px + env(safe-area-inset-bottom)) !important;
-                padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
-                background: rgba(2, 6, 23, 0.88) !important;
-                backdrop-filter: blur(24px) !important;
-                -webkit-backdrop-filter: blur(24px) !important;
+            .mobile-hamburger-button {
+                position: fixed;
+                right: 12px;
+                top: calc(10px + env(safe-area-inset-top));
+                z-index: 96;
+                width: 44px;
+                height: 44px;
+                border-radius: 16px;
+                background: rgba(2, 6, 23, 0.82);
+                border: 1px solid rgba(255,255,255,0.12);
+                color: #f8fafc;
+                box-shadow: 0 14px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06);
+                backdrop-filter: blur(22px) saturate(140%);
+                -webkit-backdrop-filter: blur(22px) saturate(140%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform .22s ease, background .22s ease, border-color .22s ease;
             }
-            nav.md\:hidden i { font-size: 18px !important; }
-            nav.md\:hidden span { font-size: 8px !important; }
+            .mobile-hamburger-button:active { transform: scale(.94); }
+            .mobile-hamburger-button i { font-size: 18px; }
+            .mobile-side-backdrop {
+                position: fixed;
+                inset: 0;
+                z-index: 130;
+                background: rgba(2, 6, 23, .66);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .24s ease;
+            }
+            .mobile-side-backdrop.is-open { opacity: 1; pointer-events: auto; }
+            .mobile-side-menu {
+                position: fixed;
+                right: 12px;
+                top: calc(64px + env(safe-area-inset-top));
+                bottom: calc(16px + env(safe-area-inset-bottom));
+                z-index: 131;
+                width: min(300px, calc(100vw - 28px));
+                border-radius: 26px;
+                background: rgba(15, 23, 42, .95);
+                border: 1px solid rgba(255,255,255,.10);
+                box-shadow: 0 24px 80px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.06);
+                backdrop-filter: blur(24px) saturate(140%);
+                -webkit-backdrop-filter: blur(24px) saturate(140%);
+                transform: translateX(calc(100% + 24px));
+                transition: transform .30s cubic-bezier(.2,.8,.2,1);
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            .mobile-side-menu.is-open { transform: translateX(0); }
+            .mobile-side-head {
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+            .mobile-side-title { color: #fff; font-weight: 900; letter-spacing: -0.02em; font-size: 15px; }
+            .mobile-side-sub { color: #64748b; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+            .mobile-side-close {
+                width: 38px; height: 38px; border-radius: 14px;
+                background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
+                color: #cbd5e1;
+            }
+            .mobile-side-body { padding: 12px; display: flex; flex-direction: column; gap: 9px; overflow-y: auto; }
+            .mobile-side-item {
+                width: 100%;
+                min-height: 54px;
+                border-radius: 18px;
+                background: rgba(255,255,255,.045);
+                border: 1px solid rgba(255,255,255,.07);
+                color: #e2e8f0;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 13px;
+                font-weight: 900;
+                font-size: 13px;
+                text-align: left;
+                transition: background .2s ease, border-color .2s ease, transform .2s ease;
+            }
+            .mobile-side-item:active { transform: scale(.985); }
+            .mobile-side-item i {
+                width: 34px; height: 34px; border-radius: 13px;
+                display: flex; align-items: center; justify-content: center;
+                background: rgba(255,255,255,.06);
+                color: #cbd5e1;
+                font-size: 14px;
+                flex: 0 0 34px;
+            }
+            .mobile-side-item small { display:block; margin-top:2px; color:#64748b; font-size:10px; font-weight:700; line-height:1.15; }
+            .mobile-side-item.primary { background: rgba(226,232,240,.92); color:#020617; border-color: transparent; }
+            .mobile-side-item.primary i { background: rgba(2,6,23,.08); color:#020617; }
 
             .floating-contact-wrap,
             .fixed.bottom-6.right-6 {
                 right: 12px !important;
-                bottom: calc(82px + env(safe-area-inset-bottom)) !important;
+                bottom: calc(22px + env(safe-area-inset-bottom)) !important;
                 gap: 8px !important;
             }
             .floating-contact-card,
@@ -474,7 +561,7 @@
                 height: 25px !important;
             }
 
-            footer { margin-bottom: 84px !important; border-radius: 24px !important; }
+            footer { margin-bottom: 18px !important; border-radius: 24px !important; }
             footer .p-6 { padding: 20px !important; }
         }
 
@@ -505,7 +592,7 @@
                 position: fixed;
                 left: 10px;
                 right: 10px;
-                bottom: calc(76px + env(safe-area-inset-bottom));
+                bottom: calc(12px + env(safe-area-inset-bottom));
                 max-height: min(74vh, 620px);
                 z-index: 121;
                 transform: translateY(calc(100% + 110px));
@@ -882,7 +969,7 @@
             <img src="https://iili.io/B5sIBtt.png" alt="VizLab" class="h-9 w-9 rounded-xl object-cover shadow-[0_0_18px_rgba(79,185,253,0.22)]">
             <span>Viz<span class="text-orange-500">Lab</span></span>
         </a>
-        <button onclick="toggleCart()" class="text-slate-300 hover:text-white relative" aria-label="Mở giỏ hàng">
+        <button onclick="toggleCart()" class="text-slate-300 hover:text-white relative mr-14" aria-label="Mở giỏ hàng">
             <i class="fas fa-shopping-bag text-xl"></i>
             <span id="cart-badge-mobile" class="absolute -top-1.5 -right-1.5 bg-slate-200 text-[#020617] font-black text-[10px] h-5 min-w-5 px-1.5 rounded-full flex items-center justify-center border border-[#020617] scale-0 transition-transform duration-300">0</span>
         </button>
@@ -1411,14 +1498,34 @@
         </div>
     </main>
 
-    <nav class="md:hidden fixed bottom-0 left-0 w-full h-[72px] glass-panel z-50 border-t border-white/10 flex items-center justify-around px-2 pb-2 pt-1">
-        <a id="mobile-bottom-login-link" href="https://hoc.vizlab3d.org/login.html" class="flex flex-col items-center justify-center text-white w-16 gap-1">
-            <i id="mobile-bottom-login-icon" class="fas fa-user-circle text-xl"></i>
-            <span id="mobile-bottom-login-text" class="text-[9px] font-bold uppercase">Đăng nhập</span>
-        </a>
-        <button type="button" onclick="openMobileTopicSheet()" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-layer-group text-xl"></i><span class="text-[9px] font-bold uppercase">Chủ Đề</span></button>
-        <button type="button" onclick="toggleMobileSearch()" class="flex flex-col items-center justify-center text-slate-400 w-16 gap-1"><i class="fas fa-search text-xl"></i><span class="text-[9px] font-bold uppercase">Tìm Kiếm</span></button>
-    </nav>
+    <button type="button" id="mobile-hamburger-button" class="mobile-hamburger-button md:hidden" onclick="toggleMobileSideMenu()" aria-label="Mở menu nhanh">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="mobile-side-backdrop" class="mobile-side-backdrop md:hidden" onclick="closeMobileSideMenu()"></div>
+    <aside id="mobile-side-menu" class="mobile-side-menu md:hidden" aria-label="Menu nhanh trên mobile">
+        <div class="mobile-side-head">
+            <div>
+                <div class="mobile-side-title">Menu nhanh</div>
+                <div class="mobile-side-sub">VizLab</div>
+            </div>
+            <button type="button" class="mobile-side-close" onclick="closeMobileSideMenu()" aria-label="Đóng menu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-side-body">
+            <a id="mobile-bottom-login-link" href="https://hoc.vizlab3d.org/login.html" class="mobile-side-item primary">
+                <i id="mobile-bottom-login-icon" class="fas fa-user-circle"></i>
+                <span><span id="mobile-bottom-login-text">Đăng nhập</span><small>Vào học và quản lý khóa</small></span>
+            </a>
+            <button type="button" onclick="openMobileTopicFromSideMenu()" class="mobile-side-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Chủ đề<small>Chọn nhóm khóa học</small></span>
+            </button>
+            <button type="button" onclick="toggleMobileSearchFromSideMenu()" class="mobile-side-item">
+                <i class="fas fa-search"></i>
+                <span>Tìm kiếm<small>Mở thanh tìm kiếm nhanh</small></span>
+            </button>
+        </div>
+    </aside>
 
     <div id="mobile-sheet-backdrop" class="mobile-sheet-backdrop md:hidden" onclick="closeMobileTopicSheet()"></div>
     <section id="mobile-topic-sheet" class="mobile-topic-sheet md:hidden" aria-label="Chủ đề và tài khoản">
@@ -1649,14 +1756,15 @@
                     mobileBottomLoginLink.href = "javascript:void(0)";
                     mobileBottomLoginLink.onclick = function(event) {
                         event.preventDefault();
-                        openMobileTopicSheet();
+                        closeMobileSideMenu();
+                        setTimeout(() => openMobileTopicSheet(), 80);
                     };
-                    mobileBottomLoginIcon.className = "fas fa-user-check text-xl";
+                    mobileBottomLoginIcon.className = "fas fa-user-check";
                     mobileBottomLoginText.textContent = "Tài khoản";
                 } else {
                     mobileBottomLoginLink.href = "https://hoc.vizlab3d.org/login.html";
                     mobileBottomLoginLink.onclick = null;
-                    mobileBottomLoginIcon.className = "fas fa-user-circle text-xl";
+                    mobileBottomLoginIcon.className = "fas fa-user-circle";
                     mobileBottomLoginText.textContent = "Đăng nhập";
                 }
             }
@@ -2870,6 +2978,41 @@
             catch (error) { console.error('Lỗi gửi đăng ký hội viên:', error); showMembershipMessage('Chưa gửi được đăng ký. Bạn kiểm tra mạng rồi thử lại hoặc liên hệ Zalo/Messenger để được hỗ trợ.', 'error'); if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; } }
         }
 
+
+        function openMobileSideMenu() {
+            const backdrop = document.getElementById('mobile-side-backdrop');
+            const menu = document.getElementById('mobile-side-menu');
+            if (backdrop) backdrop.classList.add('is-open');
+            if (menu) menu.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSideMenu() {
+            const backdrop = document.getElementById('mobile-side-backdrop');
+            const menu = document.getElementById('mobile-side-menu');
+            if (backdrop) backdrop.classList.remove('is-open');
+            if (menu) menu.classList.remove('is-open');
+            const topicSheet = document.getElementById('mobile-topic-sheet');
+            if (!topicSheet || !topicSheet.classList.contains('is-open')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function toggleMobileSideMenu() {
+            const menu = document.getElementById('mobile-side-menu');
+            if (menu && menu.classList.contains('is-open')) closeMobileSideMenu();
+            else openMobileSideMenu();
+        }
+
+        function openMobileTopicFromSideMenu() {
+            closeMobileSideMenu();
+            setTimeout(() => openMobileTopicSheet(), 80);
+        }
+
+        function toggleMobileSearchFromSideMenu() {
+            closeMobileSideMenu();
+            setTimeout(() => toggleMobileSearch(), 80);
+        }
 
         function openMobileTopicSheet() {
             renderMobileTopicSheet();
