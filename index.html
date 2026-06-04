@@ -1091,8 +1091,117 @@
                 overscroll-behavior: contain;
             }
         }
+
+        /* Checkout 2 bước: thông tin riêng, QR riêng */
+        .checkout-step-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.045);
+            color: #64748b;
+            padding: 6px 10px;
+            font-size: 10px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .checkout-step-pill.is-active {
+            background: rgba(79,185,253,.12);
+            border-color: rgba(79,185,253,.28);
+            color: #7dd3fc;
+            box-shadow: 0 0 22px rgba(79,185,253,.12);
+        }
+        .checkout-step-view {
+            animation: checkoutStepFade .26s ease both;
+        }
+        @keyframes checkoutStepFade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .checkout-qr-frame {
+            animation: checkoutQrFocus 2.4s ease-in-out infinite;
+        }
+        @keyframes checkoutQrFocus {
+            0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 30px 70px rgba(0,0,0,.48), 0 0 0 rgba(79,185,253,0); }
+            50% { transform: translateY(-3px) scale(1.012); box-shadow: 0 0 0 1px rgba(255,255,255,.22), 0 34px 80px rgba(0,0,0,.54), 0 0 42px rgba(79,185,253,.22); }
+        }
+        #checkout-payment-step #payment-qr-image {
+            max-width: none !important;
+            max-height: none !important;
+        }
+        @media (max-width: 767px) {
+            #checkout-modal > .relative {
+                max-height: 100dvh !important;
+                border-radius: 0 !important;
+            }
+            #checkout-form {
+                display: block !important;
+            }
+            #checkout-info-step,
+            #checkout-payment-step {
+                display: block;
+            }
+            #checkout-info-step.hidden,
+            #checkout-payment-step.hidden {
+                display: none !important;
+            }
+            .checkout-step-pill {
+                padding: 6px 8px;
+                font-size: 9px;
+                letter-spacing: .05em;
+            }
+            .checkout-qr-frame {
+                width: min(78vw, 292px) !important;
+                height: min(78vw, 292px) !important;
+            }
+            #checkout-countdown {
+                font-size: 44px !important;
+            }
+            #checkout-transfer-note {
+                font-size: 24px !important;
+            }
+            #checkout-summary-list {
+                max-height: 210px !important;
+            }
+        }
+
+
+        /* Membership checkout 2 bước: thông tin riêng, QR riêng */
+        #membership-payment-step #membership-payment-qr-image {
+            max-width: none !important;
+            max-height: none !important;
+        }
+        @media (max-width: 767px) {
+            #membership-form {
+                display: block !important;
+            }
+            #membership-info-step,
+            #membership-payment-step {
+                display: block;
+            }
+            #membership-info-step.hidden,
+            #membership-payment-step.hidden {
+                display: none !important;
+            }
+            #membership-payment-step .checkout-qr-frame {
+                width: min(78vw, 292px) !important;
+                height: min(78vw, 292px) !important;
+            }
+            #membership-countdown {
+                font-size: 44px !important;
+            }
+            #membership-transfer-note {
+                font-size: 24px !important;
+            }
+        }
+
 </style>
 </head>
+<!-- FIX 2026-06-05: Membership payment is fully two-step: info/payment method first, QR/countdown/transfer note second. -->
 <body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
 
     <header class="md:hidden sticky top-0 z-50 glass-panel border-b border-white/5 h-16 flex items-center justify-between px-6">
@@ -1176,130 +1285,181 @@
     <div id="checkout-modal" class="fixed inset-0 z-[140] hidden items-center justify-center p-3 sm:p-5 bg-[#020617]/80 backdrop-blur-xl">
         <div class="absolute inset-0" onclick="closeCheckoutModal()"></div>
 
-        <div class="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-[1.75rem] border border-white/10 bg-[#070c1a]/98 shadow-[0_28px_90px_rgba(0,0,0,0.75)]">
-            <div class="sticky top-0 z-10 bg-[#070c1a]/95 backdrop-blur-2xl border-b border-white/10 px-5 md:px-7 py-4 flex items-center justify-between">
-                <div>
-                    <h3 class="text-white font-black text-xl md:text-2xl tracking-tight">Thanh toán khóa học</h3>
-                    <p class="text-slate-400 text-xs md:text-sm font-medium mt-1">Điền thông tin, quét mã và gửi yêu cầu kích hoạt.</p>
-
+        <div class="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-[1.75rem] border border-white/10 bg-[#070c1a]/98 shadow-[0_28px_90px_rgba(0,0,0,0.75)]">
+            <div class="sticky top-0 z-20 bg-[#070c1a]/95 backdrop-blur-2xl border-b border-white/10 px-5 md:px-7 py-4 flex items-center justify-between">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span id="checkout-step-pill-1" class="checkout-step-pill is-active">1. Thông tin</span>
+                        <span class="h-px w-8 bg-white/10"></span>
+                        <span id="checkout-step-pill-2" class="checkout-step-pill">2. Quét mã</span>
+                    </div>
+                    <h3 id="checkout-modal-title" class="text-white font-black text-xl md:text-2xl tracking-tight">Thanh toán khóa học</h3>
+                    <p id="checkout-modal-subtitle" class="text-slate-400 text-xs md:text-sm font-medium mt-1">Điền thông tin và chọn phương thức thanh toán trước.</p>
                 </div>
-                <button onclick="closeCheckoutModal()" class="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                <button onclick="closeCheckoutModal()" class="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all shrink-0">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
 
-            <form id="checkout-form" onsubmit="submitCheckoutForm(event)" class="grid grid-cols-1 lg:grid-cols-[1fr_0.85fr] gap-0">
-                <div class="p-5 md:p-7 border-b lg:border-b-0 lg:border-r border-white/10">
-                    <div class="mb-6">
-                        <h4 class="text-white font-black text-base mb-4">Thông tin kích hoạt</h4>
+            <form id="checkout-form" onsubmit="submitCheckoutForm(event)">
+                <!-- BƯỚC 1: CHỈ ĐIỀN THÔNG TIN + CHỌN PHƯƠNG THỨC -->
+                <div id="checkout-info-step" class="checkout-step-view grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-0">
+                    <div class="p-5 md:p-7 border-b lg:border-b-0 lg:border-r border-white/10">
+                        <div class="mb-6">
+                            <div class="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] mb-4">
+                                <i class="fas fa-user-check text-[#4fb9fd]"></i> Bước 1
+                            </div>
+                            <h4 class="text-white font-black text-lg mb-1">Thông tin kích hoạt</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed mb-5">Vui lòng nhập đúng họ tên và email để bên mình kích hoạt khóa học chính xác.</p>
 
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
-                        <input id="checkout-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" class="w-full mb-4 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
+                            <input id="checkout-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" oninput="updateTransferNote()" class="w-full mb-4 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
 
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt khóa học</label>
-                        <input id="checkout-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-2 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
-                        <p class="text-slate-500 text-xs leading-relaxed">Email này dùng để kích hoạt và gửi hướng dẫn vào học.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h4 class="text-white font-black text-base mb-4">Phương thức thanh toán</h4>
-
-                        <div class="grid grid-cols-2 gap-2.5 mb-5">
-                            <label class="payment-option cursor-pointer rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 hover:bg-white/[0.07] hover:border-white/20 transition-all relative overflow-hidden" data-payment-card="momo">
-                                <input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectPaymentMethod('momo')">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="h-8 w-8 rounded-lg bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center shrink-0">
-                                        <i class="fas fa-wallet text-xs"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="text-white font-black text-sm leading-tight">MoMo</div>
-                                        <div class="text-slate-500 text-[10px] font-semibold truncate">Ví điện tử</div>
-                                    </div>
-                                    <i class="payment-check fas fa-check-circle ml-auto text-slate-200 text-sm opacity-0 transition-opacity"></i>
-                                </div>
-                            </label>
-
-                            <label class="payment-option cursor-pointer rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 hover:bg-white/[0.07] hover:border-white/20 transition-all relative overflow-hidden" data-payment-card="banking">
-                                <input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectPaymentMethod('banking')">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="h-8 w-8 rounded-lg bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center shrink-0">
-                                        <i class="fas fa-building-columns text-xs"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="text-white font-black text-sm leading-tight">Banking</div>
-                                        <div class="text-slate-500 text-[10px] font-semibold truncate">Ngân hàng</div>
-                                    </div>
-                                    <i class="payment-check fas fa-check-circle ml-auto text-slate-200 text-sm opacity-0 transition-opacity"></i>
-                                </div>
-                            </label>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt khóa học</label>
+                            <input id="checkout-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-2 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
+                            <p class="text-slate-500 text-xs leading-relaxed">Email này dùng để kích hoạt và gửi hướng dẫn vào học.</p>
                         </div>
 
-                        <div class="rounded-2xl border border-white/10 bg-black/20 p-4 shadow-[0_18px_55px_rgba(0,0,0,0.32)]">
-                            <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                <div class="relative w-40 h-40 rounded-xl overflow-hidden bg-white p-2.5 shrink-0 shadow-[0_18px_42px_rgba(0,0,0,0.38)] ring-1 ring-white/10">
-                                    <img id="payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán" class="w-full h-full object-contain">
-                                </div>
-                                <div class="flex-1 text-center sm:text-left">
-                                    <h5 id="payment-title" class="text-white font-black text-base mb-2">Quét mã MoMo để thanh toán</h5>
-                                    <p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán, tick xác nhận rồi gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt theo email bạn cung cấp.</p>
-                                    <div class="rounded-xl bg-white/[0.04] border border-white/10 p-3 text-xs text-slate-300 leading-relaxed">
-                                        <div class="font-black text-slate-500 uppercase tracking-[0.16em] text-[10px] mb-1">Nội dung chuyển khoản</div>
-                                        <div id="checkout-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div>
+                        <div>
+                            <h4 class="text-white font-black text-base mb-4">Phương thức thanh toán</h4>
+
+                            <div class="grid grid-cols-2 gap-2.5 mb-6">
+                                <label class="payment-option cursor-pointer rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 hover:bg-white/[0.07] hover:border-white/20 transition-all relative overflow-hidden" data-payment-card="momo">
+                                    <input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectPaymentMethod('momo')">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="h-8 w-8 rounded-lg bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center shrink-0">
+                                            <i class="fas fa-wallet text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-white font-black text-sm leading-tight">MoMo</div>
+                                            <div class="text-slate-500 text-[10px] font-semibold truncate">Ví điện tử</div>
+                                        </div>
+                                        <i class="payment-check fas fa-check-circle ml-auto text-slate-200 text-sm opacity-0 transition-opacity"></i>
                                     </div>
-                                    <div id="checkout-countdown-box" class="mt-4 rounded-2xl border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-4 py-3.5 text-center shadow-[0_0_24px_rgba(79,185,253,0.10)] backdrop-blur-md">
-                                        <div class="relative flex items-center justify-center gap-2 whitespace-nowrap">
-                                            <i class="fas fa-clock text-[#4fb9fd] text-xs"></i>
+                                </label>
+
+                                <label class="payment-option cursor-pointer rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 hover:bg-white/[0.07] hover:border-white/20 transition-all relative overflow-hidden" data-payment-card="banking">
+                                    <input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectPaymentMethod('banking')">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="h-8 w-8 rounded-lg bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center shrink-0">
+                                            <i class="fas fa-building-columns text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-white font-black text-sm leading-tight">Banking</div>
+                                            <div class="text-slate-500 text-[10px] font-semibold truncate">Ngân hàng</div>
+                                        </div>
+                                        <i class="payment-check fas fa-check-circle ml-auto text-slate-200 text-sm opacity-0 transition-opacity"></i>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <button id="checkout-next-btn" type="button" onclick="goCheckoutPaymentStep()" class="w-full bg-slate-100 text-[#020617] font-black py-4 rounded-xl shadow-[0_16px_34px_rgba(255,255,255,0.10)] hover:bg-white hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2">
+                                Tiếp tục quét mã
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-5 md:p-7 bg-white/[0.018]">
+                        <h4 class="text-white font-black text-base mb-4">Tóm tắt đơn hàng</h4>
+
+                        <div id="checkout-summary-list" class="space-y-3 mb-5 max-h-[300px] overflow-y-auto pr-1"></div>
+
+                        <div class="rounded-2xl border border-white/10 bg-black/25 p-5">
+                            <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
+                                <span>Số khóa học</span>
+                                <span id="checkout-total-items" class="font-bold text-slate-200">0</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
+                                <span>Tạm tính</span>
+                                <span id="checkout-subtotal" class="font-bold text-slate-200">0đ</span>
+                            </div>
+                            <div class="h-px bg-white/10 my-4"></div>
+                            <div class="flex justify-between items-end gap-4">
+                                <span class="text-white font-black">Tổng thanh toán</span>
+                                <span id="checkout-total" class="text-white font-black text-3xl tracking-tight">0đ</span>
+                            </div>
+                        </div>
+
+                        <div id="checkout-message" class="hidden mt-4 rounded-xl p-4 text-sm font-semibold leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- BƯỚC 2: KHÔNG GIAN RIÊNG CHO QR + ĐẾM NGƯỢC + NỘI DUNG CHUYỂN KHOẢN -->
+                <div id="checkout-payment-step" class="checkout-step-view hidden p-5 md:p-8">
+                    <div class="max-w-4xl mx-auto">
+                        <button type="button" onclick="backToCheckoutInfoStep()" class="mb-5 inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 text-xs font-black transition-all">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại thông tin
+                        </button>
+
+                        <div class="checkout-qr-focus rounded-[2rem] border border-[#4fb9fd]/25 bg-[radial-gradient(circle_at_top,rgba(79,185,253,0.16),rgba(255,255,255,0.035)_42%,rgba(2,6,23,0.35)_100%)] p-5 md:p-8 shadow-[0_26px_90px_rgba(0,0,0,0.48)]">
+                            <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-7 items-center">
+                                <div class="text-center">
+                                    <div class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 text-[#7dd3fc] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] mb-4">
+                                        <i class="fas fa-wallet"></i> <span id="checkout-payment-method-label">MoMo</span>
+                                    </div>
+
+                                    <div class="checkout-qr-frame relative mx-auto w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-[2rem] bg-white p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_30px_70px_rgba(0,0,0,0.48)]">
+                                        <div class="absolute -inset-3 rounded-[2.35rem] border border-[#4fb9fd]/20 pointer-events-none"></div>
+                                        <div class="absolute -inset-6 rounded-[2.8rem] bg-[#4fb9fd]/10 blur-2xl pointer-events-none"></div>
+                                        <img id="payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán" class="relative z-10 w-full h-full object-contain rounded-2xl">
+                                    </div>
+
+                                    <h5 id="payment-title" class="text-white font-black text-xl md:text-2xl mt-6 mb-2">Quét mã MoMo để thanh toán</h5>
+                                    <p class="text-slate-400 text-sm leading-relaxed">Quét mã, thanh toán đúng tổng tiền và ghi đúng nội dung chuyển khoản bên cạnh.</p>
+                                </div>
+
+                                <div>
+                                    <div id="checkout-countdown-box" class="rounded-[1.5rem] border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-5 py-5 text-center shadow-[0_0_30px_rgba(79,185,253,0.12)] backdrop-blur-md mb-4">
+                                        <div class="flex items-center justify-center gap-2 whitespace-nowrap mb-2">
+                                            <i class="fas fa-clock text-[#4fb9fd] text-sm"></i>
                                             <span class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Đơn hàng sẽ hết hạn sau</span>
-                                            <span id="checkout-countdown" class="font-black tabular-nums text-white text-2xl md:text-3xl leading-none tracking-tight">10:00</span>
+                                        </div>
+                                        <span id="checkout-countdown" class="font-black tabular-nums text-white text-5xl md:text-6xl leading-none tracking-tight">10:00</span>
+                                    </div>
+
+                                    <div class="rounded-[1.5rem] bg-white/[0.05] border border-white/10 p-5 mb-4">
+                                        <div class="font-black text-slate-500 uppercase tracking-[0.16em] text-[10px] mb-2">Nội dung chuyển khoản</div>
+                                        <div id="checkout-transfer-note" class="text-white font-black text-2xl md:text-3xl leading-tight break-words">Tên học viên</div>
+                                        <p class="text-slate-500 text-xs leading-relaxed mt-3">Nên ghi đúng họ tên đã nhập để bên mình kiểm tra và kích hoạt nhanh hơn.</p>
+                                    </div>
+
+                                    <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-4">
+                                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
+                                            <span>Tổng thanh toán</span>
+                                            <span id="checkout-total-payment-view" class="text-white font-black text-3xl tracking-tight">0đ</span>
+                                        </div>
+                                        <div class="flex justify-between items-center text-xs text-slate-500">
+                                            <span>Số khóa học</span>
+                                            <span id="checkout-total-items-payment-view" class="font-bold text-slate-300">0 khóa</span>
                                         </div>
                                     </div>
+
+                                    <label class="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4 cursor-pointer hover:bg-white/[0.07] transition-all mb-4">
+                                        <input id="payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-slate-200">
+                                        <span class="text-sm text-slate-300 leading-relaxed">
+                                            Tôi xác nhận đã thanh toán đúng số tiền và ghi đúng nội dung chuyển khoản ở trên.
+                                        </span>
+                                    </label>
+
+                                    <input type="hidden" name="_subject" value="Đăng ký khóa học mới từ VizLab">
+                                    <input type="hidden" id="checkout-hidden-items" name="danh_sach_khoa_hoc" value="">
+                                    <input type="hidden" id="checkout-hidden-total" name="tong_tien" value="">
+                                    <input type="hidden" id="checkout-hidden-user" name="tai_khoan_dang_nhap" value="">
+                                    <input type="hidden" id="checkout-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="">
+                                    <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
+
+                                    <button id="checkout-submit-btn" type="submit" class="w-full bg-slate-100 text-[#020617] font-black py-4 rounded-xl shadow-[0_16px_34px_rgba(255,255,255,0.10)] hover:bg-white hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Gửi đăng ký kích hoạt
+                                    </button>
+
+                                    <div id="checkout-message-payment" class="hidden mt-4 rounded-xl p-4 text-sm font-semibold leading-relaxed"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <label class="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.035] p-4 cursor-pointer hover:bg-white/[0.07] transition-all">
-                        <input id="payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-slate-200">
-                        <span class="text-sm text-slate-300 leading-relaxed">
-                            Tôi xác nhận đã thanh toán đúng số tiền tạm tính và ghi nội dung chuyển khoản là họ tên học viên ở trên.
-                        </span>
-                    </label>
-                </div>
-
-                <div class="p-5 md:p-7 bg-white/[0.018]">
-                    <h4 class="text-white font-black text-base mb-4">Tóm tắt đơn hàng</h4>
-
-                    <div id="checkout-summary-list" class="space-y-3 mb-5 max-h-[300px] overflow-y-auto pr-1"></div>
-
-                    <div class="rounded-2xl border border-white/10 bg-black/25 p-5 mb-5">
-                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
-                            <span>Số khóa học</span>
-                            <span id="checkout-total-items" class="font-bold text-slate-200">0</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3">
-                            <span>Tạm tính</span>
-                            <span id="checkout-subtotal" class="font-bold text-slate-200">0đ</span>
-                        </div>
-                        <div class="h-px bg-white/10 my-4"></div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-white font-black">Tổng thanh toán</span>
-                            <span id="checkout-total" class="text-white font-black text-3xl tracking-tight">0đ</span>
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="_subject" value="Đăng ký khóa học mới từ VizLab">
-                    <input type="hidden" id="checkout-hidden-items" name="danh_sach_khoa_hoc" value="">
-                    <input type="hidden" id="checkout-hidden-total" name="tong_tien" value="">
-                    <input type="hidden" id="checkout-hidden-user" name="tai_khoan_dang_nhap" value="">
-                    <input type="hidden" id="checkout-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="">
-                    <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
-
-                    <button id="checkout-submit-btn" type="submit" class="w-full bg-slate-100 text-[#020617] font-black py-4 rounded-xl shadow-[0_16px_34px_rgba(255,255,255,0.10)] hover:bg-white hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
-                        <i class="fas fa-paper-plane"></i>
-                        Gửi đăng ký kích hoạt
-                    </button>
-
-                    <div id="checkout-message" class="hidden mt-4 rounded-xl p-4 text-sm font-semibold leading-relaxed"></div>
                 </div>
             </form>
         </div>
@@ -1314,8 +1474,13 @@
                         <i class="fas fa-crown text-base"></i>
                     </div>
                     <div class="min-w-0">
-                        <h3 class="text-white font-black text-xl md:text-2xl tracking-tight">Nâng cấp Hội Viên VizLab</h3>
-                        <p class="text-slate-400 text-xs md:text-sm font-medium truncate">Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.</p>
+                        <div id="membership-step-pills" class="hidden items-center gap-2 mb-2">
+                            <span id="membership-step-pill-1" class="checkout-step-pill is-active">1. Thông tin</span>
+                            <span class="h-px w-8 bg-white/10"></span>
+                            <span id="membership-step-pill-2" class="checkout-step-pill">2. Quét mã</span>
+                        </div>
+                        <h3 id="membership-modal-title" class="text-white font-black text-xl md:text-2xl tracking-tight">Nâng cấp Hội Viên VizLab</h3>
+                        <p id="membership-modal-subtitle" class="text-slate-400 text-xs md:text-sm font-medium truncate">Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.</p>
                     </div>
                 </div>
                 <button onclick="closeMembershipModal()" class="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all shrink-0"><i class="fas fa-times"></i></button>
@@ -1430,38 +1595,146 @@
                     </div>
                 </div>
             </div>
-            <form id="membership-form" onsubmit="submitMembershipForm(event)" class="hidden grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]" style="display:none;">
-                <div class="p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
-                    <button type="button" onclick="backToMembershipPlans()" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-5 transition-all"><i class="fas fa-arrow-left"></i> Quay lại chọn gói</button>
-                    <div class="flex items-center gap-2 mb-3"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-crown"></i></span><h4 class="text-white font-black text-lg">Thông tin đăng ký Hội Viên</h4></div>
+            <form id="membership-form" onsubmit="submitMembershipForm(event)" class="hidden" style="display:none;">
+                <!-- BƯỚC 1: THÔNG TIN HỘI VIÊN + CHỌN PHƯƠNG THỨC -->
+                <div id="membership-info-step" class="checkout-step-view grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-0">
+                    <div class="p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
+                        <button type="button" onclick="backToMembershipPlans()" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-5 transition-all"><i class="fas fa-arrow-left"></i> Quay lại chọn gói</button>
 
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
-                    <input id="membership-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" oninput="updateMembershipTransferNote()" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt</label>
-                    <input id="membership-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Số điện thoại / Zalo <span class="normal-case tracking-normal text-slate-600">(không bắt buộc)</span></label>
-                    <input id="membership-phone" name="so_dien_thoai" type="tel" placeholder="Để hỗ trợ nếu nhập sai email" class="w-full mb-5 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
-                    <div class="grid grid-cols-2 gap-2 mb-5">
-                        <label class="membership-payment-option cursor-pointer rounded-2xl border border-[#4fb9fd] bg-[#4fb9fd]/10 px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="momo"><input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectMembershipPaymentMethod('momo')"><div class="flex items-center gap-2.5"><div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-wallet text-sm"></i></div><div><div class="text-white font-black text-sm">MoMo</div><div class="text-slate-500 text-[10px] font-semibold">Ví điện tử</div></div></div></label>
-                        <label class="membership-payment-option cursor-pointer rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="banking"><input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectMembershipPaymentMethod('banking')"><div class="flex items-center gap-2.5"><div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-building-columns text-sm"></i></div><div><div class="text-white font-black text-sm">Banking</div><div class="text-slate-500 text-[10px] font-semibold">Ngân hàng</div></div></div></label>
+                        <div class="mb-6">
+                            <div class="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] mb-4">
+                                <i class="fas fa-user-check text-[#4fb9fd]"></i> Bước 1
+                            </div>
+                            <h4 class="text-white font-black text-lg mb-1">Thông tin đăng ký Hội Viên</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed mb-5">Vui lòng nhập đúng email để bên mình kích hoạt gói hội viên chính xác.</p>
+
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
+                            <input id="membership-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" oninput="updateMembershipTransferNote()" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
+
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt</label>
+                            <input id="membership-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
+
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Số điện thoại / Zalo <span class="normal-case tracking-normal text-slate-600">(không bắt buộc)</span></label>
+                            <input id="membership-phone" name="so_dien_thoai" type="tel" placeholder="Để hỗ trợ nếu nhập sai email" class="w-full mb-5 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
+                        </div>
+
+                        <div>
+                            <h4 class="text-white font-black text-base mb-4">Phương thức thanh toán</h4>
+                            <div class="grid grid-cols-2 gap-2 mb-6">
+                                <label class="membership-payment-option cursor-pointer rounded-2xl border border-[#4fb9fd] bg-[#4fb9fd]/10 px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="momo">
+                                    <input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectMembershipPaymentMethod('momo')">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-wallet text-sm"></i></div>
+                                        <div class="min-w-0"><div class="text-white font-black text-sm">MoMo</div><div class="text-slate-500 text-[10px] font-semibold">Ví điện tử</div></div>
+                                        <i class="membership-payment-check fas fa-check-circle ml-auto text-[#4fb9fd] text-sm opacity-100 transition-opacity"></i>
+                                    </div>
+                                </label>
+                                <label class="membership-payment-option cursor-pointer rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="banking">
+                                    <input type="radio" name="phuong_thuc_thanh_toan" value="Banking" class="sr-only" onchange="selectMembershipPaymentMethod('banking')">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-building-columns text-sm"></i></div>
+                                        <div class="min-w-0"><div class="text-white font-black text-sm">Banking</div><div class="text-slate-500 text-[10px] font-semibold">Ngân hàng</div></div>
+                                        <i class="membership-payment-check fas fa-check-circle ml-auto text-[#4fb9fd] text-sm opacity-0 transition-opacity"></i>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <button id="membership-next-btn" type="button" onclick="goMembershipPaymentStep()" class="w-full bg-[#4fb9fd] text-[#020617] font-black py-4 rounded-2xl shadow-[0_0_24px_rgba(79,185,253,0.22)] hover:shadow-[0_0_34px_rgba(79,185,253,0.32)] hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2">
+                                Tiếp tục quét mã
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
-                    <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 cursor-pointer hover:bg-white/10 transition-all mb-5"><input id="membership-payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-[#4fb9fd]"><span class="text-sm text-slate-300 leading-relaxed">Tôi xác nhận đã thanh toán đúng số tiền và ghi nội dung chuyển khoản là họ tên học viên ở trên.</span></label>
-                    <input type="hidden" name="_subject" value="Đăng ký Hội Viên VizLab mới"><input type="hidden" name="loai_don" value="Đăng ký Hội Viên"><input type="hidden" id="membership-hidden-plan" name="goi_hoi_vien" value="VizLab Pro 6 tháng"><input type="hidden" id="membership-hidden-plan-id" name="ma_goi_hoi_vien" value="pro_6months"><input type="hidden" id="membership-hidden-price" name="so_tien" value="590.000đ"><input type="hidden" id="membership-hidden-user" name="tai_khoan_dang_nhap" value=""><input type="hidden" id="membership-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="Tên học viên"><input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
-                    <button id="membership-submit-btn" type="submit" class="w-full bg-[#4fb9fd] text-[#020617] font-black py-4 rounded-2xl shadow-[0_0_24px_rgba(79,185,253,0.22)] hover:shadow-[0_0_34px_rgba(79,185,253,0.32)] hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"><i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên</button>
-                    <div id="membership-message" class="hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed"></div>
+
+                    <div class="p-5 md:p-8 bg-white/[0.025]">
+                        <div class="flex items-center gap-2 mb-5"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-receipt"></i></span><h4 class="text-white font-black text-lg">Tóm tắt gói hội viên</h4></div>
+                        <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-5">
+                            <div class="flex justify-between text-sm text-slate-400 mb-3 gap-4"><span>Gói đăng ký</span><span id="membership-summary-plan" class="font-bold text-slate-200 text-right">VizLab Pro 6 tháng</span></div>
+                            <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Số tiền</span><span id="membership-summary-price" class="font-black text-[#4fb9fd]">590.000đ</span></div>
+                            <div class="h-px bg-white/10 my-4"></div>
+                            <div class="flex justify-between items-end gap-4"><span class="text-white font-black">Tổng thanh toán</span><span id="membership-total-price" class="text-[#4fb9fd] font-black text-3xl tracking-tight">590.000đ</span></div>
+                        </div>
+                        <div class="rounded-[1.5rem] border border-[#4fb9fd]/15 bg-[#4fb9fd]/5 p-4 text-sm text-slate-300 leading-relaxed">
+                            <i class="fas fa-circle-info text-[#4fb9fd] mr-2"></i>
+                            Lưu ý: Chuyển khoản đúng số tiền và ghi đúng nội dung ở bước quét mã để được kích hoạt nhanh hơn.
+                        </div>
+                        <div id="membership-message" class="hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed"></div>
+                    </div>
                 </div>
-                <div class="p-5 md:p-8 bg-white/[0.025]">
-                    <div class="flex items-center gap-2 mb-5"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-receipt"></i></span><h4 class="text-white font-black text-lg">Thanh toán Hội Viên</h4></div>
-                    <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-5">
-                        <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Gói đăng ký</span><span id="membership-summary-plan" class="font-bold text-slate-200">VizLab Pro 6 tháng</span></div>
-                        <div class="flex justify-between text-sm text-slate-400 mb-3"><span>Số tiền</span><span id="membership-summary-price" class="font-black text-[#4fb9fd]">590.000đ</span></div>
-                        <div class="h-px bg-white/10 my-4"></div>
-                        <div class="flex justify-between items-end"><span class="text-white font-black">Tổng thanh toán</span><span id="membership-total-price" class="text-[#4fb9fd] font-black text-3xl tracking-tight">590.000đ</span></div>
-                    </div>
-                    <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-4 md:p-5 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
-                        <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-5 items-center">
-                            <div class="relative w-48 h-48 rounded-[1.35rem] overflow-hidden bg-white p-3 shrink-0 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10"><img id="membership-payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán hội viên" class="w-full h-full object-contain"></div>
-                            <div class="flex-1 text-center sm:text-left lg:text-center xl:text-left"><h5 id="membership-payment-title" class="text-white font-black text-lg mb-2">Quét mã MoMo để thanh toán</h5><p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán xong, tick xác nhận rồi gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt hội viên theo email bạn cung cấp.</p><div class="rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 p-3 text-xs text-slate-300"><div class="font-black text-[#4fb9fd] uppercase tracking-[0.16em] text-[10px] mb-1">Nội dung chuyển khoản</div><div id="membership-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div></div><div id="membership-countdown-box" class="mt-4 rounded-2xl border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-4 py-3.5 text-center shadow-[0_0_24px_rgba(79,185,253,0.10)] backdrop-blur-md"><div class="relative flex items-center justify-center gap-2 whitespace-nowrap"><i class="fas fa-clock text-[#4fb9fd] text-xs"></i><span class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Đơn hàng sẽ hết hạn sau</span><span id="membership-countdown" class="font-black tabular-nums text-white text-2xl md:text-3xl leading-none tracking-tight">10:00</span></div></div></div>
+
+                <!-- BƯỚC 2: KHÔNG GIAN RIÊNG CHO QR HỘI VIÊN -->
+                <div id="membership-payment-step" class="checkout-step-view hidden p-5 md:p-8">
+                    <div class="max-w-4xl mx-auto">
+                        <button type="button" onclick="backToMembershipInfoStep()" class="mb-5 inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 text-xs font-black transition-all">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại thông tin
+                        </button>
+
+                        <div class="rounded-[2rem] border border-[#4fb9fd]/25 bg-[radial-gradient(circle_at_top,rgba(79,185,253,0.16),rgba(255,255,255,0.035)_42%,rgba(2,6,23,0.35)_100%)] p-5 md:p-8 shadow-[0_26px_90px_rgba(0,0,0,0.48)]">
+                            <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6 md:gap-8 items-center">
+                                <div class="text-center">
+                                    <div class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 text-[#7dd3fc] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] mb-4">
+                                        <i class="fas fa-wallet"></i> <span id="membership-payment-method-label">MoMo</span>
+                                    </div>
+                                    <div class="checkout-qr-frame relative mx-auto w-[300px] h-[300px] md:w-[340px] md:h-[340px] rounded-[2rem] bg-white p-4 shadow-[0_30px_70px_rgba(0,0,0,0.48)]">
+                                        <div class="absolute -inset-3 rounded-[2.35rem] border border-[#4fb9fd]/20 pointer-events-none"></div>
+                                        <div class="absolute -inset-6 rounded-[2.8rem] bg-[#4fb9fd]/10 blur-2xl pointer-events-none"></div>
+                                        <img id="membership-payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán hội viên" class="relative z-10 w-full h-full object-contain rounded-2xl">
+                                    </div>
+
+                                    <h5 id="membership-payment-title" class="text-white font-black text-xl md:text-2xl mt-6 mb-2">Quét mã MoMo để thanh toán</h5>
+                                    <p class="text-slate-400 text-sm leading-relaxed">Quét mã, thanh toán đúng số tiền và ghi đúng nội dung chuyển khoản bên cạnh.</p>
+                                </div>
+
+                                <div>
+                                    <div id="membership-countdown-box" class="rounded-[1.5rem] border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-5 py-5 text-center shadow-[0_0_30px_rgba(79,185,253,0.12)] backdrop-blur-md mb-4">
+                                        <div class="flex items-center justify-center gap-2 whitespace-nowrap mb-2">
+                                            <i class="fas fa-clock text-[#4fb9fd] text-sm"></i>
+                                            <span class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Đơn hàng sẽ hết hạn sau</span>
+                                        </div>
+                                        <span id="membership-countdown" class="font-black tabular-nums text-white text-5xl md:text-6xl leading-none tracking-tight">10:00</span>
+                                    </div>
+
+                                    <div class="rounded-[1.5rem] bg-white/[0.05] border border-white/10 p-5 mb-4">
+                                        <div class="font-black text-slate-500 uppercase tracking-[0.16em] text-[10px] mb-2">Nội dung chuyển khoản</div>
+                                        <div id="membership-transfer-note" class="text-white font-black text-2xl md:text-3xl leading-tight break-words">Tên học viên</div>
+                                        <p class="text-slate-500 text-xs leading-relaxed mt-3">Nên ghi đúng họ tên đã nhập để bên mình kiểm tra và kích hoạt hội viên nhanh hơn.</p>
+                                    </div>
+
+                                    <div class="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 mb-4">
+                                        <div class="flex justify-between items-center text-sm text-slate-400 mb-3 gap-4">
+                                            <span>Gói đăng ký</span>
+                                            <span id="membership-summary-plan-payment-view" class="font-bold text-slate-200 text-right">VizLab Pro 6 tháng</span>
+                                        </div>
+                                        <div class="h-px bg-white/10 my-4"></div>
+                                        <div class="flex justify-between items-end gap-4">
+                                            <span class="text-white font-black">Tổng thanh toán</span>
+                                            <span id="membership-total-price-payment-view" class="text-[#4fb9fd] font-black text-3xl tracking-tight">590.000đ</span>
+                                        </div>
+                                    </div>
+
+                                    <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 cursor-pointer hover:bg-white/10 transition-all mb-4">
+                                        <input id="membership-payment-confirmed" name="xac_nhan_da_thanh_toan" type="checkbox" required class="mt-1 h-5 w-5 rounded border-white/20 bg-black/40 accent-[#4fb9fd]">
+                                        <span class="text-sm text-slate-300 leading-relaxed">Tôi xác nhận đã thanh toán đúng số tiền và ghi đúng nội dung chuyển khoản ở trên.</span>
+                                    </label>
+
+                                    <input type="hidden" name="_subject" value="Đăng ký Hội Viên VizLab mới">
+                                    <input type="hidden" name="loai_don" value="Đăng ký Hội Viên">
+                                    <input type="hidden" id="membership-hidden-plan" name="goi_hoi_vien" value="VizLab Pro 6 tháng">
+                                    <input type="hidden" id="membership-hidden-plan-id" name="ma_goi_hoi_vien" value="pro_6months">
+                                    <input type="hidden" id="membership-hidden-price" name="so_tien" value="590.000đ">
+                                    <input type="hidden" id="membership-hidden-user" name="tai_khoan_dang_nhap" value="">
+                                    <input type="hidden" id="membership-hidden-transfer-note" name="noi_dung_chuyen_khoan" value="Tên học viên">
+                                    <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
+
+                                    <button id="membership-submit-btn" type="submit" class="w-full bg-[#4fb9fd] text-[#020617] font-black py-4 rounded-2xl shadow-[0_0_24px_rgba(79,185,253,0.22)] hover:shadow-[0_0_34px_rgba(79,185,253,0.32)] hover:-translate-y-0.5 transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Gửi đăng ký hội viên
+                                    </button>
+
+                                    <div id="membership-message-payment" class="hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2962,7 +3235,7 @@
                     window[intervalName] = null;
                     timerEl.textContent = "00:00";
 
-                    const messageId = targetId === "checkout-countdown" ? "checkout-message" : "membership-message";
+                    const messageId = targetId === "checkout-countdown" ? "checkout-message-payment" : "membership-message";
                     const messageEl = document.getElementById(messageId);
                     if (messageEl) {
                         messageEl.className = "mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed bg-amber-500/10 border border-amber-500/20 text-slate-400";
@@ -3015,39 +3288,43 @@
             const totalItemsEl = document.getElementById('checkout-total-items');
             const subtotalEl = document.getElementById('checkout-subtotal');
             const totalEl = document.getElementById('checkout-total');
+            const totalPaymentEl = document.getElementById('checkout-total-payment-view');
+            const totalItemsPaymentEl = document.getElementById('checkout-total-items-payment-view');
             const hiddenItems = document.getElementById('checkout-hidden-items');
             const hiddenTotal = document.getElementById('checkout-hidden-total');
             const hiddenUser = document.getElementById('checkout-hidden-user');
             const hiddenTransferNote = document.getElementById('checkout-hidden-transfer-note');
 
-            if (!list) return;
+            if (list) {
+                list.innerHTML = '';
 
-            list.innerHTML = '';
-
-            if (cart.length === 0) {
-                list.innerHTML = `<div class="rounded-2xl bg-white/5 border border-white/10 p-6 text-center text-slate-500 text-sm"><i class="fas fa-bag-shopping text-3xl mb-3 opacity-30"></i><p>Giỏ hàng đang trống.</p></div>`;
-            } else {
-                cart.forEach(item => {
-                    const row = document.createElement('div');
-                    row.className = "flex gap-3 rounded-2xl bg-white/5 border border-white/10 p-3";
-                    row.innerHTML = `
-                        <div class="w-16 aspect-video rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
-                            <img src="${item.image}" class="w-full h-full object-cover" alt="${item.title}">
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h5 class="text-white font-bold text-xs leading-snug line-clamp-2">${item.title}</h5>
-                            <p class="text-slate-500 text-[10px] uppercase tracking-wider mt-1">${item.categoryName || item.topicName || 'Khóa học'}</p>
-                            <p class="text-[#4fb9fd] font-black text-sm mt-1">${formatCurrency(item.price)}</p>
-                        </div>
-                    `;
-                    list.appendChild(row);
-                });
+                if (cart.length === 0) {
+                    list.innerHTML = `<div class="rounded-2xl bg-white/5 border border-white/10 p-6 text-center text-slate-500 text-sm"><i class="fas fa-bag-shopping text-3xl mb-3 opacity-30"></i><p>Giỏ hàng đang trống.</p></div>`;
+                } else {
+                    cart.forEach(item => {
+                        const row = document.createElement('div');
+                        row.className = "flex gap-3 rounded-2xl bg-white/5 border border-white/10 p-3";
+                        row.innerHTML = `
+                            <div class="w-16 aspect-video rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
+                                <img src="${item.image}" class="w-full h-full object-cover" alt="${item.title}">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="text-white font-bold text-xs leading-snug line-clamp-2">${item.title}</h5>
+                                <p class="text-slate-500 text-[10px] uppercase tracking-wider mt-1">${item.categoryName || item.topicName || 'Khóa học'}</p>
+                                <p class="text-[#4fb9fd] font-black text-sm mt-1">${formatCurrency(item.price)}</p>
+                            </div>
+                        `;
+                        list.appendChild(row);
+                    });
+                }
             }
 
             const total = getCartTotal();
             if (totalItemsEl) totalItemsEl.textContent = cart.length + ' khóa';
             if (subtotalEl) subtotalEl.textContent = formatCurrency(total);
             if (totalEl) totalEl.textContent = formatCurrency(total);
+            if (totalPaymentEl) totalPaymentEl.textContent = formatCurrency(total);
+            if (totalItemsPaymentEl) totalItemsPaymentEl.textContent = cart.length + ' khóa';
             if (hiddenItems) hiddenItems.value = getCartItemsText();
             if (hiddenTotal) hiddenTotal.value = formatCurrency(total);
             if (hiddenUser) hiddenUser.value = currentUser ? `${currentUser.email} | ${currentUser.id}` : 'Chưa đăng nhập';
@@ -3057,18 +3334,67 @@
         function updateTransferNote() {
             const nameInput = document.getElementById('checkout-fullname');
             const noteEl = document.getElementById('checkout-transfer-note');
-            if (!noteEl) return;
+            const hiddenNote = document.getElementById('checkout-hidden-transfer-note');
             const fullName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Tên học viên';
-            noteEl.textContent = fullName;
+            if (noteEl) noteEl.textContent = fullName;
+            if (hiddenNote) hiddenNote.value = fullName;
+        }
+
+        function setCheckoutStep(step) {
+            const infoStep = document.getElementById('checkout-info-step');
+            const paymentStep = document.getElementById('checkout-payment-step');
+            const pill1 = document.getElementById('checkout-step-pill-1');
+            const pill2 = document.getElementById('checkout-step-pill-2');
+            const title = document.getElementById('checkout-modal-title');
+            const subtitle = document.getElementById('checkout-modal-subtitle');
+            const modalContent = document.querySelector('#checkout-modal > .relative');
+
+            const isPayment = step === 'payment';
+
+            if (infoStep) infoStep.classList.toggle('hidden', isPayment);
+            if (paymentStep) paymentStep.classList.toggle('hidden', !isPayment);
+            if (pill1) pill1.classList.toggle('is-active', !isPayment);
+            if (pill2) pill2.classList.toggle('is-active', isPayment);
+
+            if (title) title.textContent = isPayment ? 'Quét mã thanh toán' : 'Thanh toán khóa học';
+            if (subtitle) subtitle.textContent = isPayment
+                ? 'QR được tách riêng để dễ quét, rõ nội dung chuyển khoản và thời gian giữ đơn.'
+                : 'Điền thông tin và chọn phương thức thanh toán trước.';
+
+            if (isPayment) {
+                updateTransferNote();
+                updateCheckoutSummary();
+                startPaymentCountdown('checkout-countdown', 'checkoutCountdownInterval');
+            } else {
+                stopPaymentCountdown('checkoutCountdownInterval');
+            }
+
+            if (modalContent) modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goCheckoutPaymentStep() {
+            const fullname = document.getElementById('checkout-fullname');
+            const email = document.getElementById('checkout-email');
+
+            if (fullname && !fullname.reportValidity()) return;
+            if (email && !email.reportValidity()) return;
+
+            setCheckoutStep('payment');
+        }
+
+        function backToCheckoutInfoStep() {
+            setCheckoutStep('info');
         }
 
         function selectPaymentMethod(method) {
             const config = PAYMENT_QR[method] || PAYMENT_QR.momo;
             const image = document.getElementById('payment-qr-image');
             const title = document.getElementById('payment-title');
+            const methodLabel = document.getElementById('checkout-payment-method-label');
 
             if (image) image.src = config.image;
             if (title) title.textContent = config.title;
+            if (methodLabel) methodLabel.textContent = method === 'banking' ? 'Banking' : 'MoMo';
 
             document.querySelectorAll('[data-payment-card]').forEach(card => {
                 const active = card.dataset.paymentCard === method;
@@ -3090,16 +3416,19 @@
             const modal = document.getElementById('checkout-modal');
             const form = document.getElementById('checkout-form');
             const message = document.getElementById('checkout-message');
+            const paymentMessage = document.getElementById('checkout-message-payment');
             const emailInput = document.getElementById('checkout-email');
             const nameInput = document.getElementById('checkout-fullname');
             const submitBtn = document.getElementById('checkout-submit-btn');
             const confirmCheckbox = document.getElementById('payment-confirmed');
 
             if (form) form.reset();
-            if (message) {
-                message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
-                message.textContent = '';
-            }
+            [message, paymentMessage].forEach(el => {
+                if (el) {
+                    el.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
+                    el.textContent = '';
+                }
+            });
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký kích hoạt';
@@ -3111,12 +3440,12 @@
             selectPaymentMethod('momo');
             updateTransferNote();
             updateCheckoutSummary();
+            setCheckoutStep('info');
 
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
                 document.body.classList.add('overflow-hidden');
-                startPaymentCountdown('checkout-countdown', 'checkoutCountdownInterval');
             }
         }
 
@@ -3127,11 +3456,14 @@
                 modal.classList.remove('flex');
                 document.body.classList.remove('overflow-hidden');
                 stopPaymentCountdown('checkoutCountdownInterval');
+                setCheckoutStep('info');
             }
         }
 
         function showCheckoutMessage(text, type = 'success') {
-            const message = document.getElementById('checkout-message');
+            const infoStep = document.getElementById('checkout-info-step');
+            const isPaymentStep = infoStep && infoStep.classList.contains('hidden');
+            const message = document.getElementById(isPaymentStep ? 'checkout-message-payment' : 'checkout-message');
             if (!message) return;
             const base = 'mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
             message.className = base + (type === 'error'
@@ -3310,42 +3642,134 @@
 
         function selectMembershipPaymentMethod(method) {
             const config = MEMBERSHIP_PAYMENT_QR[method] || MEMBERSHIP_PAYMENT_QR.momo;
-            const image = document.getElementById('membership-payment-qr-image'); const title = document.getElementById('membership-payment-title');
-            if (image) image.src = config.image; if (title) title.textContent = config.title;
-            document.querySelectorAll('[data-membership-payment-card]').forEach(card => { const active = card.dataset.membershipPaymentCard === method; card.classList.toggle('border-[#4fb9fd]', active); card.classList.toggle('bg-[#4fb9fd]/10', active); card.classList.toggle('border-white/10', !active); card.classList.toggle('bg-white/[0.04]', !active); });
+            const image = document.getElementById('membership-payment-qr-image');
+            const title = document.getElementById('membership-payment-title');
+            const methodLabel = document.getElementById('membership-payment-method-label');
+
+            if (image) image.src = config.image;
+            if (title) title.textContent = config.title;
+            if (methodLabel) methodLabel.textContent = method === 'banking' ? 'Banking' : 'MoMo';
+
+            document.querySelectorAll('[data-membership-payment-card]').forEach(card => {
+                const active = card.dataset.membershipPaymentCard === method;
+                card.classList.toggle('border-[#4fb9fd]', active);
+                card.classList.toggle('bg-[#4fb9fd]/10', active);
+                card.classList.toggle('shadow-[0_0_24px_rgba(79,185,253,0.18)]', active);
+                card.classList.toggle('border-white/10', !active);
+                card.classList.toggle('bg-white/[0.04]', !active);
+                const checkIcon = card.querySelector('.membership-payment-check');
+                if (checkIcon) checkIcon.classList.toggle('opacity-100', active);
+                if (checkIcon) checkIcon.classList.toggle('opacity-0', !active);
+            });
         }
+
         function updateMembershipTransferNote() {
-            const nameInput = document.getElementById('membership-fullname'); const noteEl = document.getElementById('membership-transfer-note'); const hiddenNote = document.getElementById('membership-hidden-transfer-note');
+            const nameInput = document.getElementById('membership-fullname');
+            const noteEl = document.getElementById('membership-transfer-note');
+            const hiddenNote = document.getElementById('membership-hidden-transfer-note');
             const fullName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Tên học viên';
-            if (noteEl) noteEl.textContent = fullName; if (hiddenNote) hiddenNote.value = fullName;
+            if (noteEl) noteEl.textContent = fullName;
+            if (hiddenNote) hiddenNote.value = fullName;
         }
+
+        function syncMembershipPaymentSummary() {
+            const plan = MEMBERSHIP_PRICING[currentMembershipPlanId] || MEMBERSHIP_PRICING['pro_6months'];
+            const planPayment = document.getElementById('membership-summary-plan-payment-view');
+            const pricePayment = document.getElementById('membership-total-price-payment-view');
+            if (planPayment) planPayment.textContent = plan.name;
+            if (pricePayment) pricePayment.textContent = plan.priceRaw;
+            selectMembershipPlan(currentMembershipPlanId || 'pro_6months');
+        }
+
+        function setMembershipStep(step) {
+            const infoStep = document.getElementById('membership-info-step');
+            const paymentStep = document.getElementById('membership-payment-step');
+            const pill1 = document.getElementById('membership-step-pill-1');
+            const pill2 = document.getElementById('membership-step-pill-2');
+            const title = document.getElementById('membership-modal-title');
+            const subtitle = document.getElementById('membership-modal-subtitle');
+            const modalContent = document.querySelector('#membership-modal > .relative');
+
+            const isPayment = step === 'payment';
+
+            if (infoStep) infoStep.classList.toggle('hidden', isPayment);
+            if (paymentStep) paymentStep.classList.toggle('hidden', !isPayment);
+            if (pill1) pill1.classList.toggle('is-active', !isPayment);
+            if (pill2) pill2.classList.toggle('is-active', isPayment);
+
+            if (title) title.textContent = isPayment ? 'Quét mã thanh toán Hội Viên' : 'Đăng ký Hội Viên VizLab';
+            if (subtitle) subtitle.textContent = isPayment
+                ? 'QR được tách riêng để dễ quét, rõ nội dung chuyển khoản và thời gian giữ đơn.'
+                : 'Điền thông tin và chọn phương thức thanh toán trước.';
+
+            if (isPayment) {
+                updateMembershipTransferNote();
+                syncMembershipPaymentSummary();
+                startPaymentCountdown('membership-countdown', 'membershipCountdownInterval');
+            } else {
+                stopPaymentCountdown('membershipCountdownInterval');
+            }
+
+            if (modalContent) modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goMembershipPaymentStep() {
+            const fullname = document.getElementById('membership-fullname');
+            const email = document.getElementById('membership-email');
+
+            if (fullname && !fullname.reportValidity()) return;
+            if (email && !email.reportValidity()) return;
+
+            setMembershipStep('payment');
+        }
+
+        function backToMembershipInfoStep() {
+            setMembershipStep('info');
+        }
+
         function openMembershipPayment(planId) {
             selectMembershipPlan(planId || currentMembershipPlanId || 'pro_6months');
             const plansView = document.getElementById('membership-plans-view');
             const paymentView = document.getElementById('membership-form');
+            const stepPills = document.getElementById('membership-step-pills');
             const message = document.getElementById('membership-message');
+            const messagePayment = document.getElementById('membership-message-payment');
             const emailInput = document.getElementById('membership-email');
             const hiddenUser = document.getElementById('membership-hidden-user');
             const confirmCheckbox = document.getElementById('membership-payment-confirmed');
             const submitBtn = document.getElementById('membership-submit-btn');
+
             if (plansView) plansView.classList.add('hidden');
-            if (paymentView) { paymentView.classList.remove('hidden'); paymentView.style.display = 'grid'; }
+            if (paymentView) { paymentView.classList.remove('hidden'); paymentView.style.display = 'block'; }
+            if (stepPills) { stepPills.classList.remove('hidden'); stepPills.classList.add('flex'); }
             if (message) { message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.textContent = ''; }
+            if (messagePayment) { messagePayment.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; messagePayment.textContent = ''; }
             if (confirmCheckbox) confirmCheckbox.checked = false;
             if (emailInput && currentUser && currentUser.email) emailInput.value = currentUser.email;
             if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
             if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; }
+
             selectMembershipPaymentMethod('momo');
             updateMembershipTransferNote();
-            startPaymentCountdown('membership-countdown', 'membershipCountdownInterval');
+            syncMembershipPaymentSummary();
+            setMembershipStep('info');
         }
+
         function backToMembershipPlans() {
             const plansView = document.getElementById('membership-plans-view');
             const paymentView = document.getElementById('membership-form');
+            const stepPills = document.getElementById('membership-step-pills');
+            const title = document.getElementById('membership-modal-title');
+            const subtitle = document.getElementById('membership-modal-subtitle');
+
             if (paymentView) { paymentView.classList.add('hidden'); paymentView.style.display = 'none'; }
             if (plansView) plansView.classList.remove('hidden');
+            if (stepPills) { stepPills.classList.add('hidden'); stepPills.classList.remove('flex'); }
+            if (title) title.textContent = 'Nâng cấp Hội Viên VizLab';
+            if (subtitle) subtitle.textContent = 'Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.';
             stopPaymentCountdown('membershipCountdownInterval');
         }
+
         function openMembershipModal() {
             currentMembershipDuration = '6months';
             currentMembershipPlanId = 'pro_6months';
@@ -3357,24 +3781,77 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
             const modal = document.getElementById('membership-modal');
             const form = document.getElementById('membership-form');
             const plansView = document.getElementById('membership-plans-view');
+            const stepPills = document.getElementById('membership-step-pills');
             const message = document.getElementById('membership-message');
+            const messagePayment = document.getElementById('membership-message-payment');
+            const title = document.getElementById('membership-modal-title');
+            const subtitle = document.getElementById('membership-modal-subtitle');
+
             if (form) { form.reset(); form.classList.add('hidden'); form.style.display = 'none'; }
             if (plansView) plansView.classList.remove('hidden');
+            if (stepPills) { stepPills.classList.add('hidden'); stepPills.classList.remove('flex'); }
             if (message) { message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.textContent = ''; }
+            if (messagePayment) { messagePayment.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; messagePayment.textContent = ''; }
+            if (title) title.textContent = 'Nâng cấp Hội Viên VizLab';
+            if (subtitle) subtitle.textContent = 'Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.';
+
             selectMembershipDuration('6months');
             selectMembershipPlan('pro_6months');
             if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.classList.add('overflow-hidden'); }
         }
-        function closeMembershipModal() { const modal = document.getElementById('membership-modal'); if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.classList.remove('overflow-hidden'); stopPaymentCountdown('membershipCountdownInterval'); } }
-        function showMembershipMessage(text, type = 'success') { const message = document.getElementById('membership-message'); if (!message) return; const base = 'mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.className = base + (type === 'error' ? ' bg-red-500/10 border border-red-500/20 text-red-300' : ' bg-emerald-500/10 border border-emerald-500/20 text-emerald-300'); message.textContent = text; }
-        async function submitMembershipForm(event) {
-            event.preventDefault(); const form = event.target; const confirmed = document.getElementById('membership-payment-confirmed'); const submitBtn = document.getElementById('membership-submit-btn'); const hiddenUser = document.getElementById('membership-hidden-user');
-            if (!confirmed || !confirmed.checked) { showMembershipMessage('Bạn cần tick xác nhận đã thanh toán trước khi gửi đăng ký hội viên.', 'error'); return; }
-            updateMembershipTransferNote(); selectMembershipPlan('pro_6months'); if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
-            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang gửi đăng ký...'; }
-            try { const response = await fetch('https://formspree.io/f/xrbavvpy', { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } }); if (!response.ok) throw new Error('Formspree error'); showMembershipMessage('Đăng ký hội viên thành công. Bên mình sẽ kiểm tra giao dịch và kích hoạt tài khoản theo email bạn cung cấp.', 'success'); stopPaymentCountdown('membershipCountdownInterval'); if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký'; }
-            catch (error) { console.error('Lỗi gửi đăng ký hội viên:', error); showMembershipMessage('Chưa gửi được đăng ký. Bạn kiểm tra mạng rồi thử lại hoặc liên hệ Zalo/Messenger để được hỗ trợ.', 'error'); if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; } }
+
+        function closeMembershipModal() {
+            const modal = document.getElementById('membership-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+                stopPaymentCountdown('membershipCountdownInterval');
+            }
         }
+
+        function showMembershipMessage(text, type = 'success') {
+            const activeMessage = document.getElementById('membership-payment-step')?.classList.contains('hidden')
+                ? document.getElementById('membership-message')
+                : document.getElementById('membership-message-payment');
+            const message = activeMessage || document.getElementById('membership-message');
+            if (!message) return;
+            const base = 'mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed';
+            message.className = base + (type === 'error' ? ' bg-red-500/10 border border-red-500/20 text-red-300' : ' bg-emerald-500/10 border border-emerald-500/20 text-emerald-300');
+            message.textContent = text;
+        }
+
+        async function submitMembershipForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const confirmed = document.getElementById('membership-payment-confirmed');
+            const submitBtn = document.getElementById('membership-submit-btn');
+            const hiddenUser = document.getElementById('membership-hidden-user');
+
+            if (!confirmed || !confirmed.checked) {
+                showMembershipMessage('Bạn cần tick xác nhận đã thanh toán trước khi gửi đăng ký hội viên.', 'error');
+                return;
+            }
+
+            updateMembershipTransferNote();
+            syncMembershipPaymentSummary();
+            if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
+
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang gửi đăng ký...'; }
+            try {
+                const response = await fetch('https://formspree.io/f/xrbavvpy', { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+                if (!response.ok) throw new Error('Formspree error');
+                showMembershipMessage('Đăng ký hội viên thành công. Bên mình sẽ kiểm tra giao dịch và kích hoạt tài khoản theo email bạn cung cấp.', 'success');
+                stopPaymentCountdown('membershipCountdownInterval');
+                if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký';
+            }
+            catch (error) {
+                console.error('Lỗi gửi đăng ký hội viên:', error);
+                showMembershipMessage('Chưa gửi được đăng ký. Bạn kiểm tra mạng rồi thử lại hoặc liên hệ Zalo/Messenger để được hỗ trợ.', 'error');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; }
+            }
+        }
+
 
 
         function openMobileSideMenu() {
