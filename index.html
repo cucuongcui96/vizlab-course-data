@@ -1091,8 +1091,7 @@
                 overscroll-behavior: contain;
             }
         }
-
-    </style>
+</style>
 </head>
 <body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
 
@@ -1182,6 +1181,7 @@
                 <div>
                     <h3 class="text-white font-black text-xl md:text-2xl tracking-tight">Thanh toán khóa học</h3>
                     <p class="text-slate-400 text-xs md:text-sm font-medium mt-1">Điền thông tin, quét mã và gửi yêu cầu kích hoạt.</p>
+
                 </div>
                 <button onclick="closeCheckoutModal()" class="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                     <i class="fas fa-times"></i>
@@ -1193,10 +1193,10 @@
                     <div class="mb-6">
                         <h4 class="text-white font-black text-base mb-4">Thông tin kích hoạt</h4>
 
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
                         <input id="checkout-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" class="w-full mb-4 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
 
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Email kích hoạt khóa học</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt khóa học</label>
                         <input id="checkout-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-2 bg-black/25 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-slate-300/50 focus:bg-white/[0.06] transition-all">
                         <p class="text-slate-500 text-xs leading-relaxed">Email này dùng để kích hoạt và gửi hướng dẫn vào học.</p>
                     </div>
@@ -1243,8 +1243,15 @@
                                     <h5 id="payment-title" class="text-white font-black text-base mb-2">Quét mã MoMo để thanh toán</h5>
                                     <p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán, tick xác nhận rồi gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt theo email bạn cung cấp.</p>
                                     <div class="rounded-xl bg-white/[0.04] border border-white/10 p-3 text-xs text-slate-300 leading-relaxed">
-                                        <div class="font-black text-slate-500 uppercase tracking-widest text-[10px] mb-1">Nội dung chuyển khoản</div>
+                                        <div class="font-black text-slate-500 uppercase tracking-[0.16em] text-[10px] mb-1">Nội dung chuyển khoản</div>
                                         <div id="checkout-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div>
+                                    </div>
+                                    <div id="checkout-countdown-box" class="mt-4 rounded-2xl border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-4 py-3.5 text-center shadow-[0_0_24px_rgba(79,185,253,0.10)] backdrop-blur-md">
+                                        <div class="relative flex items-center justify-center gap-2 whitespace-nowrap">
+                                            <i class="fas fa-clock text-[#4fb9fd] text-xs"></i>
+                                            <span class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Đơn hàng sẽ hết hạn sau</span>
+                                            <span id="checkout-countdown" class="font-black tabular-nums text-white text-2xl md:text-3xl leading-none tracking-tight">10:00</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1316,7 +1323,7 @@
 
             <div id="membership-plans-view" class="p-5 md:p-8">
                 <div class="text-center max-w-4xl mx-auto mb-8">
-                    <div class="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest mb-4">
+                    <div class="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 text-slate-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] mb-4">
                         <i class="fas fa-sparkles text-[#4fb9fd]"></i> Bảng giá hội viên
                     </div>
                     <h2 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4">Mở khóa hệ sinh thái học tập <span class="text-[#4fb9fd]">VizLab</span></h2>
@@ -1334,12 +1341,12 @@
                             <span class="block text-slate-500 text-[11px] font-semibold mt-1">Học mục tiêu</span>
                         </button>
                         <button id="membership-duration-6months" type="button" onclick="selectMembershipDuration('6months')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all relative overflow-hidden">
-                            <span class="absolute top-1.5 right-2 rounded-full bg-[#4fb9fd] text-[#020617] text-[9px] font-black px-2 py-0.5 uppercase tracking-widest">Phổ biến</span>
+                            <span class="absolute top-1.5 right-2 rounded-full bg-[#4fb9fd] text-[#020617] text-[9px] font-black px-2 py-0.5 uppercase tracking-[0.16em]">Phổ biến</span>
                             <span class="block text-white font-black text-sm md:text-base">6 Tháng</span>
                             <span class="block text-slate-500 text-[11px] font-semibold mt-1">Cân bằng tốt</span>
                         </button>
                         <button id="membership-duration-1year" type="button" onclick="selectMembershipDuration('1year')" class="membership-duration-btn rounded-[1.2rem] px-4 py-4 text-center transition-all relative overflow-hidden">
-                            <span class="absolute top-1.5 right-2 rounded-full bg-violet-500 text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-widest">Tiết kiệm</span>
+                            <span class="absolute top-1.5 right-2 rounded-full bg-violet-500 text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-[0.16em]">Tiết kiệm</span>
                             <span class="block text-white font-black text-sm md:text-base">1 Năm</span>
                             <span class="block text-slate-500 text-[11px] font-semibold mt-1">Lợi nhất</span>
                         </button>
@@ -1364,7 +1371,7 @@
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span id="membership-plus-monthly" class="text-[#4fb9fd] text-sm font-black">~75K/tháng</span>
-                                <span id="membership-plus-badge" class="hidden rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#4fb9fd]"></span>
+                                <span id="membership-plus-badge" class="hidden rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#4fb9fd]"></span>
                             </div>
                         </div>
 
@@ -1381,7 +1388,7 @@
                     </div>
 
                     <div id="membership-card-pro" class="rounded-[2rem] border border-[#4fb9fd]/30 bg-[linear-gradient(180deg,rgba(79,185,253,0.10),rgba(255,255,255,0.03))] p-6 md:p-7 shadow-[0_24px_70px_rgba(79,185,253,0.10)] relative overflow-hidden">
-                        <div class="absolute top-4 right-4 rounded-full bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1 uppercase tracking-widest">Khuyên dùng</div>
+                        <div class="absolute top-4 right-4 rounded-full bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1 uppercase tracking-[0.16em]">Khuyên dùng</div>
                         <div class="flex items-start justify-between gap-4 mb-6 pr-24 md:pr-28">
                             <div>
                                 <div class="text-[#ff9857] font-black text-lg md:text-xl mb-1">VizLab Pro</div>
@@ -1398,7 +1405,7 @@
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span id="membership-pro-monthly" class="text-[#4fb9fd] text-sm font-black">~98K/tháng</span>
-                                <span id="membership-pro-badge" class="hidden rounded-full bg-white/8 border border-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-slate-200"></span>
+                                <span id="membership-pro-badge" class="hidden rounded-full bg-white/8 border border-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-200"></span>
                             </div>
                         </div>
 
@@ -1426,12 +1433,13 @@
             <form id="membership-form" onsubmit="submitMembershipForm(event)" class="hidden grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]" style="display:none;">
                 <div class="p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
                     <button type="button" onclick="backToMembershipPlans()" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-5 transition-all"><i class="fas fa-arrow-left"></i> Quay lại chọn gói</button>
-                    <div class="flex items-center gap-2 mb-5"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-crown"></i></span><h4 class="text-white font-black text-lg">Thông tin đăng ký Hội Viên</h4></div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Họ và tên</label>
+                    <div class="flex items-center gap-2 mb-3"><span class="h-7 w-7 rounded-xl bg-white/10 text-[#4fb9fd] flex items-center justify-center text-xs"><i class="fas fa-crown"></i></span><h4 class="text-white font-black text-lg">Thông tin đăng ký Hội Viên</h4></div>
+
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Họ và tên</label>
                     <input id="membership-fullname" name="ho_ten" type="text" required placeholder="Nhập họ và tên của bạn" oninput="updateMembershipTransferNote()" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Email kích hoạt</label>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Email kích hoạt</label>
                     <input id="membership-email" name="email_kich_hoat" type="email" required placeholder="email@example.com" class="w-full mb-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Số điện thoại / Zalo <span class="normal-case tracking-normal text-slate-600">(không bắt buộc)</span></label>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.16em] mb-1.5 pl-1">Số điện thoại / Zalo <span class="normal-case tracking-normal text-slate-600">(không bắt buộc)</span></label>
                     <input id="membership-phone" name="so_dien_thoai" type="tel" placeholder="Để hỗ trợ nếu nhập sai email" class="w-full mb-5 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#4fb9fd]/70 focus:bg-white/10 transition-all">
                     <div class="grid grid-cols-2 gap-2 mb-5">
                         <label class="membership-payment-option cursor-pointer rounded-2xl border border-[#4fb9fd] bg-[#4fb9fd]/10 px-3 py-3 hover:bg-white/10 hover:border-[#4fb9fd]/50 transition-all" data-membership-payment-card="momo"><input type="radio" name="phuong_thuc_thanh_toan" value="MoMo" class="sr-only" checked onchange="selectMembershipPaymentMethod('momo')"><div class="flex items-center gap-2.5"><div class="h-8 w-8 rounded-xl bg-white/8 border border-white/10 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-wallet text-sm"></i></div><div><div class="text-white font-black text-sm">MoMo</div><div class="text-slate-500 text-[10px] font-semibold">Ví điện tử</div></div></div></label>
@@ -1453,7 +1461,7 @@
                     <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-4 md:p-5 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
                         <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-5 items-center">
                             <div class="relative w-48 h-48 rounded-[1.35rem] overflow-hidden bg-white p-3 shrink-0 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10"><img id="membership-payment-qr-image" src="https://iili.io/f9UTZhv.jpg" alt="QR thanh toán hội viên" class="w-full h-full object-contain"></div>
-                            <div class="flex-1 text-center sm:text-left lg:text-center xl:text-left"><h5 id="membership-payment-title" class="text-white font-black text-lg mb-2">Quét mã MoMo để thanh toán</h5><p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán xong, tick xác nhận rồi gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt hội viên theo email bạn cung cấp.</p><div class="rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 p-3 text-xs text-slate-300"><div class="font-black text-[#4fb9fd] uppercase tracking-widest text-[10px] mb-1">Nội dung chuyển khoản</div><div id="membership-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div></div></div>
+                            <div class="flex-1 text-center sm:text-left lg:text-center xl:text-left"><h5 id="membership-payment-title" class="text-white font-black text-lg mb-2">Quét mã MoMo để thanh toán</h5><p class="text-slate-400 text-sm leading-relaxed mb-3">Sau khi thanh toán xong, tick xác nhận rồi gửi đăng ký. Bên mình sẽ kiểm tra và kích hoạt hội viên theo email bạn cung cấp.</p><div class="rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 p-3 text-xs text-slate-300"><div class="font-black text-[#4fb9fd] uppercase tracking-[0.16em] text-[10px] mb-1">Nội dung chuyển khoản</div><div id="membership-transfer-note" class="text-white font-black text-sm break-words">Tên học viên</div></div><div id="membership-countdown-box" class="mt-4 rounded-2xl border border-[#4fb9fd]/25 bg-[#4fb9fd]/8 px-4 py-3.5 text-center shadow-[0_0_24px_rgba(79,185,253,0.10)] backdrop-blur-md"><div class="relative flex items-center justify-center gap-2 whitespace-nowrap"><i class="fas fa-clock text-[#4fb9fd] text-xs"></i><span class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Đơn hàng sẽ hết hạn sau</span><span id="membership-countdown" class="font-black tabular-nums text-white text-2xl md:text-3xl leading-none tracking-tight">10:00</span></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -1499,7 +1507,7 @@
                     </div>
                     <div class="flex gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full self-start md:self-auto backdrop-blur-md">
                         <span class="flex h-3 w-3 relative mt-0.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-gray-300"></span></span>
-                        <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">Thực Chiến</span>
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-[0.16em]">Thực Chiến</span>
                     </div>
                 </div>
 
@@ -2728,7 +2736,7 @@
                             <img src="${course.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy" decoding="async">
                         </div>
                         <div class="p-6 flex flex-col flex-1 relative z-20">
-                            <span class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
+                            <span class="text-[10px] uppercase font-black tracking-[0.16em] text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
                             <h3 class="text-white font-bold text-lg leading-snug line-clamp-2 mb-6 transition-colors duration-300 ${textGlow}">${course.title}</h3>
                             <div class="mt-auto flex justify-between items-end border-t border-white/5 pt-4">
                                 <div>
@@ -2756,7 +2764,7 @@
             container.appendChild(allBtn);
 
             const accountLabel = document.createElement('span');
-            accountLabel.className = "text-[9px] uppercase font-black text-slate-600 tracking-widest pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0";
+            accountLabel.className = "text-[9px] uppercase font-black text-slate-600 tracking-[0.16em] pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0";
             accountLabel.innerText = "Tài khoản";
             container.appendChild(accountLabel);
 
@@ -2787,7 +2795,7 @@
 
             for(const [groupName, items] of Object.entries(groups)) {
                 const label = document.createElement('span');
-                label.className = "text-[9px] uppercase font-black text-slate-600 tracking-widest pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0"; label.innerText = groupName;
+                label.className = "text-[9px] uppercase font-black text-slate-600 tracking-[0.16em] pl-[21px] pr-3 opacity-0 group-hover:opacity-100 transition-opacity block mt-4 mb-1.5 whitespace-nowrap shrink-0"; label.innerText = groupName;
                 container.appendChild(label);
 
                 items.forEach(src => {
@@ -2850,7 +2858,7 @@
                     <div class="bg-[#0f172a] h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
                         <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
                         <div class="p-6 md:p-8 flex flex-col flex-1 -mt-12 relative z-10">
-                            <span class="text-[10px] uppercase font-black tracking-widest text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
+                            <span class="text-[10px] uppercase font-black tracking-[0.16em] text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
                             <h3 class="text-lg md:text-xl font-black text-white leading-tight mb-3 ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${course.title}</h3>
                             <p class="text-slate-400 font-medium text-xs md:text-sm line-clamp-1 mb-6">${course.subtitle || 'Lộ trình tối ưu chuyên nghiệp.'}</p>
                             <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-4">
@@ -2922,6 +2930,55 @@
                 document.body.scrollTop = 0;
             } else {
                 library.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        const CHECKOUT_COUNTDOWN_SECONDS = 10 * 60;
+        let checkoutCountdownInterval = null;
+        let membershipCountdownInterval = null;
+
+        function formatCountdownTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function startPaymentCountdown(targetId, intervalName) {
+            const timerEl = document.getElementById(targetId);
+            if (!timerEl) return;
+
+            if (window[intervalName]) {
+                clearInterval(window[intervalName]);
+            }
+
+            let remaining = CHECKOUT_COUNTDOWN_SECONDS;
+            timerEl.textContent = formatCountdownTime(remaining);
+
+            window[intervalName] = setInterval(() => {
+                remaining -= 1;
+
+                if (remaining <= 0) {
+                    clearInterval(window[intervalName]);
+                    window[intervalName] = null;
+                    timerEl.textContent = "00:00";
+
+                    const messageId = targetId === "checkout-countdown" ? "checkout-message" : "membership-message";
+                    const messageEl = document.getElementById(messageId);
+                    if (messageEl) {
+                        messageEl.className = "mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed bg-amber-500/10 border border-amber-500/20 text-slate-400";
+                        messageEl.textContent = "Đơn hàng đã hết thời gian giữ thanh toán. Bạn có thể bấm gửi nếu đã thanh toán, hoặc đóng và mở lại để tạo lượt thanh toán mới.";
+                    }
+                    return;
+                }
+
+                timerEl.textContent = formatCountdownTime(remaining);
+            }, 1000);
+        }
+
+        function stopPaymentCountdown(intervalName) {
+            if (window[intervalName]) {
+                clearInterval(window[intervalName]);
+                window[intervalName] = null;
             }
         }
 
@@ -3059,6 +3116,7 @@
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
                 document.body.classList.add('overflow-hidden');
+                startPaymentCountdown('checkout-countdown', 'checkoutCountdownInterval');
             }
         }
 
@@ -3068,6 +3126,7 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.body.classList.remove('overflow-hidden');
+                stopPaymentCountdown('checkoutCountdownInterval');
             }
         }
 
@@ -3278,12 +3337,14 @@
             if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; }
             selectMembershipPaymentMethod('momo');
             updateMembershipTransferNote();
+            startPaymentCountdown('membership-countdown', 'membershipCountdownInterval');
         }
         function backToMembershipPlans() {
             const plansView = document.getElementById('membership-plans-view');
             const paymentView = document.getElementById('membership-form');
             if (paymentView) { paymentView.classList.add('hidden'); paymentView.style.display = 'none'; }
             if (plansView) plansView.classList.remove('hidden');
+            stopPaymentCountdown('membershipCountdownInterval');
         }
         function openMembershipModal() {
             currentMembershipDuration = '6months';
@@ -3304,14 +3365,14 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
             selectMembershipPlan('pro_6months');
             if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.classList.add('overflow-hidden'); }
         }
-        function closeMembershipModal() { const modal = document.getElementById('membership-modal'); if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.classList.remove('overflow-hidden'); } }
+        function closeMembershipModal() { const modal = document.getElementById('membership-modal'); if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.classList.remove('overflow-hidden'); stopPaymentCountdown('membershipCountdownInterval'); } }
         function showMembershipMessage(text, type = 'success') { const message = document.getElementById('membership-message'); if (!message) return; const base = 'mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.className = base + (type === 'error' ? ' bg-red-500/10 border border-red-500/20 text-red-300' : ' bg-emerald-500/10 border border-emerald-500/20 text-emerald-300'); message.textContent = text; }
         async function submitMembershipForm(event) {
             event.preventDefault(); const form = event.target; const confirmed = document.getElementById('membership-payment-confirmed'); const submitBtn = document.getElementById('membership-submit-btn'); const hiddenUser = document.getElementById('membership-hidden-user');
             if (!confirmed || !confirmed.checked) { showMembershipMessage('Bạn cần tick xác nhận đã thanh toán trước khi gửi đăng ký hội viên.', 'error'); return; }
             updateMembershipTransferNote(); selectMembershipPlan('pro_6months'); if (hiddenUser) hiddenUser.value = currentUser && currentUser.email ? currentUser.email : 'Chưa đăng nhập';
             if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang gửi đăng ký...'; }
-            try { const response = await fetch('https://formspree.io/f/xrbavvpy', { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } }); if (!response.ok) throw new Error('Formspree error'); showMembershipMessage('Đăng ký hội viên thành công. Bên mình sẽ kiểm tra giao dịch và kích hoạt tài khoản theo email bạn cung cấp.', 'success'); if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký'; }
+            try { const response = await fetch('https://formspree.io/f/xrbavvpy', { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } }); if (!response.ok) throw new Error('Formspree error'); showMembershipMessage('Đăng ký hội viên thành công. Bên mình sẽ kiểm tra giao dịch và kích hoạt tài khoản theo email bạn cung cấp.', 'success'); stopPaymentCountdown('membershipCountdownInterval'); if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đã gửi đăng ký'; }
             catch (error) { console.error('Lỗi gửi đăng ký hội viên:', error); showMembershipMessage('Chưa gửi được đăng ký. Bạn kiểm tra mạng rồi thử lại hoặc liên hệ Zalo/Messenger để được hỗ trợ.', 'error'); if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký hội viên'; } }
         }
 
