@@ -804,6 +804,74 @@
             }
         }
 
+
+        /* Performance polish for smoother PC + mobile interactions */
+        #course-grid {
+            contain: layout paint;
+            will-change: contents;
+        }
+
+        .course-card,
+        .special-card {
+            contain: content;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        #top-library-toolbar,
+        #checkout-modal,
+        #membership-modal {
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        #mobile-topic-sheet {
+            backface-visibility: hidden;
+            will-change: transform;
+        }
+
+        #cart-drawer {
+            backface-visibility: hidden;
+            will-change: transform;
+        }
+
+        #course-grid.is-filtering {
+            opacity: .72;
+            transition: opacity .16s ease;
+        }
+
+        @media (max-width: 767px) {
+            .course-card:hover,
+            .special-card:hover {
+                transform: none !important;
+            }
+            .course-card img,
+            .special-card img {
+                transition-duration: 260ms !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+    
+
+        /* Fix: mobile topic sheet must stay hidden until user taps Chủ Đề */
+        @media (max-width: 767px) {
+            #mobile-topic-sheet.mobile-topic-sheet {
+                transform: translateY(calc(100% + 110px));
+            }
+            #mobile-topic-sheet.mobile-topic-sheet.is-open {
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen w-full antialiased relative">
@@ -1256,7 +1324,7 @@
                     <div class="animate-pulse bg-white/5 h-64 rounded-2xl"></div>
                     <div class="animate-pulse bg-white/5 h-64 rounded-2xl"></div>
                 </div>
-                <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden"></div>
+                <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden transition-opacity duration-150"></div>
             </section>
 
             <footer class="mt-10 md:mt-16 mb-10 md:mb-6 relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
@@ -1681,6 +1749,11 @@
         const GUEST_CART_KEY = "vizlab_cart_guest";
         let favoriteCourseIds = [];
         const GUEST_FAVORITES_KEY = "vizlab_favorites_guest";
+        let NORMALIZED_SPECIAL_ROADMAPS = [];
+        let searchDebounceTimer = null;
+        let searchRenderFrame = null;
+        let lastFilterSignature = "";
+        const SEARCH_DEBOUNCE_MS = 190;
 
         function getCartStorageKey() {
             if (currentUser && currentUser.id) {
@@ -1859,7 +1932,8 @@
             });
 
             const results = await Promise.all(fetchPromises);
-            ALL_COURSES = results.flat(); 
+            ALL_COURSES = results.flat().map(prepareCourseForSearch); 
+            refreshNormalizedSpecialRoadmaps();
 
             loadCartFromStorage();
             loadFavoriteCoursesFromStorage();
@@ -1910,15 +1984,44 @@
             });
         }
 
-        function toggleCart() {
+        function isCartOpen() {
             const drawer = document.getElementById('cart-drawer');
-            const isHidden = drawer.classList.contains('translate-x-full');
-            if(isHidden) {
-                drawer.classList.remove('translate-x-full');
-                drawer.classList.add('translate-x-0');
+            return drawer && drawer.dataset.open === 'true';
+        }
+
+        function openCart() {
+            const drawer = document.getElementById('cart-drawer');
+            if (!drawer) return;
+            drawer.dataset.open = 'true';
+            drawer.classList.remove('translate-x-full');
+            drawer.classList.add('translate-x-0');
+            drawer.style.transform = 'translate3d(0, 0, 0)';
+            document.body.classList.add('cart-open');
+        }
+
+        function closeCart() {
+            const drawer = document.getElementById('cart-drawer');
+            if (!drawer) return;
+            drawer.dataset.open = 'false';
+            drawer.classList.remove('translate-x-0');
+            drawer.classList.add('translate-x-full');
+            drawer.style.transform = 'translate3d(100%, 0, 0)';
+            document.body.classList.remove('cart-open');
+        }
+
+        function toggleCart(forceOpen) {
+            if (forceOpen === true) {
+                openCart();
+                return;
+            }
+            if (forceOpen === false) {
+                closeCart();
+                return;
+            }
+            if (isCartOpen()) {
+                closeCart();
             } else {
-                drawer.classList.remove('translate-x-0');
-                drawer.classList.add('translate-x-full');
+                openCart();
             }
         }
 
@@ -1939,8 +2042,7 @@
     const alreadyInCart = cart.some(item => item.id === course.id);
 
     if (alreadyInCart) {
-        const drawer = document.getElementById("cart-drawer");
-        if (drawer.classList.contains("translate-x-full")) toggleCart();
+        openCart();
         return;
     }
 
@@ -1949,8 +2051,7 @@
     updateCartUI();
     executeSearchAndFilter();
 
-    const drawer = document.getElementById("cart-drawer");
-    if (drawer.classList.contains("translate-x-full")) toggleCart();
+    openCart();
 }
 
         function removeFromCart(index) {
@@ -2037,28 +2138,84 @@
         }
 
         function removeAccents(str) {
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+            return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
         }
 
-        // HÀM CHÍNH ĐỂ RENDER (Được gọi lại mỗi khi Auth / giỏ hàng / yêu thích thay đổi)
-        window.executeSearchAndFilter = function() {
-            const searchEl = document.getElementById('search-input');
-            const rawKeyword = searchEl ? searchEl.value.toLowerCase().trim() : '';
-            const keyword = removeAccents(rawKeyword); 
-            const searchTerms = keyword.split(/\s+/).filter(t => t.length > 0);
+        function buildCourseSearchText(course) {
+            const tags = searchTags[course.category] || [];
+            return removeAccents([
+                course.title,
+                course.categoryName,
+                course.topicName,
+                course.category,
+                course.topic,
+                course.level,
+                ...(Array.isArray(course.tags) ? course.tags : []),
+                ...tags
+            ].filter(Boolean).join(' ').toLowerCase());
+        }
 
-            const normalizedSpecialRoadmaps = SPECIAL_ROADMAPS_DATA.map(course => ({
+        function prepareCourseForSearch(course) {
+            return {
+                ...course,
+                _searchText: buildCourseSearchText(course)
+            };
+        }
+
+        function refreshNormalizedSpecialRoadmaps() {
+            NORMALIZED_SPECIAL_ROADMAPS = SPECIAL_ROADMAPS_DATA.map(course => prepareCourseForSearch({
                 ...course,
                 categoryName: course.categoryName || 'Bệ Phóng Chuyên Nghiệp',
                 topicName: course.topicName || 'Lộ trình đặc biệt',
                 topic: course.topic || course.category,
                 isSpecialRoadmap: true
             }));
+        }
+
+        function scheduleSearchAndFilter() {
+            clearTimeout(searchDebounceTimer);
+            if (searchRenderFrame) cancelAnimationFrame(searchRenderFrame);
+
+            const grid = document.getElementById('course-grid');
+            if (grid) grid.classList.add('is-filtering');
+
+            searchDebounceTimer = setTimeout(() => {
+                searchRenderFrame = requestAnimationFrame(() => {
+                    if (typeof executeSearchAndFilter === "function") {
+                        executeSearchAndFilter({ fromSearch: true });
+                    }
+                    if (grid) grid.classList.remove('is-filtering');
+                    searchRenderFrame = null;
+                });
+            }, SEARCH_DEBOUNCE_MS);
+        }
+
+        // HÀM CHÍNH ĐỂ RENDER (Được gọi lại mỗi khi Auth / giỏ hàng / yêu thích thay đổi)
+        window.executeSearchAndFilter = function(options = {}) {
+            const searchEl = document.getElementById('search-input');
+            const rawKeyword = searchEl ? searchEl.value.toLowerCase().trim() : '';
+            const keyword = removeAccents(rawKeyword); 
+            const searchTerms = keyword.split(/\s+/).filter(t => t.length > 0);
+            const filterSignature = [
+                currentSelectedCategory,
+                currentSelectedFilterChip,
+                keyword,
+                currentUser ? currentUser.id : 'guest',
+                userIsActiveMember ? 'member' : 'nomember',
+                ownedCourseIds.join('|'),
+                favoriteCourseIds.join('|'),
+                cart.map(item => item.id).join('|')
+            ].join('::');
+
+            if (options.fromSearch && filterSignature === lastFilterSignature) {
+                return;
+            }
+            lastFilterSignature = filterSignature;
 
             // Riêng mục yêu thích cần lấy cả khóa thường trong Vũ Trụ Sáng Tạo
             // và các lộ trình trong Bệ Phóng Chuyên Nghiệp.
             let filtered = currentSelectedFilterChip === 'favorite'
-                ? [...ALL_COURSES, ...normalizedSpecialRoadmaps]
+                ? [...ALL_COURSES, ...NORMALIZED_SPECIAL_ROADMAPS]
                 : ALL_COURSES;
 
             if (currentSelectedCategory !== 'all') {
@@ -2085,11 +2242,7 @@
 
             if (searchTerms.length > 0) {
                 filtered = filtered.filter(c => {
-                    const titleNoAccent = removeAccents((c.title || '').toLowerCase());
-                    const catNoAccent = removeAccents((c.categoryName || c.topicName || c.category || '').toLowerCase());
-                    const tags = searchTags[c.category] || [];
-                    const searchableText = `${titleNoAccent} ${catNoAccent} ${removeAccents(tags.join(' '))}`;
-
+                    const searchableText = c._searchText || buildCourseSearchText(c);
                     return searchTerms.every(term => searchableText.includes(term));
                 });
             }
@@ -2124,7 +2277,9 @@
             }
 
             renderCourses(filtered);
-            renderSpecialRoadmaps(); 
+            if (!options.fromSearch) {
+                renderSpecialRoadmaps();
+            }
         }
 
         function renderCourses(courses) {
@@ -2183,7 +2338,7 @@
                 const isMember = course.type === 'member';
                 const hasDiscount = course.originalPrice > 0; 
                 const card = document.createElement('div');
-                card.className = "group relative rounded-[1.5rem] cursor-pointer transition-all duration-500 hover:-translate-y-3 z-10 hover:z-20";
+                card.className = "course-card group relative rounded-[1.5rem] cursor-pointer transition-all duration-500 hover:-translate-y-3 z-10 hover:z-20";
                 card.onclick = () => { window.open(course.href, '_blank'); };
                 
                 const glowGradients = isMember ? 'from-slate-400/50 to-transparent shadow-[0_0_30px_rgba(226,232,240,0.2)]' : 'from-[#4fb9fd]/50 to-transparent shadow-[0_0_30px_rgba(79,185,253,0.2)]';
@@ -2224,7 +2379,7 @@
                         ${course.isSpecialRoadmap && !isInCart && !isMember ? `<div class="absolute top-4 left-4 z-20 bg-purple-500 text-white text-[10px] font-black px-3 py-1.5 rounded-md shadow-[0_0_15px_rgba(168,85,247,0.35)] uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-route"></i> Lộ trình</div>` : ''}
                         <div class="aspect-video relative overflow-hidden bg-black">
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
-                            <img src="${course.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy">
+                            <img src="${course.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy" decoding="async">
                         </div>
                         <div class="p-6 flex flex-col flex-1 relative z-20">
                             <span class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
@@ -2316,7 +2471,7 @@
 
                 card.innerHTML = `
                     <div class="bg-[#0f172a] h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
-                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
+                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
                         <div class="p-6 md:p-8 flex flex-col flex-1 -mt-12 relative z-10">
                             <span class="text-[10px] uppercase font-black tracking-widest text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
                             <h3 class="text-lg md:text-xl font-black text-white leading-tight mb-3 ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${course.title}</h3>
@@ -2794,9 +2949,18 @@
 
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
-                searchInput.addEventListener('input', () => {
-                    if (typeof executeSearchAndFilter === "function") {
-                        executeSearchAndFilter();
+                let isComposingSearch = false;
+                searchInput.setAttribute('autocomplete', 'off');
+                searchInput.setAttribute('inputmode', 'search');
+                searchInput.addEventListener('compositionstart', () => { isComposingSearch = true; });
+                searchInput.addEventListener('compositionend', () => { isComposingSearch = false; scheduleSearchAndFilter(); });
+                searchInput.addEventListener('input', () => { if (!isComposingSearch) scheduleSearchAndFilter(); });
+                searchInput.addEventListener('search', scheduleSearchAndFilter);
+                searchInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        searchInput.value = '';
+                        scheduleSearchAndFilter();
+                        searchInput.blur();
                     }
                 });
             }
