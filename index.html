@@ -1492,7 +1492,7 @@
                         <i class="fas fa-sparkles text-[#4fb9fd]"></i> Bảng giá hội viên
                     </div>
                     <h2 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4">Mở khóa hệ sinh thái học tập <span class="text-[#4fb9fd]">VizLab</span></h2>
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">Plus phù hợp nếu bạn muốn học toàn bộ thư viện khóa học thường. Pro phù hợp nếu bạn muốn mở toàn bộ hệ thống, bao gồm cả Bệ Phóng Chuyên Nghiệp.</p>
+                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">Chọn Plus nếu bạn muốn học thư viện khóa học thường. Chọn Pro nếu bạn muốn mở toàn bộ hệ sinh thái, bao gồm các lộ trình chuyên sâu trong Bệ Phóng Chuyên Nghiệp.</p>
                 </div>
 
                 <div class="flex justify-center mb-6">
@@ -1543,7 +1543,7 @@
                         <button type="button" onclick="openMembershipPaymentByTier('plus')" class="w-full rounded-[1.25rem] bg-white/8 border border-white/10 text-white font-black py-4 hover:bg-white/12 transition-all mb-6">Chọn gói Plus</button>
 
                         <div class="space-y-3 text-sm text-slate-300">
-                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Bao gồm</div>
+                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Phù hợp khi bạn muốn</div>
                             <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Truy cập toàn bộ khóa học trong <strong class="text-white">Vũ Trụ Sáng Tạo</strong></span></div>
                             <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Học không giới hạn trong thời hạn gói</span></div>
                             <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Phụ đề, tài nguyên, file đính kèm nếu khóa hỗ trợ</span></div>
@@ -1553,11 +1553,11 @@
                     </div>
 
                     <div id="membership-card-pro" class="rounded-[2rem] border border-[#4fb9fd]/30 bg-[linear-gradient(180deg,rgba(79,185,253,0.10),rgba(255,255,255,0.03))] p-6 md:p-7 shadow-[0_24px_70px_rgba(79,185,253,0.10)] relative overflow-hidden">
-                        <div class="absolute top-4 right-4 rounded-full bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1 uppercase tracking-[0.16em]">Khuyên dùng</div>
+                        <div class="absolute top-4 right-4 rounded-full bg-[#4fb9fd] text-[#020617] text-[10px] font-black px-3 py-1 uppercase tracking-[0.16em]">Đáng chọn nhất</div>
                         <div class="flex items-start justify-between gap-4 mb-6 pr-24 md:pr-28">
                             <div>
                                 <div class="text-[#ff9857] font-black text-lg md:text-xl mb-1">VizLab Pro</div>
-                                <p class="text-slate-300 text-sm font-semibold">Toàn bộ Plus + Bệ Phóng Chuyên Nghiệp</p>
+                                <p class="text-slate-300 text-sm font-semibold">Mở toàn bộ Plus + lộ trình chuyên sâu</p>
                             </div>
                             <div class="h-11 w-11 rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 text-[#4fb9fd] flex items-center justify-center shrink-0"><i class="fas fa-crown text-sm"></i></div>
                         </div>
@@ -1572,17 +1572,21 @@
                                 <span id="membership-pro-monthly" class="text-[#4fb9fd] text-sm font-black">~98K/tháng</span>
                                 <span id="membership-pro-badge" class="hidden rounded-full bg-white/8 border border-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-200"></span>
                             </div>
+                            <div id="membership-pro-upgrade-note" class="mt-4 rounded-2xl border border-[#4fb9fd]/20 bg-[#4fb9fd]/10 px-4 py-3 text-sm font-black text-white leading-relaxed">Chỉ thêm 141K so với Plus để mở khóa Bệ Phóng Chuyên Nghiệp</div>
+                            <div class="mt-2 text-xs text-slate-400 font-semibold leading-relaxed">Phù hợp nhất nếu bạn học nghiêm túc để làm nghề, làm portfolio hoặc nhận job.</div>
+                            <div class="flex items-center gap-2 flex-wrap hidden">
+                            </div>
                         </div>
 
-                        <button type="button" onclick="openMembershipPaymentByTier('pro')" class="w-full rounded-[1.25rem] bg-[#4fb9fd] text-[#020617] font-black py-4 shadow-[0_0_24px_rgba(79,185,253,0.20)] hover:shadow-[0_0_34px_rgba(79,185,253,0.30)] hover:-translate-y-0.5 transition-all mb-6">Chọn gói Pro</button>
+                        <button type="button" onclick="openMembershipPaymentByTier('pro')" class="w-full rounded-[1.25rem] bg-[#4fb9fd] text-[#020617] font-black py-4 shadow-[0_0_24px_rgba(79,185,253,0.20)] hover:shadow-[0_0_34px_rgba(79,185,253,0.30)] hover:-translate-y-0.5 transition-all mb-6">Chọn Pro — Mở khóa toàn bộ</button>
 
                         <div class="space-y-3 text-sm text-slate-200">
-                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Bao gồm</div>
+                            <div class="text-slate-500 font-black uppercase tracking-[0.18em] text-[10px] mb-3">Bạn nhận được</div>
                             <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Bao gồm toàn bộ quyền lợi của <strong class="text-white">VizLab Plus</strong></span></div>
-                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa toàn bộ phần <strong class="text-white">Bệ Phóng Chuyên Nghiệp</strong></span></div>
-                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Phù hợp nếu bạn học nghiêm túc, dài hạn</span></div>
-                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Ưu tiên cho các combo / lộ trình chuyên sâu khi có áp dụng</span></div>
-                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa toàn bộ hệ thống học tập VizLab</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa <strong class="text-white">Bệ Phóng Chuyên Nghiệp</strong> — nhóm lộ trình giá trị cao nhất</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Phù hợp để học bài bản về 3D, Game, Design và AI sáng tạo</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Hỗ trợ định hướng học theo mục tiêu: portfolio, kỹ năng nghề hoặc nhận job</span></div>
+                            <div class="flex gap-3"><i class="fas fa-check text-[#4fb9fd] mt-1 text-xs"></i><span>Mở khóa toàn bộ hệ thống học tập VizLab trong thời hạn gói</span></div>
                         </div>
                     </div>
                 </div>
@@ -1816,7 +1820,7 @@
                 <div class="flex items-end justify-between mb-6 md:mb-8 border-b border-white/10 pb-4 relative">
                     <div>
                         <h2 class="text-2xl font-black text-white tracking-tight mb-1">Bệ Phóng Chuyên Nghiệp</h2>
-                        <p class="text-slate-400 font-medium text-sm">Hành trình bài bản từ con số 0 đến 3D Artist thực chiến.</p>
+                        <p class="text-slate-400 font-medium text-sm">Ưu đãi mở bán trong thời gian giới hạn · đăng ký sớm để giữ mức giá tốt.</p>
                     </div>
                     
                     <div id="slider-progress-container" class="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full overflow-hidden">
@@ -1827,6 +1831,30 @@
                         <span id="toggle-text">Xem tất cả (8)</span>
                         <i class="fas fa-chevron-down" id="toggle-icon"></i>
                     </button>
+                </div>
+
+                <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="rounded-2xl border border-[#4fb9fd]/20 bg-[#4fb9fd]/10 px-4 py-3 flex items-center gap-3 shadow-[0_14px_34px_rgba(79,185,253,0.08)]">
+                        <div class="h-9 w-9 rounded-xl bg-[#4fb9fd]/15 text-[#7dd3fc] flex items-center justify-center shrink-0"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <div class="text-white text-sm font-black leading-tight">Giá mở bán hấp dẫn</div>
+                            <div class="text-slate-400 text-[11px] font-semibold mt-0.5">Đăng ký sớm để giữ mức giá hiện tại</div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl border border-violet-400/20 bg-violet-500/10 px-4 py-3 flex items-center gap-3 shadow-[0_14px_34px_rgba(139,92,246,0.08)]">
+                        <div class="h-9 w-9 rounded-xl bg-violet-500/15 text-violet-300 flex items-center justify-center shrink-0"><i class="fas fa-fire"></i></div>
+                        <div>
+                            <div class="text-white text-sm font-black leading-tight">Số lượng ưu đãi có hạn</div>
+                            <div class="text-slate-400 text-[11px] font-semibold mt-0.5">Đăng ký sớm để giữ giá tốt</div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 flex items-center gap-3 shadow-[0_14px_34px_rgba(0,0,0,0.18)]">
+                        <div class="h-9 w-9 rounded-xl bg-white/8 text-slate-200 flex items-center justify-center shrink-0"><i class="fas fa-gift"></i></div>
+                        <div>
+                            <div class="text-white text-sm font-black leading-tight">Học trọn đời</div>
+                            <div class="text-slate-400 text-[11px] font-semibold mt-0.5">Học trọn đời & tài nguyên học</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="relative group/slider-zone">
@@ -1883,7 +1911,7 @@
                                     <i class="fas fa-check-circle"></i> Học trọn đời
                                 </span>
                                 <span class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-3 py-2 text-[11px] font-black text-[#4fb9fd] uppercase tracking-wider">
-                                    <i class="fas fa-closed-captioning"></i> Có phụ đề
+                                    <i class="fas fa-box-open"></i> Tài nguyên học
                                 </span>
                                 <span class="inline-flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-3 py-2 text-[11px] font-black text-orange-300 uppercase tracking-wider">
                                     <i class="fas fa-bolt"></i> Kích hoạt nhanh
@@ -2309,14 +2337,14 @@
         // 2. DỮ LIỆU & RENDER WEBSITE
         // ----------------------------------------------------
         const SPECIAL_ROADMAPS_DATA = [
-            { id: 'roadmap-zbrush-1', title: 'ZBrush Masterclass: Quy Trình Thiết Kế, Điêu Khắc 3D & Tối Ưu Sản Xuất Khép', subtitle: 'Khóa học Toàn Diện nhất', category: 'zbrush', price: 499000, href: 'https://www.vizlab3d.org/list/combo-làm-chủ-thiết-kế-in-3d/zbrush-masterclass-quy-trình-thiết-kế-điêu-khắc-3d-tối-ưu-sản-xuất-khép', image: 'https://iili.io/B6e057f.jpg', rating: 5.0, originalPrice: 990000, type: 'paid', cc: true, specialBadge: '🔥 COMBO HOT', isFeaturedCombo: true },
-            { id: 'roadmap-blender-1', title: 'Lộ trình Blender Toàn Diện 9 Giai Đoạn', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 599000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước', image: 'https://iili.io/KcQ48ru.png', rating: 4.92, originalPrice: 539000, type: 'paid', cc: true, specialBadge: '30% OFF' },
-            { id: 'roadmap-blender-2', title: 'Nâng Tầm Hình Ảnh Sản Phẩm Với Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/nâng-tầm-hình-ảnh-sản-phẩm-với-blender', image: 'https://iili.io/KEkzL3g.png', rating: 4.93, originalPrice: 459000, type: 'paid', cc: true, specialBadge: '30% OFF' },
-            { id: 'roadmap-animation-1', title: 'Lộ trình Blender Animation Chuyên Sâu', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'animation', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/khóa-học-blender-animation-chuyên-sâu', image: 'https://i.postimg.cc/sxJzj9vj/1104-2.gif', rating: 4.96, originalPrice: 0, type: 'paid', cc: true },
-            { id: 'roadmap-blender-3', title: 'Dựng Nhân Vật 3D Chuyên Sâu trong Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/combo-dựng-nhân-vật-blender-lộ-trình-9-giai-đoạn-tặng-kèm', image: 'https://iili.io/Kv3NgVI.png', rating: 4.94, originalPrice: 0, type: 'paid', cc: true },
-            { id: 'roadmap-zbrush-2', title: 'Biến Nhân Vật Anime Thành Figure 3D', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 459000, href: 'https://www.vizlab3d.org/biến-nhân-vật-anime-thành-figure-3d', image: 'https://iili.io/f9mmld7.png', rating: 4.97, originalPrice: 0, type: 'paid', cc: true, specialBadge: '30% OFF' },
-            { id: 'roadmap-zbrush-3', title: 'Thành thạo Zbrush Điêu Khắc Nhân vật', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 395000, href: 'https://www.vizlab3d.org/zbp0a/thành-thạo-zbrush-điêu-khắc-nhân-vật-3d-cho-người-mới-bắt-đầu', image: 'https://iili.io/fB50Wjn.jpg', rating: 4.91, originalPrice: 0, type: 'paid', cc: true, specialBadge: '65% OFF' },
-            { id: 'roadmap-blender-4', title: 'Nhập Môn Blender Toàn Diện', subtitle: 'Từ Cơ Bản - Trung Cấp', category: 'blender', price: 399000, href: 'https://www.vizlab3d.org/list/khóa-học-nhập-môn-blender-toàn-diện', image: 'https://iili.io/fA6kDf2.png', rating: 4.98, originalPrice: 0, type: 'paid', cc: true, specialBadge: '78% OFF' }
+            { id: 'roadmap-zbrush-1', title: 'ZBrush Masterclass: Quy Trình Thiết Kế, Điêu Khắc 3D & Tối Ưu Sản Xuất Khép', subtitle: 'Khóa học Toàn Diện nhất', category: 'zbrush', price: 499000, href: 'https://www.vizlab3d.org/list/combo-làm-chủ-thiết-kế-in-3d/zbrush-masterclass-quy-trình-thiết-kế-điêu-khắc-3d-tối-ưu-sản-xuất-khép', image: 'https://iili.io/B6e057f.jpg', rating: 5.0, originalPrice: 1290000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán', isFeaturedCombo: true },
+            { id: 'roadmap-blender-1', title: 'Lộ trình Blender Toàn Diện 9 Giai Đoạn', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 599000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước', image: 'https://iili.io/KcQ48ru.png', rating: 4.92, originalPrice: 1299000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-blender-2', title: 'Nâng Tầm Hình Ảnh Sản Phẩm Với Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/nâng-tầm-hình-ảnh-sản-phẩm-với-blender', image: 'https://iili.io/KEkzL3g.png', rating: 4.93, originalPrice: 799000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-animation-1', title: 'Lộ trình Blender Animation Chuyên Sâu', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'animation', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/khóa-học-blender-animation-chuyên-sâu', image: 'https://i.postimg.cc/sxJzj9vj/1104-2.gif', rating: 4.96, originalPrice: 899000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-blender-3', title: 'Dựng Nhân Vật 3D Chuyên Sâu trong Blender', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'blender', price: 419000, href: 'https://www.vizlab3d.org/lộ-trình/lộ-trình-làm-chủ-blender-bài-bản-chỉ-trong-9-bước/combo-dựng-nhân-vật-blender-lộ-trình-9-giai-đoạn-tặng-kèm', image: 'https://iili.io/Kv3NgVI.png', rating: 4.94, originalPrice: 799000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-zbrush-2', title: 'Biến Nhân Vật Anime Thành Figure 3D', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 459000, href: 'https://www.vizlab3d.org/biến-nhân-vật-anime-thành-figure-3d', image: 'https://iili.io/f9mmld7.png', rating: 4.97, originalPrice: 899000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-zbrush-3', title: 'Thành thạo Zbrush Điêu Khắc Nhân vật', subtitle: 'Từ Cơ Bản - Nâng Cao', category: 'zbrush', price: 395000, href: 'https://www.vizlab3d.org/zbp0a/thành-thạo-zbrush-điêu-khắc-nhân-vật-3d-cho-người-mới-bắt-đầu', image: 'https://iili.io/fB50Wjn.jpg', rating: 4.91, originalPrice: 790000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' },
+            { id: 'roadmap-blender-4', title: 'Nhập Môn Blender Toàn Diện', subtitle: 'Từ Cơ Bản - Trung Cấp', category: 'blender', price: 399000, href: 'https://www.vizlab3d.org/list/khóa-học-nhập-môn-blender-toàn-diện', image: 'https://iili.io/fA6kDf2.png', rating: 4.98, originalPrice: 690000, type: 'paid', cc: true, specialBadge: 'Ưu đãi mở bán' }
         ];
 
         const sources = [
@@ -2909,6 +2937,57 @@
             }
         }
 
+        function isFullBlenderRoadmap(course) {
+            return !!course && (course.id === 'roadmap-blender-1' || /9\s*giai/i.test(course.title || ''));
+        }
+
+        function isIntroBlenderRoadmap(course) {
+            return !!course && (course.id === 'roadmap-blender-4' || /nhập\s*môn/i.test(course.title || ''));
+        }
+
+        function getDiscountPercent(course) {
+            if (!course || !course.originalPrice || !course.price || course.originalPrice <= course.price) return 0;
+            return Math.round((1 - (course.price / course.originalPrice)) * 100);
+        }
+
+        function getCourseValueNote(course, hasDiscount, discountSaving, isMember) {
+            if (isMember) return 'Mở bằng gói hội viên';
+            if (hasDiscount) return `Ưu đãi có hạn • Tiết kiệm ${discountSaving.toLocaleString('vi-VN')}đ`;
+            if (isFullBlenderRoadmap(course)) return 'Lộ trình trọn bộ • Từ cơ bản đến nâng cao';
+            if (isIntroBlenderRoadmap(course)) return 'Nhập môn - Trung cấp • Tài nguyên học';
+            if ((course.category || '').toLowerCase() === 'animation') return 'Chuyên sâu Animation • Tài nguyên học';
+            return 'Khóa chuyên sâu • Tài nguyên học';
+        }
+
+        function getSpecialCourseBadge(course, hasOriginalPrice, savingAmount) {
+            return 'Giá mở bán';
+        }
+
+        function getSpecialCoursePositionLabel(course) {
+            if (isFullBlenderRoadmap(course)) return 'Lộ trình trọn bộ';
+            if (isIntroBlenderRoadmap(course)) return 'Nhập môn - Trung cấp';
+            if ((course.category || '').toLowerCase() === 'animation') return 'Chuyên sâu Animation';
+            if ((course.category || '').toLowerCase() === 'zbrush') return 'Chuyên sâu ZBrush';
+            return 'Khóa chuyên sâu';
+        }
+
+
+        function isFeaturedSpecialCourse(course) {
+            return !!course && course.id === 'roadmap-zbrush-1';
+        }
+
+        function getSpecialCourseDisplayTitle(course) {
+            if (!course) return '';
+            if (course.id === 'roadmap-zbrush-1') return 'ZBrush Masterclass Làm Chủ Thiết Kế Figure 3D';
+            if (course.id === 'roadmap-blender-1') return 'Lộ trình Blender Toàn Diện 9 Giai Đoạn';
+            return course.title || '';
+        }
+
+        function getSpecialCourseFeaturedNote(course) {
+            if (isFeaturedSpecialCourse(course)) return 'Lộ trình figure 3D & in 3D';
+            return '';
+        }
+
         function renderCourses(courses) {
             const grid = document.getElementById('course-grid');
             if(!grid) return;
@@ -2963,7 +3042,9 @@
 
             courses.forEach(course => {
                 const isMember = course.type === 'member';
-                const hasDiscount = course.originalPrice > 0; 
+                const hasDiscount = course.originalPrice && course.originalPrice > course.price;
+                const discountSaving = hasDiscount ? course.originalPrice - course.price : 0;
+                const courseValueNote = getCourseValueNote(course, hasDiscount, discountSaving, isMember);
                 const card = document.createElement('div');
                 card.className = "course-card group relative rounded-[1.5rem] cursor-pointer transition-all duration-500 hover:-translate-y-3 z-10 hover:z-20";
                 card.onclick = () => { window.open(course.href, '_blank'); };
@@ -2988,8 +3069,8 @@
                             ? `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-[#4fb9fd] text-[#020617] flex items-center justify-center gap-2 text-sm transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(79,185,253,0.4)]" title="Đã thêm vào giỏ">
                                    <i class="fas fa-check text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Đã thêm</span>
                                </div>`
-                            : `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center gap-2 text-sm text-slate-300 transition-all duration-300 hover:scale-105 hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.4)]" title="Thêm vào giỏ hàng">
-                                   <i class="fas fa-cart-plus text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Thêm</span>
+                            : `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-10 md:w-auto md:px-4 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center gap-2 text-sm text-slate-300 transition-all duration-300 hover:scale-105 hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.4)]" title="Chọn khóa học">
+                                   <i class="fas fa-cart-plus text-base"></i><span class="font-black hidden md:block text-[10px] uppercase tracking-wider">Chọn</span>
                                </div>`;
 
                 card.innerHTML = `
@@ -3012,9 +3093,10 @@
                             <span class="text-[10px] uppercase font-black tracking-[0.16em] text-slate-500 mb-2 transition-colors ${isMember ? 'group-hover:text-slate-400' : 'group-hover:text-[#4fb9fd]/70'}">${course.categoryName || course.topicName || 'Lộ trình đặc biệt'}</span>
                             <h3 class="text-white font-bold text-lg leading-snug line-clamp-2 mb-6 transition-colors duration-300 ${textGlow}">${course.title}</h3>
                             <div class="mt-auto flex justify-between items-end border-t border-white/5 pt-4">
-                                <div>
+                                <div class="min-w-0">
                                     ${hasDiscount ? `<span class="block text-slate-500 line-through text-[11px] font-semibold -mb-1">${course.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
                                     <span class="text-white font-black text-xl tracking-tight ${isMember ? 'text-slate-300' : ''}">${isMember ? '0đ' : course.price.toLocaleString('vi-VN') + 'đ'}</span>
+                                    <span class="block mt-1 text-[10px] font-bold text-slate-500 leading-tight max-w-[160px] truncate">${courseValueNote}</span>
                                 </div>
                                 ${actionButton}
                             </div>
@@ -3098,51 +3180,69 @@
             const container = document.getElementById('special-container');
             const dotsContainer = document.getElementById('slider-dots');
             if(!container) return;
-            container.innerHTML = ''; if (dotsContainer) dotsContainer.innerHTML = '';
-            
+            container.innerHTML = '';
+            if (dotsContainer) dotsContainer.innerHTML = '';
+
             SPECIAL_ROADMAPS_DATA.forEach((course, index) => {
                 const isFree = course.price === 0;
                 const hasOriginalPrice = course.originalPrice && course.originalPrice > course.price;
+                const savingAmount = hasOriginalPrice ? course.originalPrice - course.price : 0;
+                const topBadgeText = getSpecialCourseBadge(course, hasOriginalPrice, savingAmount);
+                const coursePositionLabel = getSpecialCoursePositionLabel(course);
+                const discountPercent = getDiscountPercent(course);
+                const isFeatured = isFeaturedSpecialCourse(course);
+                const displayTitle = getSpecialCourseDisplayTitle(course);
+                const featuredNote = getSpecialCourseFeaturedNote(course);
+
                 const card = document.createElement('div');
-                card.className = "special-card btn-glow-border rounded-[2rem] p-[2px] group cursor-pointer w-[300px] md:w-[420px] shrink-0 snap-start hover:-translate-y-2 transition-transform duration-500";
+                card.className = `special-card btn-glow-border rounded-[2rem] p-[2px] group cursor-pointer w-[300px] md:w-[420px] shrink-0 snap-start hover:-translate-y-2 transition-transform duration-500 ${isFeatured ? 'md:-mt-1' : ''}`;
                 card.onclick = () => { window.open(course.href, '_blank'); };
-                
+
                 const isOwned = typeof userCanAccessCourse === "function" && userCanAccessCourse(course);
                 const isInCart = isCourseInCart(course.id);
                 const isFavorite = isCourseFavorited(course.id);
 
                 const actionBtnSpecial = isOwned
-                    ? `<div onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-emerald-400 flex items-center justify-center gap-2 text-sm md:text-base text-[#020617] shadow-[0_0_15px_rgba(52,211,153,0.35)] transition-all hover:scale-105" title="Vào học">
-                           <i class="fas fa-check-circle"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Vào học</span>
-                       </div>`
+                    ? `<button type="button" onclick="event.stopPropagation(); window.open('${course.href}', '_blank')" class="w-full rounded-2xl bg-emerald-400 text-[#020617] py-3.5 px-4 font-black text-sm shadow-[0_0_18px_rgba(52,211,153,0.28)] transition-all hover:scale-[1.01] flex items-center justify-center gap-2" title="Vào học"><i class="fas fa-check-circle"></i><span>Vào học</span></button>`
                     : isFree
-                        ? `<div onclick="upgradeMembership(event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-slate-200 flex items-center justify-center gap-2 text-sm md:text-base text-slate-900 shadow-[0_0_15px_rgba(226,232,240,0.5)] transition-all hover:scale-105" title="Nâng Cấp Hội Viên">
-                               <i class="fas fa-crown"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Hội Viên</span>
-                           </div>`
+                        ? `<button type="button" onclick="upgradeMembership(event)" class="w-full rounded-2xl bg-slate-200 text-slate-900 py-3.5 px-4 font-black text-sm shadow-[0_0_18px_rgba(226,232,240,0.20)] transition-all hover:scale-[1.01] flex items-center justify-center gap-2" title="Nâng cấp hội viên"><i class="fas fa-crown"></i><span>Nâng cấp hội viên</span></button>`
                         : isInCart
-                            ? `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-[#4fb9fd] text-[#020617] flex items-center justify-center gap-2 text-sm md:text-base shadow-[0_0_20px_rgba(79,185,253,0.5)] transition-all hover:scale-105" title="Đã thêm vào giỏ hàng">
-                                   <i class="fas fa-check"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Đã thêm</span>
-                               </div>`
-                            : `<div onclick="addToCart('${course.id}', event)" class="h-10 w-10 md:h-12 md:w-auto md:px-5 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center gap-2 text-sm md:text-base text-slate-300 hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.5)] transition-all hover:scale-105" title="Thêm vào giỏ hàng">
-                                   <i class="fas fa-cart-plus"></i><span class="font-black hidden md:block text-[11px] uppercase tracking-wider">Thêm Giỏ</span>
-                               </div>`;
+                            ? `<button type="button" onclick="addToCart('${course.id}', event)" class="w-full rounded-2xl bg-[#4fb9fd] text-[#020617] py-3.5 px-4 font-black text-sm shadow-[0_0_20px_rgba(79,185,253,0.35)] transition-all hover:scale-[1.01] flex items-center justify-center gap-2" title="Đã thêm vào giỏ hàng"><i class="fas fa-check"></i><span>Đã thêm vào giỏ</span></button>`
+                            : `<button type="button" onclick="addToCart('${course.id}', event)" class="w-full rounded-2xl ${isFeatured ? 'bg-gradient-to-r from-[#4fb9fd] to-[#8b5cf6] text-white border border-[#8b5cf6]/40 shadow-[0_0_26px_rgba(79,185,253,0.24)]' : 'bg-white/10 border border-white/10 text-white hover:bg-[#4fb9fd] hover:text-[#020617] hover:border-[#4fb9fd] hover:shadow-[0_0_20px_rgba(79,185,253,0.35)]'} py-3.5 px-4 font-black text-sm transition-all hover:scale-[1.01] flex items-center justify-center gap-2" title="Giữ ưu đãi"><i class="fas ${isFeatured ? 'fa-star' : 'fa-bolt'}"></i><span>${isFeatured ? 'Chọn ZBrush Masterclass' : 'Giữ ưu đãi'}</span></button>`;
 
                 card.innerHTML = `
-                    <div class="bg-[#0f172a] h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
-                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden"><button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button><img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async"><div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>${course.specialBadge ? `<div class="absolute top-4 right-4 z-10 bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 border border-white/80 text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-crown ${isFree ? 'text-slate-700' : 'hidden'}"></i> ${course.specialBadge}</div>` : ''}</div>
-                        <div class="p-6 md:p-8 flex flex-col flex-1 -mt-12 relative z-10">
-                            <span class="text-[10px] uppercase font-black tracking-[0.16em] text-[#4fb9fd] mb-1 block">${course.category.toUpperCase()}</span>
-                            <h3 class="text-lg md:text-xl font-black text-white leading-tight mb-3 ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${course.title}</h3>
-                            <p class="text-slate-400 font-medium text-xs md:text-sm line-clamp-1 mb-6">${course.subtitle || 'Lộ trình tối ưu chuyên nghiệp.'}</p>
-                            <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-4">
-                                <div>${hasOriginalPrice ? `<span class="block text-slate-500 line-through text-xs font-semibold">${course.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}<span class="text-white font-black text-xl md:text-2xl tracking-tight ${isFree ? 'text-slate-300' : 'text-[#4fb9fd]'}">${isFree ? '0đ (Hội Viên)' : course.price.toLocaleString('vi-VN') + 'đ'}</span></div>
+                    <div class="${isFeatured ? 'bg-[linear-gradient(180deg,rgba(79,185,253,0.12),rgba(15,23,42,1)_18%,rgba(15,23,42,1)_100%)] ring-1 ring-[#4fb9fd]/30 shadow-[0_0_0_1px_rgba(79,185,253,0.12),0_20px_60px_rgba(79,185,253,0.12)]' : 'bg-[#0f172a]'} h-full rounded-[1.8rem] overflow-hidden flex flex-col relative">
+                        <div class="aspect-[16/9] w-full relative bg-slate-900 overflow-hidden">
+                            <button onclick="toggleFavoriteCourse('${course.id}', event)" class="absolute top-4 left-4 z-20 h-10 w-10 rounded-xl ${isFavorite ? 'bg-rose-500 text-white border-rose-300/40 shadow-[0_0_18px_rgba(244,63,94,0.45)]' : 'bg-black/45 text-white/80 border-white/10 hover:bg-rose-500 hover:text-white'} border backdrop-blur-md flex items-center justify-center transition-all hover:scale-110" title="${isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart text-base"></i></button>
+                            ${isFeatured ? '<div class="absolute left-16 top-4 z-20 inline-flex items-center gap-1.5 rounded-full bg-amber-300 text-[#111827] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] shadow-[0_12px_24px_rgba(251,191,36,0.28)]"><i class="fas fa-crown text-[10px]"></i>Đáng học nhất</div>' : ''}
+                            <img src="${course.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/10 to-transparent opacity-90"></div>
+                            <div class="absolute top-4 right-4 z-10 ${isFeatured ? 'bg-gradient-to-tr from-violet-200 via-white to-sky-100 text-slate-900 border-white/90' : 'bg-gradient-to-tr from-slate-300 via-gray-100 to-slate-300 text-slate-900 border-white/80'} border text-[10px] font-black px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-bolt text-slate-700"></i> ${topBadgeText}</div>
+                        </div>
+                        <div class="p-6 md:p-7 flex flex-col flex-1">
+                            <h3 class="text-lg md:text-[1.35rem] font-black text-white leading-tight mb-3 min-h-[56px] ${isFree ? 'group-hover:text-slate-300' : 'group-hover:text-[#4fb9fd]'} transition-colors line-clamp-2">${displayTitle}</h3>
+                            <div class="mb-4 min-h-[28px] flex items-center flex-wrap gap-2">
+                                <span class="inline-flex items-center gap-1.5 rounded-full ${isFeatured ? 'border border-amber-300/30 bg-amber-300/12 text-amber-200' : 'border border-[#4fb9fd]/20 bg-[#4fb9fd]/10 text-[#8ad5ff]'} px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em]"><i class="fas fa-layer-group text-[9px]"></i>${coursePositionLabel}</span>
+                                ${isFeatured ? '<span class="inline-flex items-center gap-1 rounded-full border border-violet-400/25 bg-violet-400/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-violet-200"><i class="fas fa-fire text-[9px]"></i>Đáng học nhất</span>' : ''}
+                            </div>
+                            ${isFeatured ? `<div class="mb-4 text-[12px] font-semibold text-slate-300/90 leading-relaxed line-clamp-1 min-h-[18px]">${featuredNote}</div>` : ''}
+
+                            <div class="mt-auto border-t border-white/8 pt-4">
+                                ${hasOriginalPrice ? `<div class="flex items-center gap-2 mb-2 flex-wrap"><span class="text-slate-500 line-through text-sm md:text-[15px] font-semibold">${course.originalPrice.toLocaleString('vi-VN')}đ</span><span class="rounded-full bg-rose-500/12 border border-rose-400/20 px-2 py-0.5 text-[10px] font-black text-rose-200 uppercase tracking-[0.12em]">-${discountPercent}%</span></div>` : `<div class="mb-2 h-[24px]"></div>`}
+                                <div class="flex items-end gap-2 flex-wrap mb-1">
+                                    <span class="text-white font-black ${isFeatured ? 'text-[2.15rem] md:text-[2.45rem]' : 'text-[1.95rem] md:text-[2.2rem]'} tracking-tight leading-none ${isFree ? 'text-slate-300' : 'text-[#4fb9fd]'}">${isFree ? '0đ (Hội Viên)' : course.price.toLocaleString('vi-VN') + 'đ'}</span>
+                                </div>
+                                <div class="text-[11px] md:text-[12px] font-bold ${isFeatured ? 'text-sky-200' : 'text-slate-400'} mb-4 min-h-[18px]">${hasOriginalPrice ? `Tiết kiệm ${savingAmount.toLocaleString('vi-VN')}đ` : (isFree ? 'Mở bằng gói hội viên' : 'Giá mở bán trong thời gian giới hạn')}</div>
                                 ${actionBtnSpecial}
                             </div>
                         </div>
                     </div>`;
                 container.appendChild(card);
                 if (dotsContainer) {
-                    const dot = document.createElement('button'); dot.className = index === 0 ? 'w-6 h-2 rounded-full transition-all duration-300 bg-[#4fb9fd]' : 'w-2 h-2 rounded-full transition-all duration-300 bg-white/20 hover:bg-white/50 cursor-pointer'; dot.onclick = () => scrollToCard(index); dotsContainer.appendChild(dot);
+                    const dot = document.createElement('button');
+                    dot.className = index === 0 ? 'w-6 h-2 rounded-full transition-all duration-300 bg-[#4fb9fd]' : 'w-2 h-2 rounded-full transition-all duration-300 bg-white/20 hover:bg-white/50 cursor-pointer';
+                    dot.onclick = () => scrollToCard(index);
+                    dotsContainer.appendChild(dot);
                 }
             });
         }
@@ -3558,10 +3658,10 @@
         };
         const MEMBERSHIP_PAYMENT_QR = { momo: { image: 'https://iili.io/f9UTZhv.jpg', title: 'Quét mã MoMo để thanh toán' }, banking: { image: 'https://iili.io/f9UTbBp.jpg', title: 'Quét mã Banking để thanh toán' } };
         const MEMBERSHIP_DURATION_META = {
-            '1month': { plusBadge: '', proBadge: '', label: '1 tháng' },
-            '3months': { plusBadge: '', proBadge: '', label: '3 tháng' },
-            '6months': { plusBadge: 'Tiết kiệm tốt', proBadge: 'Phổ biến', label: '6 tháng' },
-            '1year': { plusBadge: 'Tiết kiệm nhất', proBadge: 'Tiết kiệm nhất', label: '1 năm' }
+            '1month': { plusBadge: '', proBadge: '', label: '1 tháng', upgradeText: 'Chỉ thêm 50K so với Plus để mở khóa Bệ Phóng Chuyên Nghiệp' },
+            '3months': { plusBadge: '', proBadge: '', label: '3 tháng', upgradeText: 'Chỉ thêm 100K so với Plus để mở khóa Bệ Phóng Chuyên Nghiệp' },
+            '6months': { plusBadge: 'Tiết kiệm tốt', proBadge: 'Phổ biến', label: '6 tháng', upgradeText: 'Chỉ thêm 141K so với Plus để mở khóa Bệ Phóng Chuyên Nghiệp' },
+            '1year': { plusBadge: 'Tiết kiệm nhất', proBadge: 'Lợi nhất', label: '1 năm', upgradeText: 'Chỉ thêm 200K so với Plus để mở khóa Bệ Phóng Chuyên Nghiệp' }
         };
         let currentMembershipPlanId = 'pro_6months';
         let currentMembershipDuration = '6months';
@@ -3622,6 +3722,7 @@
             setText('membership-plus-monthly', plusPlan.monthlyText);
             setText('membership-pro-price', proPlan.monthlyDisplay);
             setText('membership-pro-monthly', proPlan.monthlyText);
+            setText('membership-pro-upgrade-note', meta.upgradeText || 'Mở khóa toàn bộ Bệ Phóng Chuyên Nghiệp');
 
             const plusBadge = document.getElementById('membership-plus-badge');
             const proBadge = document.getElementById('membership-pro-badge');
