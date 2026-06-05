@@ -2234,10 +2234,11 @@
 
         function handleMembershipStatusClick(event) {
             if (event) event.stopPropagation();
-            if (userIsActiveMember && userMembership) {
+            if (userIsActiveMember && userMembership && getMembershipTier() === 'pro') {
                 alert(`${formatMembershipPlan(userMembership.plan)} đang hoạt động\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
                 return;
             }
+            // Nếu đang dùng Plus, vẫn cho mở bảng gói để khách có thể nâng cấp lên Pro.
             openMembershipModal();
         }
 
@@ -3335,7 +3336,7 @@
                     window[intervalName] = null;
                     timerEl.textContent = "00:00";
 
-                    const messageId = targetId === "checkout-countdown" ? "checkout-message-payment" : "membership-message";
+                    const messageId = targetId === "checkout-countdown" ? "checkout-message-payment" : "membership-message-payment";
                     const messageEl = document.getElementById(messageId);
                     if (messageEl) {
                         messageEl.className = "mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed bg-amber-500/10 border border-amber-500/20 text-slate-400";
@@ -3874,7 +3875,7 @@
         function openMembershipModal() {
             currentMembershipDuration = '6months';
             currentMembershipPlanId = 'pro_6months';
-            if (userIsActiveMember && userMembership) {
+            if (userIsActiveMember && userMembership && getMembershipTier() === 'pro') {
                 alert(`${formatMembershipPlan(userMembership.plan)} đang hoạt động
 Hết hạn: ${formatDateVN(userMembership.end_date)}`);
                 return;
@@ -3893,8 +3894,10 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
             if (stepPills) { stepPills.classList.add('hidden'); stepPills.classList.remove('flex'); }
             if (message) { message.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; message.textContent = ''; }
             if (messagePayment) { messagePayment.className = 'hidden mt-4 rounded-2xl p-4 text-sm font-semibold leading-relaxed'; messagePayment.textContent = ''; }
-            if (title) title.textContent = 'Nâng cấp Hội Viên VizLab';
-            if (subtitle) subtitle.textContent = 'Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.';
+            if (title) title.textContent = userIsActiveMember && getMembershipTier() === 'plus' ? 'Nâng cấp lên VizLab Pro' : 'Nâng cấp Hội Viên VizLab';
+            if (subtitle) subtitle.textContent = userIsActiveMember && getMembershipTier() === 'plus'
+                ? 'Bạn đang dùng Plus. Chọn Pro để mở thêm Bệ Phóng Chuyên Nghiệp.'
+                : 'Chọn thời hạn trước, sau đó chọn gói phù hợp với nhu cầu của bạn.';
 
             selectMembershipDuration('6months');
             selectMembershipPlan('pro_6months');
