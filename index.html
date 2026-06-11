@@ -1199,6 +1199,18 @@
             }
         }
 
+
+
+        /* Guest mode: người chưa đăng nhập chỉ xem Bệ Phóng Chuyên Nghiệp */
+        body.guest-mode #top-library-toolbar,
+        body.guest-mode #course-library {
+            display: none !important;
+        }
+
+        body.guest-mode .guest-hidden {
+            display: none !important;
+        }
+
 </style>
 </head>
 <!-- FIX 2026-06-05: Membership payment is fully two-step: info/payment method first, QR/countdown/transfer note second. -->
@@ -1245,7 +1257,7 @@
             </button>
         </div>
 
-        <div class="p-3 pt-1 border-t border-white/5 shrink-0 flex flex-col items-center gap-1">
+        <div id="membership-sidebar-wrap" data-membership-visible class="p-3 pt-1 border-t border-white/5 shrink-0 flex flex-col items-center gap-1 hidden">
             <button id="membership-sidebar-action" type="button" onclick="handleMembershipStatusClick(event)" class="relative flex items-center h-10 w-10 group-hover:w-full bg-gradient-to-r from-slate-200 to-slate-400 text-[#020617] font-black rounded-xl shadow-[0_0_15px_rgba(226,232,240,0.4)] hover:shadow-[0_0_25px_rgba(226,232,240,0.7)] transition-all duration-300 overflow-hidden">
                 <div class="w-10 h-10 shrink-0 flex items-center justify-center">
                     <i data-membership-action-icon class="fas fa-crown text-sm animate-[pulse_3s_ease-in-out_infinite]"></i>
@@ -1889,82 +1901,44 @@
                 <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden transition-opacity duration-150"></div>
             </section>
 
-            <footer class="mt-10 md:mt-16 mb-10 md:mb-6 relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
-                <div class="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-[#4fb9fd]/10 blur-[90px]"></div>
-                <div class="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-orange-500/10 blur-[90px]"></div>
-
-                <div class="relative z-10 p-6 md:p-10">
-                    <div class="grid grid-cols-1 lg:grid-cols-[1.25fr_0.85fr_0.85fr_1fr] gap-8 md:gap-10">
+            <footer class="relative left-1/2 w-screen md:w-[calc(100vw-68px)] -translate-x-1/2 mt-10 md:mt-16 mb-0 border-y border-white/10 bg-white/[0.025]">
+                <div class="max-w-[1600px] mx-auto px-6 md:px-12 py-8">
+                    <div class="grid grid-cols-1 md:grid-cols-[1.4fr_0.8fr_0.8fr] gap-8 md:gap-10">
                         <div>
-                            <a href="#" class="inline-flex items-center gap-2 text-3xl font-black tracking-tighter text-white mb-4">
-                                <span class="h-11 w-11 rounded-2xl bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 flex items-center justify-center shadow-[0_0_24px_rgba(79,185,253,0.18)]">
-                                    <i class="fas fa-cube text-[#4fb9fd]"></i>
+                            <a href="#" onclick="goToSpecialRoadmaps(); return false;" class="inline-flex items-center gap-3 text-2xl font-black tracking-tighter text-white mb-3">
+                                <span class="h-10 w-10 rounded-2xl bg-white/90 p-2 flex items-center justify-center overflow-hidden">
+                                    <img src="https://iili.io/B5sIBtt.png" alt="VizLab" class="h-full w-full object-contain">
                                 </span>
-                                Viz<span class="text-orange-500 -ml-1">Lab</span>
+                                Viz<span class="text-slate-300 -ml-2">Lab</span>
                             </a>
                             <p class="text-slate-400 text-sm leading-relaxed max-w-md">
-                                Không gian học tập dành cho người học 3D, thiết kế, hậu kỳ và sáng tạo nội dung. Học theo lộ trình, chọn khóa phù hợp và kích hoạt nhanh qua email.
+                                Nền tảng học tập dành cho người học 3D, thiết kế và sáng tạo nội dung. Tập trung vào lộ trình rõ ràng, dễ theo học và hỗ trợ kích hoạt sau thanh toán.
                             </p>
+                        </div>
 
-                            <div class="mt-6 flex flex-wrap gap-2">
-                                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-[11px] font-black text-emerald-300 uppercase tracking-wider">
-                                    <i class="fas fa-check-circle"></i> Học trọn đời
-                                </span>
-                                <span class="inline-flex items-center gap-2 rounded-full bg-[#4fb9fd]/10 border border-[#4fb9fd]/20 px-3 py-2 text-[11px] font-black text-[#4fb9fd] uppercase tracking-wider">
-                                    <i class="fas fa-box-open"></i> Tài nguyên học
-                                </span>
-                                <span class="inline-flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-3 py-2 text-[11px] font-black text-orange-300 uppercase tracking-wider">
-                                    <i class="fas fa-bolt"></i> Kích hoạt nhanh
-                                </span>
+                        <div>
+                            <h4 class="text-white font-black text-xs uppercase tracking-[0.18em] mb-4">Học tập</h4>
+                            <div class="flex flex-col gap-3 text-sm font-semibold">
+                                <button onclick="goToSpecialRoadmaps()" class="text-left text-slate-400 hover:text-white transition-colors">Bệ Phóng Chuyên Nghiệp</button>
+                                <button data-membership-visible onclick="handleMembershipStatusClick(event)" class="hidden text-left text-slate-400 hover:text-white transition-colors">Gói hội viên Plus / Pro</button>
+                                <a href="https://hoc.vizlab3d.org/login.html" class="text-slate-400 hover:text-white transition-colors">Đăng nhập học viên</a>
                             </div>
                         </div>
 
                         <div>
-                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Khám phá</h4>
-                            <div class="flex flex-col gap-3 text-sm">
-                                <button onclick="currentSelectedFilterChip='all'; currentSelectedCategory='all'; renderFilterChips(); renderSidebarCategories(); executeSearchAndFilter(); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Tất cả khóa học</button>
-                                <button onclick="currentSelectedFilterChip='owned'; renderFilterChips(); executeSearchAndFilter(); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học của tôi</button>
-                                <button onclick="currentSelectedFilterChip='favorite'; renderFilterChips(); executeSearchAndFilter(); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa học yêu thích</button>
-                                <button onclick="currentSelectedFilterChip='paid'; renderFilterChips(); executeSearchAndFilter(); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Khóa lẻ</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Chủ đề nổi bật</h4>
-                            <div class="flex flex-col gap-3 text-sm">
-                                <button onclick="filterCategory('blender'); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Blender 3D</button>
-                                <button onclick="filterCategory('zbrush'); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">ZBrush Sculpt</button>
-                                <button onclick="filterCategory('maya'); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">Autodesk Maya</button>
-                                <button onclick="filterCategory('after-effects'); scrollToLibrary();" class="text-left text-slate-400 hover:text-[#4fb9fd] transition-colors font-semibold">After Effects</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-white font-black text-sm uppercase tracking-[0.18em] mb-4">Hỗ trợ học viên</h4>
-                            <div class="rounded-3xl bg-black/25 border border-white/10 p-4">
-                                <p class="text-slate-400 text-sm leading-relaxed mb-4">
-                                    Cần tư vấn lộ trình, kích hoạt khóa học hoặc hỗ trợ sau thanh toán? Liên hệ VizLab để được hỗ trợ nhanh.
-                                </p>
-                                <div class="flex gap-3">
-                                    <a href="https://www.vizlab3d.org/tiện-ích/liên-hệ" target="_blank" rel="noopener" class="flex-1 h-11 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm font-black text-white">
-                                        <img src="https://i.postimg.cc/htBP5xJc/Logo-Zalo-Arc.png" class="h-5 w-5 object-contain" alt="Zalo"> Zalo
-                                    </a>
-                                    <a href="https://m.me/109209856089250" target="_blank" rel="noopener" class="flex-1 h-11 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm font-black text-white">
-                                        <img src="https://i.postimg.cc/mgy2fDMM/Facebook-Messenger-logo-2018-svg.png" class="h-5 w-5 object-contain" alt="Messenger"> Chat
-                                    </a>
-                                </div>
+                            <h4 class="text-white font-black text-xs uppercase tracking-[0.18em] mb-4">Hỗ trợ</h4>
+                            <div class="flex flex-col gap-3 text-sm font-semibold">
+                                <a href="https://www.vizlab3d.org/tiện-ích/liên-hệ" target="_blank" rel="noopener" class="text-slate-400 hover:text-white transition-colors">Liên hệ hỗ trợ</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                        <p class="text-slate-500 text-xs font-semibold">
-                            © 2026 VizLab. Nền tảng tổng hợp khóa học sáng tạo dành cho học viên Việt Nam.
-                        </p>
-                        <div class="flex flex-wrap gap-3 text-xs font-bold text-slate-500">
-                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-shield-alt text-slate-600"></i> Bảo mật thông tin</span>
-                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-envelope text-slate-600"></i> Kích hoạt qua email</span>
-                            <span class="inline-flex items-center gap-1.5"><i class="fas fa-headset text-slate-600"></i> Hỗ trợ sau mua</span>
+                    <div class="mt-8 pt-5 border-t border-white/10 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+                        <p class="text-slate-500 text-xs leading-relaxed">© 2026 VizLab. Hệ sinh thái khóa học sáng tạo dành cho học viên Việt Nam.</p>
+                        <div class="flex items-center gap-4 text-xs text-slate-500">
+                            <span>Hỗ trợ sau mua</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-700"></span>
+                            <span>Bảo mật thông tin</span>
                         </div>
                     </div>
                 </div>
@@ -2029,7 +2003,7 @@
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('favorite')"><i class="fas fa-heart"></i> Yêu thích</button>
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('member')"><i class="fas fa-crown"></i> Hội viên</button>
                 <button class="mobile-topic-btn" onclick="selectMobileFilter('paid')"><i class="fas fa-briefcase"></i> Khóa lẻ</button>
-                <button class="mobile-topic-btn" onclick="handleMembershipStatusClick(event); closeMobileTopicSheet();"><i class="fas fa-gem"></i> Nâng cấp Pro</button>
+                <button data-membership-visible class="mobile-topic-btn hidden" onclick="handleMembershipStatusClick(event); closeMobileTopicSheet();"><i class="fas fa-gem"></i> Nâng cấp Pro</button>
             </div>
 
             <div class="mobile-sheet-section-title">Chủ đề khóa học</div>
@@ -2085,6 +2059,46 @@
         let ownedCourseIds = [];
         let userMembership = null;
         let userIsActiveMember = false;
+
+        function shouldShowFullCourseLibrary() {
+            return Boolean(currentUser);
+        }
+
+        function updateCourseLibraryVisibility() {
+            const showFullLibrary = shouldShowFullCourseLibrary();
+            document.body.classList.toggle('guest-mode', !showFullLibrary);
+
+            const topToolbar = document.getElementById('top-library-toolbar');
+            const courseLibrary = document.getElementById('course-library');
+            const loadingShimmer = document.getElementById('loading-shimmer');
+            const courseGrid = document.getElementById('course-grid');
+            const searchInput = document.getElementById('search-input');
+
+            if (topToolbar) topToolbar.style.display = showFullLibrary ? '' : 'none';
+            if (courseLibrary) courseLibrary.style.display = showFullLibrary ? '' : 'none';
+            if (!showFullLibrary) {
+                if (loadingShimmer) loadingShimmer.classList.add('hidden');
+                if (courseGrid) {
+                    courseGrid.innerHTML = '';
+                    courseGrid.classList.add('hidden');
+                }
+                if (searchInput) searchInput.value = '';
+                currentSelectedCategory = 'all';
+                currentSelectedFilterChip = 'all';
+                closeMobileSearch();
+            } else if (courseGrid) {
+                courseGrid.classList.remove('hidden');
+            }
+        }
+
+        function goToSpecialRoadmaps() {
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
 
         async function getCurrentUser() {
             const { data, error } = await window.supabaseClient.auth.getUser();
@@ -2203,6 +2217,10 @@
             const statusMini = document.getElementById('membership-status-mini');
             const titleEl = document.querySelector('[data-membership-status-title]');
             const subtitleEl = document.querySelector('[data-membership-status-subtitle]');
+            const membershipVisibleEls = document.querySelectorAll('[data-membership-visible]');
+            membershipVisibleEls.forEach(el => {
+                el.classList.toggle('hidden', !currentUser);
+            });
 
             if (!actionBtn || !actionText) return;
 
@@ -2234,6 +2252,10 @@
 
         function handleMembershipStatusClick(event) {
             if (event) event.stopPropagation();
+            if (!currentUser) {
+                window.location.href = 'https://hoc.vizlab3d.org/login.html';
+                return;
+            }
             if (userIsActiveMember && userMembership && getMembershipTier() === 'pro') {
                 alert(`${formatMembershipPlan(userMembership.plan)} đang hoạt động\nHết hạn: ${formatDateVN(userMembership.end_date)}`);
                 return;
@@ -2291,7 +2313,9 @@
             }
 
             updateMembershipUI();
+            updateCourseLibraryVisibility();
             renderFilterChips();
+            renderSidebarCategories();
             if (typeof renderMobileTopicSheet === "function") renderMobileTopicSheet();
         }
 
@@ -2592,6 +2616,7 @@
 
             document.getElementById('loading-shimmer').classList.add('hidden');
             document.getElementById('course-grid').classList.remove('hidden');
+            updateCourseLibraryVisibility();
             
             // Vẽ giao diện lần đầu sau khi tải xong mảng dữ liệu
             executeSearchAndFilter();
@@ -2601,6 +2626,10 @@
             const container = document.getElementById('filter-chips-container');
             if (!container) return;
             container.innerHTML = '';
+
+            if (!shouldShowFullCourseLibrary()) {
+                return;
+            }
 
             const chipIcons = {
                 all: 'fas fa-compass',
@@ -2868,6 +2897,12 @@
             }
             lastFilterSignature = filterSignature;
 
+            updateCourseLibraryVisibility();
+            if (!shouldShowFullCourseLibrary()) {
+                renderSpecialRoadmaps();
+                return;
+            }
+
             // Riêng mục yêu thích cần lấy cả khóa thường trong Vũ Trụ Sáng Tạo
             // và các lộ trình trong Bệ Phóng Chuyên Nghiệp.
             let filtered = currentSelectedFilterChip === 'favorite'
@@ -3110,7 +3145,17 @@
 
         function renderSidebarCategories() {
             const container = document.getElementById('sidebar-menu-container');
+            if (!container) return;
             container.innerHTML = ''; 
+
+            if (!shouldShowFullCourseLibrary()) {
+                const specialBtn = document.createElement('button');
+                specialBtn.className = 'category-btn relative flex items-center w-full py-2.5 pl-[21px] pr-3 transition-all overflow-hidden whitespace-nowrap group/btn text-white font-bold';
+                specialBtn.onclick = () => goToSpecialRoadmaps();
+                specialBtn.innerHTML = `<div class="active-bar absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full h-1/2 bg-[#4fb9fd] shadow-[0_0_10px_rgba(79,185,253,0.45)]"></div><div class="w-5 flex justify-center shrink-0"><i class="fas fa-rocket text-sm text-[#4fb9fd]"></i></div><span class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wide text-sm font-semibold">Bệ Phóng Chuyên Nghiệp</span>`;
+                container.appendChild(specialBtn);
+                return;
+            }
             
             const isAllActive = currentSelectedCategory === 'all';
             const allBtn = document.createElement('button');
@@ -3283,6 +3328,10 @@
         });
 
         function scrollToLibrary() {
+            if (!shouldShowFullCourseLibrary()) {
+                goToSpecialRoadmaps();
+                return;
+            }
             const library = document.getElementById('course-library');
             const mainEl = document.querySelector('main');
 
@@ -4015,6 +4064,10 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
         }
 
         function toggleMobileSearch() {
+            if (!shouldShowFullCourseLibrary()) {
+                goToSpecialRoadmaps();
+                return;
+            }
             const isOpen = document.body.classList.toggle('mobile-search-open');
             if (isOpen) {
                 closeMobileTopicSheet();
@@ -4035,6 +4088,11 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
         }
 
         function selectMobileFilter(filterId) {
+            if (!shouldShowFullCourseLibrary()) {
+                closeMobileTopicSheet();
+                goToSpecialRoadmaps();
+                return;
+            }
             currentSelectedFilterChip = filterId;
             currentSelectedCategory = 'all';
             renderFilterChips();
@@ -4046,6 +4104,11 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
         }
 
         function selectMobileCategory(categoryId) {
+            if (!shouldShowFullCourseLibrary()) {
+                closeMobileTopicSheet();
+                goToSpecialRoadmaps();
+                return;
+            }
             filterCategory(categoryId);
             closeMobileTopicSheet();
             const library = document.getElementById('course-library');
@@ -4075,6 +4138,16 @@ Hết hạn: ${formatDateVN(userMembership.end_date)}`);
             const list = document.getElementById('mobile-topic-list');
             if (!list || !Array.isArray(sources)) return;
             list.innerHTML = '';
+
+            if (!shouldShowFullCourseLibrary()) {
+                const quickTitle = Array.from(document.querySelectorAll('#mobile-topic-sheet .mobile-sheet-section-title')).find(el => el.textContent.includes('Truy cập nhanh'));
+                const quickGrid = quickTitle ? quickTitle.nextElementSibling : null;
+                if (quickGrid) {
+                    quickGrid.innerHTML = `<button class="mobile-topic-btn primary" onclick="closeMobileTopicSheet(); goToSpecialRoadmaps();"><i class="fas fa-rocket"></i> Xem Bệ Phóng</button>`;
+                }
+                list.innerHTML = '';
+                return;
+            }
             const allBtn = document.createElement('button');
             allBtn.className = `mobile-topic-btn ${currentSelectedCategory === 'all' ? 'active' : ''}`;
             allBtn.innerHTML = `<i class="fas fa-border-all"></i> Tất cả chủ đề`;
